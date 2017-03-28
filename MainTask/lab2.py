@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import argparse
+import ConfigParser
 
 
 #I guess all this can be better :)
@@ -60,6 +61,9 @@ def main():
 	arguments = parser.parse_args(sys.argv[1:])
 	file_location = os.getcwd()
 	trash_location = ("Trash/")
+	conf = ConfigParser.RawConfigParser()
+	conf.read("smart_rm.conf")
+	print conf.get("main", "trash_location")
 
 	
 	if arguments.type_of_command == 'trash':

@@ -23,16 +23,17 @@ def recover_from_trash(filename):
 	f = open('Trash/list.txt', 'r+')
 	for line in f:
 		file_list.append(line)
+	if file_list[0] == '\n':
+		file_list.pop(0)   #deleting first \n
 	f.close()
 	
 
 
-	for i in xrange(len(file_list)):		
+	for i in xrange(len(file_list)):
 		line = file_list[i].split()   #could be better way	
 		if filename == line[0]:			
 			shutil.move("Trash/"+filename, line[1])
-			file_list.pop(i)
-			#
+			file_list.pop(i)			
 			f = open('Trash/list.txt', 'w')
 			f.writelines(file_list)
 			f.close()
@@ -45,7 +46,7 @@ def recover_from_trash(filename):
 def delete_to_trash(filename, file_location, trash_location):
 	shutil.move(filename, trash_location)
 	f = open('Trash/list.txt', 'a')
-	f.write(filename + ' ' + file_location + '\n')
+	f.write('\n' + filename + ' ' + file_location)
 	f.close()
 
 
@@ -63,6 +64,7 @@ def main():
 	
 	if arguments.type_of_command == 'trash':
 		delete_to_trash(arguments.file, file_location, trash_location)
+
 	elif arguments.type_of_command == 'recover_from_trash':
 		recover_from_trash(arguments.file)
 	elif arguments.type_of_command == 'clean_trash':

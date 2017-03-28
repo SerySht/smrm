@@ -1,1 +1,0 @@
-tteth /home/sergey/labs/lab2/MainTask

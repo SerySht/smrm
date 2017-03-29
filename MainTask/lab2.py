@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import shutil
 import argparse
@@ -60,7 +61,8 @@ def main():
 	parser.add_argument('-t', nargs='?', default='')
 	parser.add_argument('-st', nargs='?', default='')
 	parser.add_argument('-wt', nargs='?', default='')
-	parser.add_argument('-r', nargs='?', default=''))
+	parser.add_argument('-r', nargs='?', default='')
+	parser.add_argument('-i', nargs='?', default='')
 	arguments = parser.parse_args(sys.argv[1:])
 	
 	file_location = os.getcwd()  ####fixxxxxxxxxxxxx
@@ -68,7 +70,6 @@ def main():
 	conf = ConfigParser.RawConfigParser()            #<<-----config
 	conf.read("smart_rm.conf")
 	trash_location = conf.get("main", "trash_location")
-
 	
 	if arguments.t != '':
 		delete_to_trash(arguments.t, file_location, trash_location)
@@ -78,6 +79,13 @@ def main():
 		wipe_trash(trash_location)
 	elif arguments.r != '':
 		recover_from_trash(arguments.r)
+	elif arguments.i != '':
+		answer = raw_input("Are you sure?\n")
+		if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:
+			delete_file(arguments.i)
+		elif answer in {'No', 'no', 'NO', 'net'}:
+			print ":("
+		else: print "Unknown answer"		
 	else:
 		delete_file(arguments.file)
 main()

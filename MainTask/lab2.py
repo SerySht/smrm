@@ -6,7 +6,7 @@ import ConfigParser
 
 
 #I guess all this can be better :)
-def clean_trash(trash_location):
+def wipe_trash(trash_location):
 	shutil.rmtree(trash_location)
 	os.mkdir(trash_location)
 
@@ -56,27 +56,28 @@ def delete_to_trash(filename, file_location, trash_location):
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('type_of_command')
-	parser.add_argument('file', nargs='?', default=' ')	
+	parser.add_argument('file', nargs='?', default='')	
+	parser.add_argument('-t', nargs='?', default='')
+	parser.add_argument('-st', nargs='?', default='')
+	parser.add_argument('-wt', nargs='?', default='')
+	parser.add_argument('-r', nargs='?', default=''))
 	arguments = parser.parse_args(sys.argv[1:])
-	file_location = os.getcwd()
-	trash_location = ("Trash/")
-	conf = ConfigParser.RawConfigParser()
+	
+	file_location = os.getcwd()  ####fixxxxxxxxxxxxx
+	
+	conf = ConfigParser.RawConfigParser()            #<<-----config
 	conf.read("smart_rm.conf")
-	print conf.get("main", "trash_location")
+	trash_location = conf.get("main", "trash_location")
 
 	
-	if arguments.type_of_command == 'trash':
-		delete_to_trash(arguments.file, file_location, trash_location)
-
-	elif arguments.type_of_command == 'recover_from_trash':
-		recover_from_trash(arguments.file)
-	elif arguments.type_of_command == 'clean_trash':
-		clean_trash(trash_location)
-	elif arguments.type_of_command == 'show_trash':
+	if arguments.t != '':
+		delete_to_trash(arguments.t, file_location, trash_location)
+	elif arguments.st != '':
 		show_trash(trash_location)
-	elif arguments.type_of_command == 'without_recover':
+	elif arguments.wt != '':
+		wipe_trash(trash_location)
+	elif arguments.r != '':
+		recover_from_trash(arguments.r)
+	else:
 		delete_file(arguments.file)
-	else: print "There is no such command!"
-
 main()

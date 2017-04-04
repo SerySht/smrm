@@ -55,15 +55,24 @@ def delete_to_trash(filename, file_location, trash_location):
 def delete_by_reg(regular):
 	pass
 
-def recursive_delete(filename):
-	stack = []
-	stack.extend(os.listdir(filename))
-	for i in range(len(stack)):
-		print stack[i]
-		if os.path.isdir(stack[i]):
-			recursive_delete(stack[i])
-		else:
-			os.remove(filename +'/' + stack[i])
+
+def recursive_delete(directory):
+	if len(os.listdir(directory)) == 0:
+		os.rmdir(directory) 
+	else:
+		stack = [directory]
+		files = os.listdir(directory)
+		for i in range(len(files)):
+			stack.append(directory + '/' + files[i])    #adding files in stack
+		while len(stack)>0:
+			f = stack.pop()
+			print f
+			if os.path.isdir(f):
+				recursive_delete(f)
+			else: os.remove(f)
+
+
+
 	 	
 
 

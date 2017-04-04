@@ -52,6 +52,19 @@ def delete_to_trash(filename, file_location, trash_location):
 	f.close()
 
 
+def delete_by_reg(regular):
+	pass
+
+def recursive_delete(filename):
+	stack = []
+	stack.extend(os.listdir(filename))
+	for i in range(len(stack)):
+		print stack[i]
+		if os.path.isdir(stack[i]):
+			recursive_delete(stack[i])
+		else:
+			os.remove(filename +'/' + stack[i])
+	 	
 
 
 
@@ -61,8 +74,10 @@ def main():
 	parser.add_argument('-t', nargs='?', default='')
 	parser.add_argument('-st', nargs='?', default='')
 	parser.add_argument('-wt', nargs='?', default='')
-	parser.add_argument('-r', nargs='?', default='')
+	parser.add_argument('-rt', nargs='?', default='')
 	parser.add_argument('-i', nargs='?', default='')
+	parser.add_argument('-r', nargs='?', default='')
+	parser.add_argument('-reg', nargs='?', default='')
 	arguments = parser.parse_args(sys.argv[1:])
 	
 	file_location = os.getcwd()  ####fixxxxxxxxxxxxx
@@ -77,7 +92,7 @@ def main():
 		show_trash(trash_location)
 	elif arguments.wt != '':
 		wipe_trash(trash_location)
-	elif arguments.r != '':
+	elif arguments.rt != '':
 		recover_from_trash(arguments.r)
 	elif arguments.i != '':
 		answer = raw_input("Are you sure?\n")
@@ -85,7 +100,11 @@ def main():
 			delete_file(arguments.i)
 		elif answer in {'No', 'no', 'NO', 'net'}:
 			print ":("
-		else: print "Unknown answer"		
+		else: print "Unknown answer"	
+	elif arguments.reg != '':
+		delete_by_reg(arguments.reg)
+	elif arguments.r != '':
+		recursive_delete(arguments.r)		
 	else:
 		delete_file(arguments.file)
 main()

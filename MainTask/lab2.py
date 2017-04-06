@@ -8,8 +8,9 @@ import ConfigParser
 
 
 def wipe_trash(trash_location):
-	shutil.rmtree(trash_location)
+	recursive_delete(trash_location)
 	os.mkdir(trash_location)
+
 
 def show_trash(trash_location):
 	print os.listdir(trash_location) 
@@ -22,36 +23,27 @@ def delete(list_of_files):
 			os.remove(list_of_files[i])
 
 
-def delete_directory():
-	shutil.rmtree(directory_location)
+def recover_from_trash(filename, trash_location):
+	f = open(trash_location + "filelist", 'a+')               
+	try:
+		d = json.load(f)
+	except ValueError:
+		d = {}  
+	f.close() 
 
-def recover_from_trash(filename):
-	file_list = []
-	f = open('Trash/list.txt', 'r+')
-	for line in f:
-		file_list.append(line)
-	if file_list[0] == '\n':
-		file_list.pop(0)   #deleting first \n
+	try: file_location = d.pop(filename)		
+	except KeyError:
+		print "There is no such file!!!"
+		return
+	
+	shutil.move(trash_location + '/' + filename, file_location)
+	f = open(trash_location + "filelist", 'w')    #may be better way
+	f.write(json.dumps(d))
 	f.close()
-	
-
-
-	for i in xrange(len(file_list)):
-		line = file_list[i].split()   #could be better way	
-		if filename == line[0]:			
-			shutil.move("Trash/"+filename, line[1])
-			file_list.pop(i)			
-			f = open('Trash/list.txt', 'w')
-			f.writelines(file_list)
-			f.close()
-			return
-	print "There is no such file!"	
-	
-
 
 
 def delete_to_trash(files, location, trash_location):
-	f = open(trash_location + "filelist", 'r')               #esli net to error ---- fix
+	f = open(trash_location + "filelist", 'a+')               
 	try:
 		d = json.load(f)
 	except ValueError:
@@ -59,8 +51,7 @@ def delete_to_trash(files, location, trash_location):
 	f.close()  	
 	for i in range(len(files)):
 		shutil.move(files[i], trash_location)
-		d[files[i]] = location
-	print (json.dumps(d))
+		d[files[i]] = location	
 	f = open(trash_location + "filelist", 'w')    #may be better way
 	f.write(json.dumps(d))
 	f.close()
@@ -97,10 +88,10 @@ def recursive_delete(directory):
 def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('files', nargs='*', default='')	
-	parser.add_argument('-t', nargs='*', default='')
+	parser.add_argument('-t', nargs='*', default='')   
 	parser.add_argument('-st', nargs='?', default='')
 	parser.add_argument('-wt', nargs='?', default='')
-	parser.add_argument('-rt', nargs='?', default='')
+	parser.add_argument('-recover', nargs='?', default='')
 	parser.add_argument('-i', nargs='?', default='')
 	parser.add_argument('-r', nargs='?', default='')
 	parser.add_argument('-reg', nargs='?', default='')
@@ -118,15 +109,18 @@ def main():
 	if arguments.files != '':
 		delete(arguments.files)
 	
-	elif arguments.t != '':        #deleting to trash
+	elif arguments.t != '':       
 		delete_to_trash(arguments.t, location, trash_location)
 
 	elif arguments.st != '':
 		show_trash(trash_location)
+
 	elif arguments.wt != '':
 		wipe_trash(trash_location)
-	elif arguments.rt != '':
-		recover_from_trash(arguments.r)
+
+	elif arguments.recover != '':
+		recover_from_trash(arguments.recover, trash_location)
+
 	elif arguments.i != '':
 		answer = raw_input("Are you sure?\n")
 		if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:

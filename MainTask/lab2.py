@@ -14,8 +14,13 @@ def wipe_trash(trash_location):
 def show_trash(trash_location):
 	print os.listdir(trash_location) 
 
-def delete_file(filename):
-	os.remove(filename)
+def delete(list_of_files):
+	for i in range(len(list_of_files)):
+		if os.path.isdir(list_of_files[i]):
+			recursive_delete(list_of_files[i])
+		else:
+			os.remove(list_of_files[i])
+
 
 def delete_directory():
 	shutil.rmtree(directory_location)
@@ -45,15 +50,23 @@ def recover_from_trash(filename):
 
 
 
-def delete_to_trash(filename, file_location, trash_location):
-	shutil.move(filename, trash_location)
-	f = open('Trash/list.txt', 'a')
-	f.write('\n' + filename + ' ' + file_location)
-	f.close()
+def delete_to_trash(files, location, trash_location):
+	d = {}
+	for i in range(len(files)):
+		shutil.move(files[i], trash_location)
+		d[files[i]] = location
+	print d
+
+		#f = open('Trash/list.txt', 'a')
+		#f.write('\n' + filename + ' ' + location)
+		#f.close()
 
 
-def delete_by_reg(regular):
-	pass
+def delete_by_reg(directory, regular):
+	files = os.listdir(directory)
+	for i in range(len(files)):
+		if re.match(regular, files[i]):
+			os.remove(files[i])
 
 
 def recursive_delete(directory):
@@ -79,8 +92,8 @@ def recursive_delete(directory):
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('file', nargs='?', default='')	
-	parser.add_argument('-t', nargs='?', default='')
+	parser.add_argument('files', nargs='*', default='')	
+	parser.add_argument('-t', nargs='*', default='')
 	parser.add_argument('-st', nargs='?', default='')
 	parser.add_argument('-wt', nargs='?', default='')
 	parser.add_argument('-rt', nargs='?', default='')
@@ -88,15 +101,22 @@ def main():
 	parser.add_argument('-r', nargs='?', default='')
 	parser.add_argument('-reg', nargs='?', default='')
 	arguments = parser.parse_args(sys.argv[1:])
-	
-	file_location = os.getcwd()  ####fixxxxxxxxxxxxx
+	print arguments
+
+	location = os.getcwd()  ####fixxxxxxxxxxxxx
+	print location 
 	
 	conf = ConfigParser.RawConfigParser()            #<<-----config
 	conf.read("smart_rm.conf")
 	trash_location = conf.get("main", "trash_location")
 	
-	if arguments.t != '':
-		delete_to_trash(arguments.t, file_location, trash_location)
+
+	if arguments.files != '':
+		delete(arguments.files)
+	
+	elif arguments.t != '':        #deleting to trash
+		delete_to_trash(arguments.t, location, trash_location)
+
 	elif arguments.st != '':
 		show_trash(trash_location)
 	elif arguments.wt != '':

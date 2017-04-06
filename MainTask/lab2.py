@@ -1,12 +1,12 @@
 import os
 import re
 import sys
+import json
 import shutil
 import argparse
 import ConfigParser
 
 
-#I guess all this can be better :)
 def wipe_trash(trash_location):
 	shutil.rmtree(trash_location)
 	os.mkdir(trash_location)
@@ -51,15 +51,19 @@ def recover_from_trash(filename):
 
 
 def delete_to_trash(files, location, trash_location):
-	d = {}
+	f = open(trash_location + "filelist", 'r')               #esli net to error ---- fix
+	try:
+		d = json.load(f)
+	except ValueError:
+		d = {}  
+	f.close()  	
 	for i in range(len(files)):
 		shutil.move(files[i], trash_location)
 		d[files[i]] = location
-	print d
-
-		#f = open('Trash/list.txt', 'a')
-		#f.write('\n' + filename + ' ' + location)
-		#f.close()
+	print (json.dumps(d))
+	f = open(trash_location + "filelist", 'w')    #may be better way
+	f.write(json.dumps(d))
+	f.close()
 
 
 def delete_by_reg(directory, regular):

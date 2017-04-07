@@ -15,15 +15,19 @@ def wipe_trash(trash_location):
 def show_trash(trash_location):
 	print os.listdir(trash_location) 
 
-def delete(list_of_files):
-	for i in range(len(list_of_files)):
-		if os.path.isdir(list_of_files[i]):
-			recursive_delete(list_of_files[i])
-		else:
-			os.remove(list_of_files[i])
+def delete(list_of_files, confirm = False):
+	for i in range(len(list_of_files)): 
+			if os.path.isdir(list_of_files[i]):
+				print "It is directory"
+			else:
+				if confirm and confirmed(list_of_files[i]):
+					os.remove(list_of_files[i])
+				else:
+					if not confirm:
+						os.remove(list_of_files[i])
 
 
-def recover_from_trash(filename, trash_location):
+def recover_from_trash(filenames, trash_location):
 	f = open(trash_location + "filelist", 'a+')               
 	try:
 		d = json.load(f)
@@ -31,12 +35,13 @@ def recover_from_trash(filename, trash_location):
 		d = {}  
 	f.close() 
 
-	try: file_location = d.pop(filename)		
-	except KeyError:
-		print "There is no such file!!!"
-		return
-	
-	shutil.move(trash_location + '/' + filename, file_location)
+	for filename in filenames:
+		try: file_location = d.pop(filename)		
+		except KeyError:
+			print "There is no such file!!!"
+			continue		
+		shutil.move(trash_location + '/' + filename, file_location)
+
 	f = open(trash_location + "filelist", 'w')    #may be better way
 	f.write(json.dumps(d))
 	f.close()
@@ -64,7 +69,7 @@ def delete_by_reg(directory, regular):
 			os.remove(files[i])
 
 
-def recursive_delete(directory):
+def recursive_delete(directory, confirm = False):
 	if len(os.listdir(directory)) == 0:
 		os.rmdir(directory) 
 	else:
@@ -77,9 +82,21 @@ def recursive_delete(directory):
 			print f
 			if os.path.isdir(f):
 				recursive_delete(f)
-			else: os.remove(f)
+			else: 
+				if not confirm:
+					os.remove(f)
+				else:
+					if confirmed(directory):
+						os.remove(f)
 
 
+def confirmed(filename):
+	answer = raw_input("-Are you sure that you want delete {0}?\n".format(filename))
+	if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:
+		return True
+	elif answer in {'No', 'no', 'NO', 'net'}:
+		return False
+	else: print "Unknown answer"
 
 	 	
 
@@ -91,15 +108,14 @@ def main():
 	parser.add_argument('-t', nargs='*', default='')   
 	parser.add_argument('-st', nargs='?', default='')
 	parser.add_argument('-wt', nargs='?', default='')
-	parser.add_argument('-recover', nargs='?', default='')
-	parser.add_argument('-i', nargs='?', default='')
+	parser.add_argument('-recover', nargs='*', default='')
+	parser.add_argument('-i', nargs='*', default='')
 	parser.add_argument('-r', nargs='?', default='')
 	parser.add_argument('-reg', nargs='?', default='')
 	arguments = parser.parse_args(sys.argv[1:])
 	print arguments
 
-	location = os.getcwd()  ####fixxxxxxxxxxxxx
-	print location 
+	location = os.getcwd()  ####fixxxxxxxxxxxxx	
 	
 	conf = ConfigParser.RawConfigParser()            #<<-----config
 	conf.read("smart_rm.conf")
@@ -122,12 +138,7 @@ def main():
 		recover_from_trash(arguments.recover, trash_location)
 
 	elif arguments.i != '':
-		answer = raw_input("Are you sure?\n")
-		if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:
-			delete_file(arguments.i)
-		elif answer in {'No', 'no', 'NO', 'net'}:
-			print ":("
-		else: print "Unknown answer"	
+		delete(arguments.i, confirm = True) 
 	elif arguments.reg != '':
 		delete_by_reg(arguments.reg)
 	elif arguments.r != '':

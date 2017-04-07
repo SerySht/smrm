@@ -1,0 +1,5 @@
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg=['b+', 'mek'], st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg=['b+', 'mek'], st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask

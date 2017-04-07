@@ -1,114 +1,15 @@
 import os
-import re
 import sys
-import json
-import shutil
+import trash
+import deleter
 import argparse
+import logging
 import ConfigParser
 
 
-def wipe_trash(trash_location):
-	recursive_delete(trash_location)
-	os.mkdir(trash_location)
 
-
-def show_trash(trash_location):
-	print os.listdir(trash_location) 
-
-def delete(list_of_files, confirm = False):
-	for i in range(len(list_of_files)): 
-			if os.path.isdir(list_of_files[i]):
-				print "It is directory"
-			else:
-				if  not confirm:
-					os.remove(list_of_files[i])
-				else:
-					if confirmed:
-						os.remove(list_of_files[i])
-
-
-def recover_from_trash(filenames, trash_location):
-	f = open(trash_location + "filelist", 'a+')               
-	try:
-		d = json.load(f)
-	except ValueError:
-		d = {}  
-	f.close() 
-
-	for filename in filenames:
-		try: file_location = d.pop(filename)		
-		except KeyError:
-			print "There is no such file!!!"
-			continue		
-		shutil.move(trash_location + '/' + filename, file_location)
-
-	f = open(trash_location + "filelist", 'w')    #may be better way
-	f.write(json.dumps(d))
-	f.close()
-
-
-def delete_to_trash(files, location, trash_location):
-	f = open(trash_location + "filelist", 'a+')               
-	try:
-		d = json.load(f)
-	except ValueError:
-		d = {}  
-	f.close()  	
-	for i in range(len(files)):
-		shutil.move(files[i], trash_location)
-		d[files[i]] = location	
-	f = open(trash_location + "filelist", 'w')    #may be better way
-	f.write(json.dumps(d))
-	f.close()
-
-
-def delete_by_reg(directory, regular):
-	files = os.listdir(directory)
-	regular = '\\' + regular
-	print regular
-	for i in range(len(files)):
-		if re.match(regular, files[i]):
-			os.remove(directory + '/' + files[i])
-
-
-def recursive_delete(directory, confirm = False):
-	if len(os.listdir(directory)) == 0:
-		if not confirm:	
-			os.rmdir(directory) 
-		else:
-			if confirmed(directory):
-				os.rmdir(directory)	
-	else:
-		stack = [directory]
-		files = os.listdir(directory)
-		for i in range(len(files)):
-			stack.append(directory + '/' + files[i])    #adding files in stack
-		while len(stack)>0:
-			f = stack.pop()
-			print f
-			if os.path.isdir(f):  
-				recursive_delete(f, confirm)
-			else: 
-				if not confirm:
-					os.remove(f)
-				else:
-					if confirmed(directory):
-						os.remove(f)
-
-
-def confirmed(filename):
-	answer = raw_input("-Are you sure that you want delete {0}?\n".format(filename))
-	if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:
-		return True
-	elif answer in {'No', 'no', 'NO', 'net'}:
-		return False
-	else: print "Unknown answer"
-
-	 	
-
-
-
-def main():
+def main():	
+	logging.basicConfig(filename='smart_rm.log',level=logging.DEBUG)
 	parser = argparse.ArgumentParser()
 	parser.add_argument('files', nargs='*', default='')	
 
@@ -123,9 +24,11 @@ def main():
 	parser.add_argument('-r', nargs='?', default='')
 	parser.add_argument('-reg', nargs=2, type=str, default='')
 	arguments = parser.parse_args(sys.argv[1:])
-	print arguments
+	
+	location = os.getcwd() 
 
-	location = os.getcwd() 	
+	logging.info(arguments)
+	logging.info(location)	
 	
 	conf = ConfigParser.RawConfigParser()            #<<-----config
 	conf.read("smart_rm.conf")
@@ -133,32 +36,32 @@ def main():
 	
 
 	if arguments.files != '':
-		delete(arguments.files)
+		deleter.delete(arguments.files)
 	
 	elif arguments.t != '':       
-		delete_to_trash(arguments.t, location, trash_location)
+		trash.delete_to_trash(arguments.t, location, trash_location)
 
 	elif arguments.st != '':
-		show_trash(trash_location)
+		trash.show_trash(trash_location)
 
 	elif arguments.wt != '':
-		wipe_trash(trash_location)
+		trash.wipe_trash(trash_location)
 
 	elif arguments.recover != '':
-		recover_from_trash(arguments.recover, trash_location)
+		trash.recover_from_trash(arguments.recover, trash_location)
 
 	elif arguments.i != '':
-		delete(arguments.i, confirm = True) 
+		deleter.delete(arguments.i, interactive = True) 
 
 	elif arguments.ir != '':
-		recursive_delete(arguments.ir, confirm = True) 
+		recursive_delete(arguments.ir, interactive = True) 
 	
 	elif arguments.reg != '':
-		delete_by_reg(arguments.reg[0], arguments.reg[1])
+		deleter.delete_by_reg(arguments.reg[0], arguments.reg[1])
 	
 	elif arguments.r != '':
-		recursive_delete(arguments.r)		
+		deleter.recursive_delete(arguments.r)		
 	
 	else:
-		delete_file(arguments.file)
+		deleter.delete_file(arguments.file)
 main()

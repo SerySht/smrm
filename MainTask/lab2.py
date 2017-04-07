@@ -64,14 +64,16 @@ def delete_to_trash(files, location, trash_location):
 
 def delete_by_reg(directory, regular):
 	files = os.listdir(directory)
+	regular = '\\' + regular
+	print regular
 	for i in range(len(files)):
 		if re.match(regular, files[i]):
-			os.remove(files[i])
+			os.remove(directory + '/' + files[i])
 
 
 def recursive_delete(directory, confirm = False):
 	if len(os.listdir(directory)) == 0:
-		if not confirm:
+		if not confirm:	
 			os.rmdir(directory) 
 		else:
 			if confirmed(directory):
@@ -109,14 +111,17 @@ def confirmed(filename):
 def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('files', nargs='*', default='')	
+
+	#arguments for working with tash
 	parser.add_argument('-t', nargs='*', default='')   
 	parser.add_argument('-st', nargs='?', default='')
 	parser.add_argument('-wt', nargs='?', default='')
 	parser.add_argument('-recover', nargs='*', default='')
+
 	parser.add_argument('-i', nargs='*', default='')
 	parser.add_argument('-ir', nargs='?', default='')             #make for list
 	parser.add_argument('-r', nargs='?', default='')
-	parser.add_argument('-reg', nargs='?', default='')
+	parser.add_argument('-reg', nargs=2, type=str, default='')
 	arguments = parser.parse_args(sys.argv[1:])
 	print arguments
 
@@ -149,7 +154,7 @@ def main():
 		recursive_delete(arguments.ir, confirm = True) 
 	
 	elif arguments.reg != '':
-		delete_by_reg(arguments.reg)
+		delete_by_reg(arguments.reg[0], arguments.reg[1])
 	
 	elif arguments.r != '':
 		recursive_delete(arguments.r)		

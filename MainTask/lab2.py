@@ -20,10 +20,10 @@ def delete(list_of_files, confirm = False):
 			if os.path.isdir(list_of_files[i]):
 				print "It is directory"
 			else:
-				if confirm and confirmed(list_of_files[i]):
+				if  not confirm:
 					os.remove(list_of_files[i])
 				else:
-					if not confirm:
+					if confirmed:
 						os.remove(list_of_files[i])
 
 
@@ -71,7 +71,11 @@ def delete_by_reg(directory, regular):
 
 def recursive_delete(directory, confirm = False):
 	if len(os.listdir(directory)) == 0:
-		os.rmdir(directory) 
+		if not confirm:
+			os.rmdir(directory) 
+		else:
+			if confirmed(directory):
+				os.rmdir(directory)	
 	else:
 		stack = [directory]
 		files = os.listdir(directory)
@@ -80,8 +84,8 @@ def recursive_delete(directory, confirm = False):
 		while len(stack)>0:
 			f = stack.pop()
 			print f
-			if os.path.isdir(f):
-				recursive_delete(f)
+			if os.path.isdir(f):  
+				recursive_delete(f, confirm)
 			else: 
 				if not confirm:
 					os.remove(f)
@@ -110,12 +114,13 @@ def main():
 	parser.add_argument('-wt', nargs='?', default='')
 	parser.add_argument('-recover', nargs='*', default='')
 	parser.add_argument('-i', nargs='*', default='')
+	parser.add_argument('-ir', nargs='?', default='')             #make for list
 	parser.add_argument('-r', nargs='?', default='')
 	parser.add_argument('-reg', nargs='?', default='')
 	arguments = parser.parse_args(sys.argv[1:])
 	print arguments
 
-	location = os.getcwd()  ####fixxxxxxxxxxxxx	
+	location = os.getcwd() 	
 	
 	conf = ConfigParser.RawConfigParser()            #<<-----config
 	conf.read("smart_rm.conf")
@@ -139,10 +144,16 @@ def main():
 
 	elif arguments.i != '':
 		delete(arguments.i, confirm = True) 
+
+	elif arguments.ir != '':
+		recursive_delete(arguments.ir, confirm = True) 
+	
 	elif arguments.reg != '':
 		delete_by_reg(arguments.reg)
+	
 	elif arguments.r != '':
 		recursive_delete(arguments.r)		
+	
 	else:
 		delete_file(arguments.file)
 main()

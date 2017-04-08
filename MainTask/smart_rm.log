@@ -3,3 +3,333 @@ INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg=['b+', 'mek'], 
 INFO:root:/home/sergey/labs/lab2/MainTask
 INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg=['b+', 'mek'], st='', t='', wt='')
 INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['bekmek'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['bekmek'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['bekmek'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['bekmek'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['bekmek'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['bekmek'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='bekmek', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='bekmek', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='bekmek', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file
+DEBUG:root:bekmek/deep1/deep2
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1file
+DEBUG:root:bekmek
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg=['bekmek', 'd+'], st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg=['d+', 'bekmek'], st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:\d+
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg=['d+', 'bekmek'], st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:\d+
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg=['d+', 'bekmek'], st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:\d+
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek', 'mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover=['mek3'], reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover=['mek2'], reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t='', wt=None)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t='', wt=None)
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:Trash//mek
+DEBUG:root:Trash//filelist
+DEBUG:root:Trash/
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['bekmek'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i=['mek2'], ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i=['mek2'], ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i=['mek2'], ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i=['mek3'], ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i=['mek2'], ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i=['mek2'], ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i=['mek2'], ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i=['mek2'], ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='bekmek', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='bekmek', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file
+DEBUG:root:bekmek/deep1/deep2
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1file
+DEBUG:root:bekmek
+INFO:root:Namespace(files='', i='', ir='bekmek', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file
+DEBUG:root:bekmek/deep1/3543534
+DEBUG:root:bekmek/deep1/deep2
+DEBUG:root:bekmek/deep1/deep2/4564
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1file
+INFO:root:Namespace(files='', i='', ir='bekmek', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2
+DEBUG:root:bekmek/deep1/deep2/4564
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1file
+INFO:root:Namespace(files='', i='', ir='bekmek', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file
+DEBUG:root:bekmek/deep1/deep2
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1file
+DEBUG:root:bekmek
+INFO:root:Namespace(files='', i='', ir='bekmek', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file
+DEBUG:root:bekmek/deep1/deep2
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1file
+DEBUG:root:bekmek
+INFO:root:Namespace(files='', i='', ir='Trash', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:Trash/filelist
+DEBUG:root:Trash/bekmek
+DEBUG:root:Trash/bekmek/deep1
+DEBUG:root:Trash/bekmek/deep1/deep2file
+DEBUG:root:Trash/bekmek/deep1/3543534
+DEBUG:root:Trash/bekmek/deep1/deep2
+DEBUG:root:Trash/bekmek/deep1/deep2/4564
+DEBUG:root:Trash/bekmek/deep1/deep2
+DEBUG:root:Trash/bekmek/deep1/deep2file2
+DEBUG:root:Trash/bekmek/deep1
+DEBUG:root:Trash/bekmek/deep1file
+DEBUG:root:Trash/bekmek
+DEBUG:root:Trash
+DEBUG:root:Trash/bekmek
+DEBUG:root:Trash
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek3'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t='', wt=None)
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:Trash//mek2
+DEBUG:root:Trash//filelist
+DEBUG:root:Trash//mek3
+DEBUG:root:Trash/
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek3'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t='', wt=None)
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:Trash//filelist
+DEBUG:root:Trash//mek3
+DEBUG:root:Trash/
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek3'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['T'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek3'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['mek5'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['Trash'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover=['mek3'], reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t='', wt=None)
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:Trash/mek5
+DEBUG:root:Trash/filelist
+DEBUG:root:Trash/mek3
+DEBUG:root:Trash
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['bek2'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover=['bek2'], reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask

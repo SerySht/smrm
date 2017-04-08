@@ -23,8 +23,13 @@ def main():
 	parser.add_argument('-ir', nargs='?', default='')             #make for list
 	parser.add_argument('-r', nargs='?', default='')
 	parser.add_argument('-reg', nargs=2, type=str, default='')
-	arguments = parser.parse_args(sys.argv[1:])
 	
+	try:
+		arguments = parser.parse_args(sys.argv[1:])
+	except:
+		print "There is no such parameter!"
+		return
+
 	location = os.getcwd() 
 
 	logging.info(arguments)
@@ -33,7 +38,13 @@ def main():
 	conf = ConfigParser.RawConfigParser()            #<<-----config
 	conf.read("smart_rm.conf")
 	trash_location = conf.get("main", "trash_location")
+	try: 
+		os.mkdir(trash_location)
+	except:
+		pass
 	
+
+	#politika udal
 
 	if arguments.files != '':
 		deleter.delete(arguments.files)
@@ -54,14 +65,13 @@ def main():
 		deleter.delete(arguments.i, interactive = True) 
 
 	elif arguments.ir != '':
-		recursive_delete(arguments.ir, interactive = True) 
+		deleter.recursive_delete(arguments.ir, interactive = True) 
 	
 	elif arguments.reg != '':
 		deleter.delete_by_reg(arguments.reg[0], arguments.reg[1])
 	
 	elif arguments.r != '':
-		deleter.recursive_delete(arguments.r)		
-	
+		deleter.recursive_delete(arguments.r)	
 	else:
-		deleter.delete_file(arguments.file)
+		print "Error! There are no parameters!"
 main()

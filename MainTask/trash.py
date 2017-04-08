@@ -6,7 +6,7 @@ import deleter
 
 
 def recover_from_trash(filenames, trash_location):
-	f = open(trash_location + "filelist", 'a+')               
+	f = open(trash_location + '/' + "filelist", 'a+')               
 	try:
 		d = json.load(f)
 	except ValueError:
@@ -20,31 +20,46 @@ def recover_from_trash(filenames, trash_location):
 			continue		
 		shutil.move(trash_location + '/' + filename, file_location)
 
-	f = open(trash_location + "filelist", 'w')    #may be better way
+	f = open(trash_location +'/' + "filelist", 'w')    #may be better way
 	f.write(json.dumps(d))
 	f.close()
 
 
 def delete_to_trash(files, location, trash_location):
-	f = open(trash_location + "filelist", 'a+')               
+	not_for_delete_set = set()
+	not_for_delete_set.add(trash_location)
+
+	f = open(trash_location + '/' + "filelist", 'a+')
 	try:
 		d = json.load(f)
-	except ValueError:
+	except:
 		d = {}  
 	f.close()  	
 	for i in range(len(files)):
-		shutil.move(files[i], trash_location)
-		d[files[i]] = location	
-	f = open(trash_location + "filelist", 'w')    #may be better way
+		if files[i] not in not_for_delete_set:			
+			shutil.move(files[i], trash_location)
+			d[files[i]] = location	
+		else:
+			print "Chto mertvo umeret ne moget"
+	f = open(trash_location + '/' + "filelist", 'w')    #may be better way
 	f.write(json.dumps(d))
 	f.close()
 
 
 
 def wipe_trash(trash_location):
-	recursive_delete(trash_location)
+	deleter.recursive_delete(trash_location)
 	os.mkdir(trash_location)
 
 
 def show_trash(trash_location):
-	print os.listdir(trash_location)
+	#problemi (too big trash)
+	f = open(trash_location +'/' + "filelist", 'a+')               
+	try:
+		d = json.load(f)
+	except ValueError:
+		print "Trash is empty!"
+		return
+	for i in d:
+		print i, ' deleted from: ', d[i]
+	f.close()

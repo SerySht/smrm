@@ -333,3 +333,33 @@ INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st=None, t=
 INFO:root:/home/sergey/labs/lab2/MainTask
 INFO:root:Namespace(files='', i='', ir='', r='', recover=['bek2'], reg='', st='', t='', wt='')
 INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='bekmek', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file
+DEBUG:root:bekmek/deep1/deep2
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1file
+DEBUG:root:bekmek
+INFO:root:Namespace(files='', i='', ir='', r='bekmek', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1/deep2file
+DEBUG:root:bekmek/deep1/deep2
+DEBUG:root:bekmek/deep1/deep2file2
+DEBUG:root:bekmek/deep1
+DEBUG:root:bekmek/deep1file
+DEBUG:root:bekmek
+DEBUG:root:bekmek/deep1file
+DEBUG:root:bekmek
+INFO:root:Namespace(files=['mek3'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['3'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['1', '2', '3'], i='', ir='', r='', recover='', reg='', st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['1', '2', '3'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', st='', t=['1', '2', '3'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask

@@ -41,16 +41,15 @@ def main():
 	try: 
 		os.mkdir(trash_location)
 	except:
-		pass
-	
+		pass	
 
 	#politika udal
 
 	if arguments.files != '':
-		deleter.delete(arguments.files)
+		deleter.delete(arguments.files, dry_run=False)
 	
 	elif arguments.t != '':       
-		trash.delete_to_trash(arguments.t, location, trash_location)
+		trash.delete_to_trash(arguments.t, location, trash_location, dry_run=False)
 
 	elif arguments.st != '':
 		trash.show_trash(trash_location)

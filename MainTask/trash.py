@@ -25,7 +25,7 @@ def recover_from_trash(filenames, trash_location):
 	f.close()
 
 
-def delete_to_trash(files, location, trash_location):
+def delete_to_trash(files, location, trash_location, dry_run=False):
 	not_for_delete_set = set()
 	not_for_delete_set.add(trash_location)
 
@@ -36,6 +36,9 @@ def delete_to_trash(files, location, trash_location):
 		d = {}  
 	f.close()  	
 	for i in range(len(files)):
+		if dry_run: 
+			print "moving {0} to Trash".format(files[i])
+			continue
 		if files[i] not in not_for_delete_set:			
 			shutil.move(files[i], trash_location)
 			d[files[i]] = location	

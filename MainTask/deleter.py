@@ -4,11 +4,14 @@ import logging
 
 logging.basicConfig(filename='smart_rm.log',level=logging.DEBUG)
 
-def delete(list_of_files, interactive = False):
+def delete(list_of_files, interactive = False, dry_run=False):
 	for i in range(len(list_of_files)): 
 			if os.path.isdir(list_of_files[i]):
 				print "Can't be deleted: it is directory! \nUse parameter -r to delete directory."
 			else:
+				if dry_run:
+		  			print "deleting " + list_of_files[i]
+		  			continue
 				if not interactive:
 					try:
 						os.remove(list_of_files[i])

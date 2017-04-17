@@ -5,6 +5,8 @@ import deleter
 
 
 
+
+
 def recover_from_trash(filenames, trash_location):
 	f = open(trash_location + '/' + "filelist", 'a+')               
 	try:
@@ -14,11 +16,27 @@ def recover_from_trash(filenames, trash_location):
 	f.close() 
 
 	for filename in filenames:
-		try: file_location = d.pop(filename)		
-		except KeyError:
+		files = d.get(filename)		
+		if files == None:
 			print "There is no such file!!!"
-			continue		
-		shutil.move(trash_location + '/' + filename, file_location)
+			continue	
+		else:
+			if len(files)==1:				
+				shutil.move(trash_location + '/' + str(files[0][1]), files[0][0])
+				os.rename(str(files[0][1]), filename)
+				d.pop(filename) 
+			else:
+				print "Which one you want to recover?"	
+				for i in range(len(files)):
+					print "#{0} from {1}".format(i+1, files[i][0])
+				number = int(raw_input()) - 1
+				shutil.move(trash_location + '/' + str(files[number][1]), files[number][0])
+				os.rename(str(files[number][1]), filename) #add location
+				files.pop(number)
+				d[filename] = files
+
+
+
 
 	f = open(trash_location +'/' + "filelist", 'w')    #may be better way
 	f.write(json.dumps(d))
@@ -36,7 +54,7 @@ def delete_to_trash(files, location, trash_location):
 		d = {}  
 	f.close() 
 
-	for i in range(len(files)):
+	for i in range(len(files)):  # fix^
 		if files[i] not in not_for_delete_set:			
 			key = os.stat(files[i]).st_ino
 			os.rename(files[i], str(key))

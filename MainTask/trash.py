@@ -2,9 +2,12 @@ import os
 import json
 import shutil
 import deleter
+from datetime import datetime
 
-
-
+def trash_dry_run(f):
+	def wrapped():
+		pass
+	return wrapped
 
 
 def recover_from_trash(filenames, trash_location):
@@ -60,7 +63,7 @@ def delete_to_trash(files, location, trash_location):
 			os.rename(files[i], str(key))
 			shutil.move(str(key), trash_location)
 			if d.get(files[i]) == None:
-				d[files[i]] = [[location, key]]
+				d[files[i]] = [[location, key, str(datetime.now())]]
 			else:
 				l = []
 				l.extend(d.get(files[i]))
@@ -68,6 +71,7 @@ def delete_to_trash(files, location, trash_location):
 				d[files[i]]	= l
 		else:
 			print "Chto mertvo umeret ne moget"
+	
 	f = open(trash_location + '/' + "filelist", 'w')    #may be better way
 	f.write(json.dumps(d))
 	f.close()
@@ -87,6 +91,7 @@ def show_trash(trash_location):
 	except ValueError:
 		print "Trash is empty!"
 		return
-	for i in d:
-		print i, ' deleted from: ', d[i]
+	for files in d:		
+		for i in range(len(d.get(files))):
+			print files, ' deleted from: ', d.get(files)[i][0]
 	f.close()

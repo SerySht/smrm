@@ -71,4 +71,6 @@ def main():
 		deleter.recursive_delete(arguments.r)	
 	else:
 		print "Error! There are no parameters!"
+
+
 main()

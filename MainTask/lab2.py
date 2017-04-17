@@ -46,11 +46,9 @@ def main():
 	#politika udal
 
 	if arguments.files != '':
-		deleter.delete(arguments.files, dry_run=False)
-	
+		deleter.delete(arguments.files)
 	elif arguments.t != '':       
-		trash.delete_to_trash(arguments.t, location, trash_location, dry_run=False)
-
+		trash.delete_to_trash(arguments.t, location, trash_location)
 	elif arguments.st != '':
 		trash.show_trash(trash_location)
 

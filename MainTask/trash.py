@@ -25,23 +25,29 @@ def recover_from_trash(filenames, trash_location):
 	f.close()
 
 
-def delete_to_trash(files, location, trash_location, dry_run=False):
+def delete_to_trash(files, location, trash_location):
 	not_for_delete_set = set()
 	not_for_delete_set.add(trash_location)
 
 	f = open(trash_location + '/' + "filelist", 'a+')
 	try:
 		d = json.load(f)
-	except:
+	except:					#find Error for json
 		d = {}  
-	f.close()  	
+	f.close() 
+
 	for i in range(len(files)):
-		if dry_run: 
-			print "moving {0} to Trash".format(files[i])
-			continue
 		if files[i] not in not_for_delete_set:			
-			shutil.move(files[i], trash_location)
-			d[files[i]] = location	
+			key = os.stat(files[i]).st_ino
+			os.rename(files[i], str(key))
+			shutil.move(str(key), trash_location)
+			if d.get(files[i]) == None:
+				d[files[i]] = [[location, key]]
+			else:
+				l = []
+				l.extend(d.get(files[i]))
+				l.append([location, key])
+				d[files[i]]	= l
 		else:
 			print "Chto mertvo umeret ne moget"
 	f = open(trash_location + '/' + "filelist", 'w')    #may be better way

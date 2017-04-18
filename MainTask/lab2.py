@@ -48,9 +48,11 @@ def main():
 
 	if arguments.files:
 		deleter.delete(arguments.files)
+
 	elif arguments.t:       
 		trash.delete_to_trash(arguments.t, location, trash_location, arguments.silent)
-	elif arguments.st:
+
+	elif arguments.st:		
 		trash.show_trash(trash_location)
 
 	elif arguments.wt:
@@ -73,6 +75,6 @@ def main():
 	else:
 		print "Error! There are no parameters!"
 
-	trash.check_trash(trash_location, storage_time)
+	#trash.check_trash(trash_location, storage_time)
 
 main()

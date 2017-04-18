@@ -4,79 +4,82 @@ import shutil
 import deleter
 import time
 
+
+
 def trash_dry_run(f):
 	def wrapped():
 		pass
 	return wrapped
 
 
-def recover_from_trash(filenames, trash_location):
+def load_from_filelist(trash_location):
 	f = open(trash_location + '/' + "filelist", 'a+')               
 	try:
 		d = json.load(f)
 	except ValueError:
 		d = {}  
 	f.close() 
+	return d
+
+
+def load_to_filelist(trash_location, d):
+	f = open(trash_location +'/' + "filelist", 'w')  
+	f.write(json.dumps(d))
+	f.close()
+
+
+def delete_to_trash(filenames, location, trash_location, silent):
+	d = load_from_filelist(trash_location) 	
+	not_for_delete_set = set()
+	not_for_delete_set.add(trash_location)	
+
+	for filename in filenames: 
+		if filename not in not_for_delete_set:			
+			key = str(os.stat(filename).st_ino)  #id
+			os.rename(filename, key)
+			shutil.move(key, trash_location)
+			
+			if d.get(filename) == None:
+				d[filename] = [{'location':location, 'key':key, 'time':str(time.time())}]
+			else:
+				d[filename].append({'location':location, 'key':key, 'time':str(time.time())})
+		else:
+			print d[filename]," can't be deleted!"
+	
+	load_to_filelist(trash_location, d)
+	
+	if not silent:
+		print "Successfully moved to trash!"
+
+
+
+def recover_from_trash(filenames, trash_location):
+	d = load_from_filelist(trash_location)
 
 	for filename in filenames:
-		files = d.get(filename)		
-		if files == None:
+		list_of_files = d.get(filename)		
+		
+		if list_of_files == None:
 			print "There is no such file!!!"
 			continue	
+		
 		else:
-			if len(files)==1:				
-				shutil.move(trash_location + '/' + str(files[0][1]), files[0][0])
-				os.rename(str(files[0][1]), filename)
+			if len(list_of_files) == 1:				
+				shutil.move(trash_location + '/' + list_of_files[0]["key"], list_of_files[0]["location"]) 
+				os.rename(list_of_files[0]["key"], filename)
 				d.pop(filename) 
 			else:
 				print "Which one you want to recover?"	
-				for i in range(len(files)):
-					print "#{0} from {1}".format(i+1, files[i][0])
+				for i in range(len(list_of_files)):
+					print "#{0} from {1}".format(i+1, list_of_files[i]["location"])
 				number = int(raw_input()) - 1
-				shutil.move(trash_location + '/' + str(files[number][1]), files[number][0])
-				os.rename(str(files[number][1]), filename) #add location
-				files.pop(number)
-				d[filename] = files
+				
+				shutil.move(trash_location + '/' + list_of_files[number]["key"], list_of_files[number]["location"])
+				os.rename(str(list_of_files[number]['key']), filename)
+				list_of_files.pop(number)
+				d[filename] = list_of_files
 
-
-
-
-	f = open(trash_location +'/' + "filelist", 'w')    #may be better way
-	f.write(json.dumps(d))
-	f.close()
-
-
-def delete_to_trash(files, location, trash_location, silent):
-	not_for_delete_set = set()
-	not_for_delete_set.add(trash_location)
-
-	f = open(trash_location + '/' + "filelist", 'a+')
-	try:
-		d = json.load(f)
-	except:					#find Error for json
-		d = {}  
-	f.close() 
-
-	for i in range(len(files)):  # fix^
-		if files[i] not in not_for_delete_set:			
-			key = os.stat(files[i]).st_ino
-			os.rename(files[i], str(key))
-			shutil.move(str(key), trash_location)
-			if d.get(files[i]) == None:
-				d[files[i]] = [[location, key, str(time.time())]]	
-			else:
-				l = []
-				l.extend(d.get(files[i]))
-				l.append([location, key, str(time.time())])
-				d[files[i]]	= l
-		else:
-			print "Chto mertvo umeret ne moget"
-	
-	f = open(trash_location + '/' + "filelist", 'w')    #may be better way
-	f.write(json.dumps(d))
-	f.close()
-	if not silent:
-		print "Successfully moved to trash!"
+	load_to_filelist(trash_location, d)
 
 
 
@@ -102,12 +105,8 @@ def show_trash(trash_location):
 
 
 def check_trash(trash_location, storage_time):
-	f = open(trash_location + '/' + "filelist", 'a+')               
-	try:
-		d = json.load(f)
-	except ValueError:
-		d = {}  
-	f.close() 
+	d = load_from_filelist(trash_location) 
+	
 	t = time.time()
 	c = d.copy()
 	for files in d:	
@@ -128,6 +127,4 @@ def check_trash(trash_location, storage_time):
 			d[files] = l
 		if len(d[files]) == 0:
 			c.pop(files)
-	f = open(trash_location +'/' + "filelist", 'w')    #may be better way
-	f.write(json.dumps(c))
-	f.close()
+	load_to_filelist(trash_location, d)

@@ -5,6 +5,7 @@ import deleter
 import argparse
 import logging
 import ConfigParser
+import time 
 
 
 
@@ -22,6 +23,7 @@ def main():
 	parser.add_argument('-i', nargs='*', default='')
 	parser.add_argument('-ir', nargs='?', default='')             #make for list
 	parser.add_argument('-r', nargs='?', default='')
+	parser.add_argument('-silent', nargs='?', type=bool, default=False)
 	parser.add_argument('-reg', nargs=2, type=str, default='')
 	
 	try:
@@ -33,6 +35,7 @@ def main():
 	location = os.getcwd() 
 
 	logging.info(arguments)
+	print arguments
 	logging.info(location)	
 	
 	conf = ConfigParser.RawConfigParser()            #<<-----config
@@ -45,10 +48,11 @@ def main():
 
 	#politika udal
 
+
 	if arguments.files != '':
 		deleter.delete(arguments.files)
 	elif arguments.t != '':       
-		trash.delete_to_trash(arguments.t, location, trash_location)
+		trash.delete_to_trash(arguments.t, location, trash_location, arguments.silent)
 	elif arguments.st != '':
 		trash.show_trash(trash_location)
 

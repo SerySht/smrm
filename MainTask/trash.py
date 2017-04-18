@@ -2,7 +2,7 @@ import os
 import json
 import shutil
 import deleter
-from datetime import datetime
+import time
 
 def trash_dry_run(f):
 	def wrapped():
@@ -46,7 +46,7 @@ def recover_from_trash(filenames, trash_location):
 	f.close()
 
 
-def delete_to_trash(files, location, trash_location):
+def delete_to_trash(files, location, trash_location, silent):
 	not_for_delete_set = set()
 	not_for_delete_set.add(trash_location)
 
@@ -63,7 +63,7 @@ def delete_to_trash(files, location, trash_location):
 			os.rename(files[i], str(key))
 			shutil.move(str(key), trash_location)
 			if d.get(files[i]) == None:
-				d[files[i]] = [[location, key, str(datetime.now())]]
+				d[files[i]] = [[location, key, str(time.time())]]	
 			else:
 				l = []
 				l.extend(d.get(files[i]))
@@ -75,6 +75,8 @@ def delete_to_trash(files, location, trash_location):
 	f = open(trash_location + '/' + "filelist", 'w')    #may be better way
 	f.write(json.dumps(d))
 	f.close()
+	if not silent:
+		print "Successfully moved to trash!"
 
 
 

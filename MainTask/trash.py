@@ -123,8 +123,8 @@ def check_trash(trash_location, storage_time):
 				
 				#d[filename] = files
 			else:
-				i += 1
 				print (t - float(d.get(files)[i][2]))
+				i += 1
 			d[files] = l
 		if len(d[files]) == 0:
 			c.pop(files)

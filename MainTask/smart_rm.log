@@ -746,3 +746,69 @@ INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', silent=Fals
 INFO:root:/home/sergey/labs/lab2/MainTask
 INFO:root:Namespace(files='', i='', ir='', r='', recover='', reg='', silent=False, st=None, t='', wt='')
 INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['1'], i='', ir='', r='', recover='', reg='', silent=False, st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['1'], i='', ir='', r='', recover='', reg='', silent=False, st='', t='', wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i='', ir='', r='', recover='', reg='', silent=False, st='', t=['1'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i='', ir='', r='', recover='', reg='', silent=False, st='', t=['1'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i='', ir='', r='', recover='', reg='', silent=False, st='', t=['1'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=None, i='', ir='', r='', recover='', reg='', silent=False, st='', t=['1'], wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files='1', i='', ir='', r='', recover='', reg='', silent=False, st='', t=None, wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['1'], i='', ir='', r='', recover='', reg='', silent=False, st='', t=None, wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=['1', '2', '3', '4'], i='', ir='', r='', recover='', reg='', silent=False, st='', t=None, wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i='', ir='', r='', recover='', reg='', silent=False, st='', t=None, wt='')
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=None, t=None, wt=None)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=False, t=None, wt=True)
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:Trash/802293
+DEBUG:root:Trash/802295
+DEBUG:root:Trash/filelist
+DEBUG:root:Trash/802127
+DEBUG:root:Trash/802300
+DEBUG:root:Trash
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=False, t=None, wt=True)
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:Trash/filelist
+DEBUG:root:Trash
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=False, t=None, wt=True)
+INFO:root:/home/sergey/labs/lab2/MainTask
+DEBUG:root:Trash/filelist
+DEBUG:root:Trash
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=[], reg=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=[], reg=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=[], ir=None, r=None, recover=None, reg=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=['1'], ir=None, r=None, recover=None, reg=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey/labs/lab2/MainTask

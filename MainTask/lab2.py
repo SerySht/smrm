@@ -41,12 +41,13 @@ def main():
 	conf = ConfigParser.RawConfigParser()            #<<-----config
 	conf.read("smart_rm.conf")
 	trash_location = conf.get("main", "trash_location")
+	storage_time = conf.get("main", "storage_time")
 	try: 
 		os.mkdir(trash_location)
 	except:
 		pass	
 
-	#politika udal
+	
 
 
 	if arguments.files != '':
@@ -76,5 +77,6 @@ def main():
 	else:
 		print "Error! There are no parameters!"
 
+	trash.check_trash(trash_location, storage_time)
 
 main()

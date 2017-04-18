@@ -67,7 +67,7 @@ def delete_to_trash(files, location, trash_location, silent):
 			else:
 				l = []
 				l.extend(d.get(files[i]))
-				l.append([location, key])
+				l.append([location, key, str(time.time())])
 				d[files[i]]	= l
 		else:
 			print "Chto mertvo umeret ne moget"
@@ -85,6 +85,7 @@ def wipe_trash(trash_location):
 	os.mkdir(trash_location)
 
 
+
 def show_trash(trash_location):
 	#problemi (too big trash)
 	f = open(trash_location +'/' + "filelist", 'a+')               
@@ -96,4 +97,37 @@ def show_trash(trash_location):
 	for files in d:		
 		for i in range(len(d.get(files))):
 			print files, ' deleted from: ', d.get(files)[i][0]
+	f.close()
+
+
+
+def check_trash(trash_location, storage_time):
+	f = open(trash_location + '/' + "filelist", 'a+')               
+	try:
+		d = json.load(f)
+	except ValueError:
+		d = {}  
+	f.close() 
+	t = time.time()
+	c = d.copy()
+	for files in d:	
+		i = 0	
+		while i < len(d[files]):
+			print i
+			print d.get(files)
+			if (t - float(d.get(files)[i][2])) > int(storage_time):
+				#os.remove(trash_location + '/' + str(d.get(files)[i][1]))
+				
+				l = d.get(files)				
+				l.pop(i)
+				
+				#d[filename] = files
+			else:
+				i += 1
+				print (t - float(d.get(files)[i][2]))
+			d[files] = l
+		if len(d[files]) == 0:
+			c.pop(files)
+	f = open(trash_location +'/' + "filelist", 'w')    #may be better way
+	f.write(json.dumps(c))
 	f.close()

@@ -9,7 +9,7 @@ import ConfigParser
 
 def main():	
 	
-	logging.basicConfig(filename='smart_rm.log',level=logging.DEBUG)
+	logging.basicConfig(filename='/home/sergey/labs/lab2/MainTask/smart_rm.log',level=logging.DEBUG)
 	
 	parser = argparse.ArgumentParser()
 	
@@ -38,10 +38,10 @@ def main():
 	logging.info(location)	
 	
 	conf = ConfigParser.RawConfigParser()            
-	conf.read("smart_rm.conf")
+	conf.read('/home/sergey/labs/lab2/MainTask/smart_rm.conf') #os.path.expanduser('~/.myapp.cfg')])
 	trash_location = conf.get("main", "trash_location")
 	storage_time = conf.get("main", "storage_time")
-	storage_time = storage_time * 1 #3600 86400
+	storage_time = storage_time * 1 * 3600 #86400
 
 	if not os.path.exists(trash_location):		
 		os.mkdir(trash_location)	

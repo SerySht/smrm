@@ -2,55 +2,31 @@ import os
 import re
 import logging
 
-logging.basicConfig(filename='smart_rm.log',level=logging.DEBUG)
 
-
-
-def delete(list_of_files, interactive = False):
-	for i in range(len(list_of_files)): 
-			if os.path.isdir(list_of_files[i]):
+def delete(filenames, interactive = False):
+	for filename in filenames: 
+			if os.path.isdir(filename):
 				print "Can't be deleted: it is directory! \nUse parameter -r to delete directory."
 			else:				
-				if not interactive:
+				if (not interactive) or (interactive and confirmed(filename)):
 					try:
-						os.remove(list_of_files[i])
+						os.remove(filename)
 					except:
 						print "There is no such file!"
-				else:
-					if confirmed(list_of_files[i]):
-						try:
-							os.remove(list_of_files[i])
-						except:
-							print "There is no such file!"
-
-
-def delete_by_reg(regular, directory):
-	#recursive
-	#to trash
-	#-i
-	files = os.listdir(directory)
-	regular = '\\' + regular
-	logging.debug(regular)
-	for i in range(len(files)):
-		if re.match(regular, files[i]):
-			os.remove(directory + '/' + files[i])
-
+				
 
 def recursive_delete(directory, interactive = False):
 	if len(os.listdir(directory)) == 0:
-		if not interactive:	
-			os.rmdir(directory) 
-		else:
-			if confirmed(directory):
-				os.rmdir(directory)	
+		if (not interactive) or (interactive and confirmed(filename)):
+			os.rmdir(directory) 	
 	else:
 		stack = [directory]
 		files = os.listdir(directory)
-		for i in range(len(files)):
-			stack.append(directory + '/' + files[i])    #adding files in stack
+		for f in files:
+			stack.append(directory + '/' + f)    #adding files in stack
+		
 		while len(stack)>0:
-			f = stack.pop()
-			logging.debug(f)
+			f = stack.pop()			
 			if os.path.isdir(f):  
 				recursive_delete(f, interactive)
 			else: 
@@ -61,7 +37,7 @@ def recursive_delete(directory, interactive = False):
 						os.remove(f)
 					else:
 						print "The directory can't be deleted until it be empty!"
-						return  #fix
+						return 
 
 def confirmed(filename):
 	answer = raw_input("-Are you sure that you want delete {0}?\n".format(filename))
@@ -71,4 +47,15 @@ def confirmed(filename):
 		return False
 	else: print "Unknown answer"
 
+
+def delete_by_reg(regular, directory):
+	#recursive
+	#to trash
+	#-i
+	files = os.listdir(directory)
+	regular = '\\' + regular
+	
+	for i in range(len(files)):
+		if re.match(regular, files[i]):
+			os.remove(directory + '/' + files[i])
 	 	

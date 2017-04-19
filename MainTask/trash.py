@@ -28,23 +28,42 @@ def load_to_filelist(trash_location, d):
 	f.close()
 
 
+def add_slash(p):
+	if p[0] != '/':
+		return '/' + p
+	return p
+
+
+def get_name(filename):
+	i = len(filename) - 1
+	while i >= 0:
+		if  filename[i] == '/':
+			break
+		else: i -= 1
+	if i > 0: 
+		return add_slash(filename[0:i+1]), filename[i+1:len(filename)]
+	return '', filename
+
+
+#polniy put nepravilno pishet
 def delete_to_trash(filenames, location, trash_location, silent):
 	d = load_from_filelist(trash_location) 	
 	not_for_delete_set = set()
 	not_for_delete_set.add(trash_location)	
 
-	for filename in filenames: 
-		if filename not in not_for_delete_set:			
+	for filename in filenames: 		
+		location_add, f = get_name(filename)				
+		if f not in not_for_delete_set:	
+			print location_add		
 			key = str(os.stat(filename).st_ino)  #id
-			os.rename(filename, key)
-			shutil.move(key, trash_location)
-			
-			if d.get(filename) == None:
-				d[filename] = [{'location':location, 'key':key, 'time':str(time.time())}]
+			os.rename(filename, key)			
+			shutil.move(key, trash_location)			
+			if d.get(f) == None:
+				d[f] = [{'location':location + location_add, 'key':key, 'time':str(time.time())}]
 			else:
-				d[filename].append({'location':location, 'key':key, 'time':str(time.time())})
+				d[f].append({'location':location + location_add, 'key':key, 'time':str(time.time())})
 		else:
-			print d[filename]," can't be deleted!"
+			print d[f]," can't be deleted!"
 	
 	load_to_filelist(trash_location, d)
 	
@@ -103,7 +122,7 @@ def show_trash(trash_location):
 def check_trash(trash_location, storage_time):
 	d = load_from_filelist(trash_location)	
 	t = time.time()
-	
+	c = d.copy()
 	for filename in d:	
 		i = -1	
 		for f in d[filename]:
@@ -111,10 +130,10 @@ def check_trash(trash_location, storage_time):
 			if (t - float(f['time'])) > int(storage_time):
 				print "lol kek cheburek ", f
 				os.remove(trash_location + '/' + f["key"])
-				d[filename].pop(i) 	
-				#if len(d[filename]) == 0:
-					#d.pop(filename)
+				c[filename].pop(i) 	
+				if len(c[filename]) == 0:
+					c.pop(filename)
 			else:
 				print (t - float(f['time']))				
-	
+	d = c
 	load_to_filelist(trash_location, d)

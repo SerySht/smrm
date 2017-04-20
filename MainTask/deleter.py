@@ -39,6 +39,7 @@ def recursive_delete(directory, interactive = False):
 						print "The directory can't be deleted until it be empty!"
 						return 
 
+
 def confirmed(filename):
 	answer = raw_input("-Are you sure that you want delete {0}?\n".format(filename))
 	if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:

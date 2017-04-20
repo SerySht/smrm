@@ -24,6 +24,7 @@ def main():
 	parser.add_argument('-r', nargs='?')
 	parser.add_argument('-silent', action='store_true')
 	parser.add_argument('-reg', nargs=2, type=str, help='-reg [regular] [directory]')
+	parser.add_argument('-reg_t', nargs=2, type=str, help='-reg [regular] [directory]')
 	
 	try:
 		arguments = parser.parse_args(sys.argv[1:],)
@@ -73,6 +74,8 @@ def main():
 	
 	elif arguments.r:
 		deleter.recursive_delete(arguments.r)	
+	elif arguments.reg_t:
+		trash.delete_to_trash_by_reg('\\' + arguments.reg_t[0], arguments.reg_t[1], location, trash_location)
 	else:
 		print "Error! There are no parameters!"
 

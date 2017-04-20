@@ -62,9 +62,9 @@ def delete_to_trash(filenames, location, trash_location, silent=False):
 			os.rename(filename, key)			
 			shutil.move(key, trash_location)			
 			if d.get(f) == None:
-				d[f] = [{'location':location + location_add, 'key':key, 'time':str(time.time())}]
+				d[f] = [{'location':location + location_add, 'key':key, 'time':str(time.time()), 'size':os.path.getsize(trash_location+'/' + key)}]
 			else:
-				d[f].append({'location':location + location_add, 'key':key, 'time':str(time.time())})
+				d[f].append({'location':location + location_add, 'key':key, 'time':str(time.time()),'size':os.path.getsize(trash_location+'/'+key)})
 		else:
 			print f," can't be deleted!"
 	
@@ -96,7 +96,7 @@ def recover_from_trash(filenames, trash_location):
 				number = int(raw_input()) - 1
 				os.rename(trash_location + '/' + list_of_files[number]['key'], list_of_files[number]["location"] + '/' + filename)
 				list_of_files.pop(number)
-				d[filename] = list_of_files
+				d[filename] = list_of_files				
 
 	load_to_filelist(trash_location, d)
 
@@ -119,7 +119,8 @@ def show_trash(trash_location):
 
 
 
-def check_trash(trash_location, storage_time):
+def check_trash(trash_location, storage_time, trash_maximum_size):
+	#
 	d = load_from_filelist(trash_location)	
 	t = time.time()
 	c = d.copy()

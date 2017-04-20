@@ -42,6 +42,8 @@ def main():
 	conf.read('/home/sergey/labs/lab2/MainTask/smart_rm.conf') #os.path.expanduser('~/.myapp.cfg')])
 	trash_location = conf.get("main", "trash_location")
 	storage_time = conf.get("main", "storage_time")
+	trash_maximum_size = conf.get("main", "trash_maximum_size")
+
 	storage_time = storage_time * 1 * 3600 #86400
 
 	if not os.path.exists(trash_location):		
@@ -79,6 +81,6 @@ def main():
 	else:
 		print "Error! There are no parameters!"
 
-	trash.check_trash(trash_location, storage_time)
+	trash.check_trash(trash_location, storage_time, trash_maximum_size)
 
 main()

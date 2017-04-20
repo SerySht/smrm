@@ -222,3 +222,33 @@ INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, r
 INFO:root:/home/sergey
 INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=['1212'], reg=None, reg_t=None, silent=False, st=False, t=None, wt=False)
 INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=False, t=None, wt=True)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=['w+', 'test'], silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=True, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=['bekmek'], reg=None, reg_t=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=['bekmek'], reg=None, reg_t=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=['34534535'], reg=None, reg_t=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=['345345'], reg=None, reg_t=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=False, t=['test/dee1foolder/deep2folder2/34545'], wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=False, t=['test/dee1folder/deep2folder2/345345'], wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=['345345'], reg=None, reg_t=None, silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=['w+', 'test'], silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=['w+', 'test'], silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey
+INFO:root:Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=['w+', 'test'], silent=False, st=False, t=None, wt=False)
+INFO:root:/home/sergey

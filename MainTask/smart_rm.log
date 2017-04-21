@@ -1,24 +1,4 @@
-arguments: Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=['d+', 'test'], silent=False, st=False, t=None, wt=False)
+arguments: Namespace(files=[], i=None, ir=None, r=None, recover=['1'], reg=None, reg_t=None, silent=False, st=False, t=None, wt=False)
 location: /home/sergey
-"34534535" will be deleted in 41089 sec
-"bekmek" will be deleted in 42944 sec
-"bekmek" will be deleted in 41089 sec
-"bekmek" will be deleted in 41089 sec
-"pustoi" will be deleted in 41089 sec
-"5645645646" will be deleted in 42944 sec
-"lol mda kek" will be deleted in 42944 sec
-"000000" will be deleted in 616 sec
-"1234567" will be deleted in 616 sec
-"776767" will be deleted in 87 sec
-"555 555" will be deleted in 42944 sec
-"345345" will be deleted in 41089 sec
-"34343" will be deleted in 42944 sec
-"rofl" will be deleted in 42944 sec
-"ddfdfdf" will be deleted in 41089 sec
-"456456" will be deleted in 87 sec
-"cheburek" will be deleted in 42944 sec
-"4325435" will be deleted in 42944 sec
-"5655788" will be deleted in 87 sec
-"Trash" will be deleted in 1679 sec
-"778967" will be deleted in 124 sec
-"67576576" will be deleted in 124 sec
+In recover_from_trash
+In check_trash

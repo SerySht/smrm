@@ -20,7 +20,7 @@ def main():
 	parser.add_argument('-recover', nargs='*')
 
 	parser.add_argument('-i', nargs='*')
-	parser.add_argument('-ir', nargs='?')             #make for list
+	parser.add_argument('-ir', nargs='?')          
 	parser.add_argument('-r', nargs='?')
 	parser.add_argument('-silent', action='store_true')
 	parser.add_argument('-reg', nargs=2, type=str, help='-reg [regular] [directory]')
@@ -32,10 +32,7 @@ def main():
 		print "There is no such parameter!"
 		return
 
-	location = os.getcwd() 
-
-	logging.debug("arguments: " + str(arguments))
-	logging.debug("location: " + str(location))	
+	location = os.getcwd()
 
 	conf = ConfigParser.RawConfigParser()            
 	conf.read('/home/sergey/labs/lab2/MainTask/smart_rm.conf') #os.path.expanduser('~/.myapp.cfg')])
@@ -48,6 +45,10 @@ def main():
 
 	if not os.path.exists(trash_location):		
 		os.mkdir(trash_location)	
+
+
+	logging.debug("arguments: " + str(arguments))
+	logging.debug("location: " + str(location))	
 
 
 	if arguments.files:
@@ -83,4 +84,7 @@ def main():
 
 	trash.check_trash(trash_location, storage_time, trash_maximum_size)
 
-main()
+
+if __name__ == "__main__":
+    main()
+    

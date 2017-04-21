@@ -8,12 +8,6 @@ import logging
 
 
 
-def trash_dry_run(f):
-	def wrapped():
-		pass
-	return wrapped
-
-
 def load_from_filelist(trash_location):	
 	f = open(trash_location + '/' + "filelist", 'a+')               
 	try:
@@ -24,7 +18,7 @@ def load_from_filelist(trash_location):
 	return d
 
 
-def load_to_filelist(trash_location, d):
+def save_to_filelist(trash_location, d):
 	f = open(trash_location +'/' + "filelist", 'w')  
 	f.write(json.dumps(d))
 	f.close()
@@ -37,49 +31,56 @@ def add_slash(p):
 
 
 def get_name(filename):
-	i = len(filename) - 1
-	while i >= 0:
-		if  filename[i] == '/':
-			break
-		else: i -= 1
+	i = filename.rfind('/')	
 	if i > 0: 
-		return add_slash(filename[0:i+1]), filename[i+1:len(filename)]
+		return add_slash(filename[0:i+1]), filename[i+1:]
 	return '', filename
 
 
-#polniy put nepravilno pishet
+def can_be_deleted(filename):
+	return os.access(filename, os.W_OK)
+
+
+def location_check(location, location_add):
+	if location_add.find(location) == 0:
+		return location_add
+	return location + '/'+ location_add
+
+
 def delete_to_trash(filenames, location, trash_location, silent=False):
+	logging.info("In delete_to_trash")
+	
 	d = load_from_filelist(trash_location) 	
-	not_for_delete_set = set()
-	not_for_delete_set.add(trash_location)	
 
 	for filename in filenames:
 		location_add, f = get_name(filename)				
-		if f not in not_for_delete_set:				 	
+		if can_be_deleted(filename):	
+			logging.debug(f)		 	
 			key = str(os.stat(filename).st_ino)  #id
 			os.rename(filename, key)			
 			shutil.move(key, trash_location)	
 			if not silent:
 				print "\"{0}\" successfully moved to trash".format(f)		
 			if d.get(f) == None:
-				d[f] = [{'location':location + location_add, 'key':key, 'time':str(time.time()), 'size':os.path.getsize(trash_location+'/' + key)}]
+				d[f] = [{'location':location_check(location, location_add), 'key':key, 'time':str(time.time()), 'size':os.path.getsize(trash_location+'/' + key)}]
 			else:
-				d[f].append({'location':location + location_add, 'key':key, 'time':str(time.time()),'size':os.path.getsize(trash_location+'/'+key)})
+				d[f].append({'location':location_check(location, location_add), 'key':key, 'time':str(time.time()),'size':os.path.getsize(trash_location+'/'+key)})
 		else:
 			print f," can't be deleted!"
 	
-	load_to_filelist(trash_location, d)
+	save_to_filelist(trash_location, d)
 	
 	
 
 
 
 def recover_from_trash(filenames, trash_location, recover_conflict):
+	logging.info("In recover_from_trash")
+
 	d = load_from_filelist(trash_location)
 
 	for filename in filenames:
-		list_of_files = d.get(filename)		
-		print filename
+		list_of_files = d.get(filename)				
 		if list_of_files == None:
 			print "There is no such file!!!"
 			continue	
@@ -97,7 +98,7 @@ def recover_from_trash(filenames, trash_location, recover_conflict):
 				list_of_files.pop(number)
 				d[filename] = list_of_files				
 
-	load_to_filelist(trash_location, d)
+	save_to_filelist(trash_location, d)
 
 
 
@@ -119,6 +120,8 @@ def show_trash(trash_location):
 
 
 def check_trash(trash_location, storage_time, trash_maximum_size):
+	logging.info("In check_trash")
+
 	d = load_from_filelist(trash_location)	
 	t = time.time()
 	c = d.copy()
@@ -134,7 +137,7 @@ def check_trash(trash_location, storage_time, trash_maximum_size):
 			else:
 				logging.info("\"{0}\" will be deleted in {1} sec".format(filename, int(t - float(f['time']))))	
 	d = c
-	load_to_filelist(trash_location, d)
+	save_to_filelist(trash_location, d)
 
 
 

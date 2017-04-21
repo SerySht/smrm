@@ -19,6 +19,13 @@ class TestTrash(unittest.TestCase):
 		self.assertEqual(trash.location_check("/home/sergey", "test"), "/home/sergey/test")
 		self.assertEqual(trash.location_check("/home/sergey", "/home/sergey/test"), "/home/sergey/test")
 
+	
+	def test_conflict_solver(self):
+		self.assertEqual(trash.conflict_solver('bekmek', 'filename'), 'filename(1)')
+		self.assertEqual(trash.conflict_solver('bekmek', 'filename(2)'), 'filename(3)')
+		self.assertEqual(trash.conflict_solver('replace', 'filename(2)'), 'filename(2)')
+
+
 	def test_remove_to_trash(self):
 		#os.mkdir('test')
 		#f = open("test/abc", 'w')

@@ -2,3 +2,4 @@ arguments: Namespace(files=[], i=None, ir=None, r=None, recover=['1'], reg=None,
 location: /home/sergey
 In recover_from_trash
 In check_trash
+"1" will be deleted in 9 sec

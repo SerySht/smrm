@@ -47,6 +47,18 @@ def location_check(location, location_add):
 	return location + '/'+ location_add
 
 
+
+def conflict_solver(recover_conflict, filename):
+	if recover_conflict != 'replace':
+		try:
+			int(filename[filename.rfind('(')+1:filename.rfind(')')])
+		except ValueError:
+			return filename + '(1)'
+		num = int(filename[filename.rfind('(')+1:filename.rfind(')')])
+		return filename.replace(str(num), str(num+1))
+ 	return filename
+
+
 def delete_to_trash(filenames, location, trash_location, silent=False):
 	logging.info("In delete_to_trash")
 	
@@ -86,9 +98,12 @@ def recover_from_trash(filenames, trash_location, recover_conflict):
 			continue	
 		
 		else:
-			if len(list_of_files) == 1:				
-				os.rename(trash_location + '/' + list_of_files[0]['key'], list_of_files[0]["location"] + '/' + filename)
-				d.pop(filename) 
+			if len(list_of_files) == 1:	
+				if not os.path.exists(list_of_files[0]["location"] + '/' + filename):			
+					os.rename(trash_location + '/' + list_of_files[0]['key'], list_of_files[0]["location"] + '/' + filename)
+					d.pop(filename) 
+				else: 
+					os.rename(trash_location + '/' + list_of_files[0]['key'], conflict_solver(recover_conflict, list_of_files[0]["location"] + '/' + filename))
 			else:
 				print "Which one you want to recover?"	
 				for i in range(len(list_of_files)):

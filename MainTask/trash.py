@@ -4,6 +4,7 @@ import shutil
 import deleter
 import time
 import re
+import logging
 
 
 
@@ -13,8 +14,7 @@ def trash_dry_run(f):
 	return wrapped
 
 
-def load_from_filelist(trash_location):
-	print '-',trash_location
+def load_from_filelist(trash_location):	
 	f = open(trash_location + '/' + "filelist", 'a+')               
 	try:
 		d = json.load(f)
@@ -53,14 +53,14 @@ def delete_to_trash(filenames, location, trash_location, silent=False):
 	not_for_delete_set = set()
 	not_for_delete_set.add(trash_location)	
 
-	for filename in filenames: 	
-
+	for filename in filenames:
 		location_add, f = get_name(filename)				
-		if f not in not_for_delete_set:	
-			print location_add, f 	
+		if f not in not_for_delete_set:				 	
 			key = str(os.stat(filename).st_ino)  #id
 			os.rename(filename, key)			
-			shutil.move(key, trash_location)			
+			shutil.move(key, trash_location)	
+			if not silent:
+				print "\"{0}\" successfully moved to trash".format(f)		
 			if d.get(f) == None:
 				d[f] = [{'location':location + location_add, 'key':key, 'time':str(time.time()), 'size':os.path.getsize(trash_location+'/' + key)}]
 			else:
@@ -70,12 +70,11 @@ def delete_to_trash(filenames, location, trash_location, silent=False):
 	
 	load_to_filelist(trash_location, d)
 	
-	if not silent:
-		print "Successfully moved to trash!"
+	
 
 
 
-def recover_from_trash(filenames, trash_location):
+def recover_from_trash(filenames, trash_location, recover_conflict):
 	d = load_from_filelist(trash_location)
 
 	for filename in filenames:
@@ -113,14 +112,13 @@ def show_trash(trash_location):
 	if d != {}:
 		for filename in d:		
 			for f in d[filename]:
-				print "{0} deleted from {1}".format(str(filename), f["location"])					
+				print "\"{0}\" was deleted from: {1}".format(str(filename), f["location"])					
 	else:	
 		print "Trash is empty!"
 
 
 
 def check_trash(trash_location, storage_time, trash_maximum_size):
-	#
 	d = load_from_filelist(trash_location)	
 	t = time.time()
 	c = d.copy()
@@ -128,14 +126,13 @@ def check_trash(trash_location, storage_time, trash_maximum_size):
 		i = -1	
 		for f in d[filename]:
 			i += 1
-			if (t - float(f['time'])) > int(storage_time):
-				print "lol kek cheburek ", f
+			if (t - float(f['time'])) > int(storage_time):				
 				os.remove(trash_location + '/' + f["key"])
 				c[filename].pop(i) 	
 				if len(c[filename]) == 0:
 					c.pop(filename)
 			else:
-				print (t - float(f['time']))				
+				logging.info("\"{0}\" will be deleted in {1} sec".format(filename, int(t - float(f['time']))))	
 	d = c
 	load_to_filelist(trash_location, d)
 
@@ -146,8 +143,7 @@ def delete_to_trash_by_reg(regular, directory, location, trash_location, interac
 	files = os.listdir(directory)
 	for f in files:		
 		if not os.path.isdir(directory + '/' + f): 			
-			if re.match(regular, f):
+			if (re.match(regular, f) and not interactive) or (re.match(regular, f) and (interactive and deleter.confirmed(f))):
 				delete_to_trash([directory + '/'+f], location , trash_location)
 		else:
-
 			delete_to_trash_by_reg(regular, directory + '/' + f, location, trash_location, interactive)

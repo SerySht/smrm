@@ -9,7 +9,7 @@ import ConfigParser
 
 def main():	
 	
-	logging.basicConfig(filename='/home/sergey/labs/lab2/MainTask/smart_rm.log',level=logging.DEBUG)
+	logging.basicConfig(format = u'%(message)s',filemode="w",filename='/home/sergey/labs/lab2/MainTask/smart_rm.log',level=logging.DEBUG)
 	
 	parser = argparse.ArgumentParser()
 	
@@ -34,15 +34,15 @@ def main():
 
 	location = os.getcwd() 
 
-	logging.info(arguments)
-	print arguments
-	logging.info(location)	
-	
+	logging.debug("arguments: " + str(arguments))
+	logging.debug("location: " + str(location))	
+
 	conf = ConfigParser.RawConfigParser()            
 	conf.read('/home/sergey/labs/lab2/MainTask/smart_rm.conf') #os.path.expanduser('~/.myapp.cfg')])
 	trash_location = conf.get("main", "trash_location")
 	storage_time = conf.get("main", "storage_time")
 	trash_maximum_size = conf.get("main", "trash_maximum_size")
+	recover_conflict = conf.get("main", "recover_conflict")
 
 	storage_time = storage_time * 1 * 3600 #86400
 
@@ -63,7 +63,7 @@ def main():
 		trash.wipe_trash(trash_location)
 
 	elif arguments.recover:
-		trash.recover_from_trash(arguments.recover, trash_location)
+		trash.recover_from_trash(arguments.recover, trash_location, recover_conflict)
 
 	elif arguments.i:
 		deleter.delete(arguments.i, interactive = True) 

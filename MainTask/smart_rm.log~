@@ -1,0 +1,12 @@
+lab2.py[LINE:37]# DEBUG    [2017-04-21 12:38:12,367] 
+ 
+arguments: Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=True, t=None, wt=False)
+lab2.py[LINE:38]# DEBUG    [2017-04-21 12:38:12,368] 
+ 
+location: /home/sergey
+
+ 
+arguments: Namespace(files=[], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=True, t=None, wt=False)
+
+ 
+location: /home/sergey

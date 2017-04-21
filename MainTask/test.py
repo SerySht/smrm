@@ -1,5 +1,8 @@
 import unittest
 import trash
+import os
+import shtutil
+
 
 class TestTrash(unittest.TestCase):
 
@@ -10,6 +13,14 @@ class TestTrash(unittest.TestCase):
 	def test_get_name(self):		
 		self.assertEqual(trash.get_name("folder1/folder2/file"),("/folder1/folder2/","file"))
 		self.assertEqual(trash.get_name("file"),("","file"))
+
+	def test_remove_to_trash(self):
+		os.mkdir('test')
+		f = open("test/abc", 'w')
+		f.close()
+		
+
+		shtutil.rmtee('test')
 
 
 

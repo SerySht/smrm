@@ -33,7 +33,7 @@ def add_slash(p):
 def get_name(filename):
 	i = filename.rfind('/')	
 	if i > 0: 
-		return add_slash(filename[0:i+1]), filename[i+1:]
+		return filename[0:i+1], filename[i+1:]
 	return '', filename
 
 
@@ -41,11 +41,14 @@ def can_be_deleted(filename):
 	return os.access(filename, os.W_OK)
 
 
-def location_check(location, location_add):
-	if location_add.find(location) == 0:
-		return location_add
-	return location + '/'+ location_add
-
+def location_check(location, location_add):  #chekaet na polni put'
+	if location_add != '':
+		if location_add.find(location) == 0:
+			return location_add
+		elif location_add[0] == '/':
+			return location_add	
+		return location + '/'+ location_add
+	return location
 
 
 def conflict_solver(recover_conflict, filename):
@@ -65,18 +68,19 @@ def delete_to_trash(filenames, location, trash_location, silent=False):
 	d = load_from_filelist(trash_location) 	
 
 	for filename in filenames:
-		location_add, f = get_name(filename)				
+		location_add, f = get_name(filename)	
+
 		if can_be_deleted(filename):	
 			logging.debug(f)		 	
 			key = str(os.stat(filename).st_ino)  #id
 			os.rename(filename, key)			
-			shutil.move(key, trash_location)	
-			if not silent:
-				print "\"{0}\" successfully moved to trash".format(f)		
+			shutil.move(key, trash_location)					
 			if d.get(f) == None:
 				d[f] = [{'location':location_check(location, location_add), 'key':key, 'time':str(time.time()), 'size':os.path.getsize(trash_location+'/' + key)}]
 			else:
 				d[f].append({'location':location_check(location, location_add), 'key':key, 'time':str(time.time()),'size':os.path.getsize(trash_location+'/'+key)})
+			if not silent:
+				print "\"{0}\" successfully moved to trash".format(f)	
 		else:
 			print f," can't be deleted!"
 	
@@ -99,7 +103,7 @@ def recover_from_trash(filenames, trash_location, recover_conflict):
 		
 		else:
 			if len(list_of_files) == 1:	
-				if not os.path.exists(list_of_files[0]["location"] + '/' + filename):			
+				if not os.path.exists(list_of_files[0]["location"] + '/' + filename):						
 					os.rename(trash_location + '/' + list_of_files[0]['key'], list_of_files[0]["location"] + '/' + filename)
 					d.pop(filename) 
 				else: 
@@ -149,8 +153,8 @@ def check_trash(trash_location, storage_time, trash_maximum_size):
 				c[filename].pop(i) 	
 				if len(c[filename]) == 0:
 					c.pop(filename)
-			else:
-				logging.info("\"{0}\" will be deleted in {1} sec".format(filename, int(t - float(f['time']))))	
+			else:				
+				logging.info("\"{0}\" will be deleted in {1} sec".format(filename, int(storage_time) - int(t - float(f['time']))))	
 	d = c
 	save_to_filelist(trash_location, d)
 

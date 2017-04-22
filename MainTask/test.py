@@ -18,7 +18,7 @@ class TestTrash(unittest.TestCase):
 	def test_location_check(self):
 		self.assertEqual(trash.location_check("/home/sergey", "test"), "/home/sergey/test")
 		self.assertEqual(trash.location_check("/home/sergey", "/home/sergey/test"), "/home/sergey/test")
-
+		self.assertEqual(trash.location_check("/home/sergey", "/h/lel/test"), "/h/lel/test")
 	
 	def test_conflict_solver(self):
 		self.assertEqual(trash.conflict_solver('bekmek', 'filename'), 'filename(1)')

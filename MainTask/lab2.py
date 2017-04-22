@@ -41,7 +41,8 @@ def main():
 	trash_maximum_size = conf.get("main", "trash_maximum_size")
 	recover_conflict = conf.get("main", "recover_conflict")
 
-	storage_time = storage_time * 1 * 3600 #86400
+	storage_time = int(storage_time) * 1 * 3600 #86400
+	logging.info(storage_time)
 
 	if not os.path.exists(trash_location):		
 		os.mkdir(trash_location)	

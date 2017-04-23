@@ -62,7 +62,7 @@ def main():
 		trash.show_trash(trash_location)
 
 	elif arguments.wt:
-		trash.wipe_trash(trash_location)
+		trash.wipe_trash(trash_location, arguments.silent)
 
 	elif arguments.recover:
 		trash.recover_from_trash(arguments.recover, trash_location, recover_conflict)

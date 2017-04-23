@@ -2,5 +2,5 @@
 trash_location = /home/sergey/labs/lab2/MainTask/Trash
 storage_time = 60
 trash_maximum_size = 10000000
-recover_conflict = replace
+recover_conflict = not_replace
 

@@ -41,7 +41,7 @@ def can_be_deleted(filename):
 	return os.access(filename, os.W_OK)
 
 
-def location_check(location, location_add):  #chekaet na polni put'
+def location_check(location, location_add):
 	if location_add != '':
 		if location_add.find(location) == 0:
 			return location_add
@@ -112,8 +112,12 @@ def recover_from_trash(filenames, trash_location, recover_conflict):
 				print "Which one you want to recover?"	
 				for i in range(len(list_of_files)):
 					print "#{0} from {1}".format(i+1, list_of_files[i]["location"])
-				number = int(raw_input()) - 1
-				os.rename(trash_location + '/' + list_of_files[number]['key'], list_of_files[number]["location"] + '/' + filename)
+				number = int(raw_input()) - 1	
+				
+				if not os.path.exists(list_of_files[number]["location"] + '/' + filename):
+					os.rename(trash_location + '/' + list_of_files[number]['key'], list_of_files[number]["location"] + '/' + filename)
+				else:
+					os.rename(trash_location + '/' + list_of_files[number]['key'], conflict_solver(recover_conflict, list_of_files[number]["location"] + '/' + filename))
 				list_of_files.pop(number)
 				d[filename] = list_of_files				
 
@@ -121,9 +125,11 @@ def recover_from_trash(filenames, trash_location, recover_conflict):
 
 
 
-def wipe_trash(trash_location):
+def wipe_trash(trash_location, silent = False):
 	deleter.recursive_delete(trash_location)
 	os.mkdir(trash_location)
+	if not silent:
+		print "Trash wiped!"
 
 
 

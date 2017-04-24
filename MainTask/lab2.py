@@ -5,6 +5,7 @@ import deleter
 import argparse
 import logging
 import ConfigParser
+import trash1
 
 
 def main():	
@@ -41,6 +42,9 @@ def main():
 	trash_maximum_size = conf.get("main", "trash_maximum_size")
 	recover_conflict = conf.get("main", "recover_conflict")
 
+	t = trash1.Trash(trash_location, location, storage_time, trash_maximum_size, recover_conflict, silent=False)
+
+
 	storage_time = int(storage_time) * 1 * 3600 #86400
 	logging.info(storage_time)
 
@@ -53,7 +57,7 @@ def main():
 
 
 	if arguments.files:
-		trash.delete_to_trash(arguments.files, location, trash_location, arguments.silent)
+		t.delete_to_trash(arguments.files)
 
 	#elif arguments.t:       
 		#trash.delete_to_trash(arguments.t, location, trash_location, arguments.silent)

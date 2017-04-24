@@ -1,5 +1,6 @@
 216000
-arguments: Namespace(files=[], i=None, ir=None, r=None, recover=['1'], reg=None, reg_t=None, silent=False, st=False, wt=False)
+arguments: Namespace(files=['10'], i=None, ir=None, r=None, recover=None, reg=None, reg_t=None, silent=False, st=False, wt=False)
 location: /home/sergey
-In recover_from_trash
 In check_trash
+"10" will be deleted in 216000 sec
+"6" will be deleted in 215124 sec

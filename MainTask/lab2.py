@@ -14,8 +14,8 @@ def main():
 	parser = argparse.ArgumentParser()
 	
 	parser.add_argument('files', nargs='*')	
-	parser.add_argument('-t', nargs='*')   
-	parser.add_argument('-st', action='store_true')
+	#parser.add_argument('-t', nargs='*')   
+	parser.add_argument('-st', '-show_trash', action='store_true')
 	parser.add_argument('-wt', action='store_true')
 	parser.add_argument('-recover', nargs='*')
 
@@ -53,10 +53,10 @@ def main():
 
 
 	if arguments.files:
-		deleter.delete(arguments.files)
+		trash.delete_to_trash(arguments.files, location, trash_location, arguments.silent)
 
-	elif arguments.t:       
-		trash.delete_to_trash(arguments.t, location, trash_location, arguments.silent)
+	#elif arguments.t:       
+		#trash.delete_to_trash(arguments.t, location, trash_location, arguments.silent)
 
 	elif arguments.st:		
 		trash.show_trash(trash_location)

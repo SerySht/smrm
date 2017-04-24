@@ -71,10 +71,14 @@ def delete_to_trash(filenames, location, trash_location, silent=False):
 		location_add, f = get_name(filename)	
 
 		if can_be_deleted(filename):	
-			logging.debug(f)		 	
-			key = str(os.stat(filename).st_ino)  #id
-			os.rename(filename, key)			
-			shutil.move(key, trash_location)					
+			logging.debug(f)
+
+			shutil.move(filename, trash_location + '/temporary')
+			key = str(os.stat(trash_location + '/temporary/' + filename).st_ino)			
+			os.rename(trash_location + '/temporary/' + filename, trash_location + '/' + key)
+							
+			
+
 			if d.get(f) == None:
 				d[f] = [{'location':location_check(location, location_add), 'key':key, 'time':str(time.time()), 'size':os.path.getsize(trash_location+'/' + key)}]
 			else:
@@ -111,7 +115,7 @@ def recover_from_trash(filenames, trash_location, recover_conflict):
 			else:
 				print "Which one you want to recover?"	
 				for i in range(len(list_of_files)):
-					print "#{0} from {1}".format(i+1, list_of_files[i]["location"])
+					print "#{0} from {1} deleted at {2}".format(i+1, list_of_files[i]["location"], time.ctime(float(list_of_files[i]["time"])))
 				number = int(raw_input()) - 1	
 				
 				if not os.path.exists(list_of_files[number]["location"] + '/' + filename):
@@ -138,7 +142,7 @@ def show_trash(trash_location):
 	if d != {}:
 		for filename in d:		
 			for f in d[filename]:
-				print "\"{0}\" was deleted from: {1}".format(str(filename), f["location"])					
+				print "\"{0}\" was deleted from: {1} at {2}".format(str(filename), f["location"],time.ctime(float(f["time"])))					
 	else:	
 		print "Trash is empty!"
 

@@ -5,7 +5,7 @@ import deleter
 import argparse
 import logging
 import ConfigParser
-import trash1
+
 
 
 def main():	
@@ -42,7 +42,7 @@ def main():
 	trash_maximum_size = conf.get("main", "trash_maximum_size")
 	recover_conflict = conf.get("main", "recover_conflict")
 
-	t = trash1.Trash(trash_location, location, storage_time, trash_maximum_size, recover_conflict, silent=False)
+	t = trash.Trash(trash_location, location, storage_time, trash_maximum_size, recover_conflict, silent=False)
 
 
 	storage_time = int(storage_time) * 1 * 3600 #86400
@@ -63,13 +63,13 @@ def main():
 		#trash.delete_to_trash(arguments.t, location, trash_location, arguments.silent)
 
 	elif arguments.st:		
-		trash.show_trash(trash_location)
+		t.show_trash()
 
 	elif arguments.wt:
-		trash.wipe_trash(trash_location, arguments.silent)
+		t.wipe_trash()
 
 	elif arguments.recover:
-		trash.recover_from_trash(arguments.recover, trash_location, recover_conflict)
+		t.recover_from_trash(arguments.recover)
 
 	elif arguments.i:
 		deleter.delete(arguments.i, interactive = True) 
@@ -83,11 +83,11 @@ def main():
 	elif arguments.r:
 		deleter.recursive_delete(arguments.r)	
 	elif arguments.reg_t:
-		trash.delete_to_trash_by_reg('\\' + arguments.reg_t[0], arguments.reg_t[1], location, trash_location)
+		t.delete_to_trash_by_reg('\\' + arguments.reg_t[0], arguments.reg_t[1], location, trash_location)
 	else:
 		print "Error! There are no parameters!"
 
-	trash.check_trash(trash_location, storage_time, trash_maximum_size)
+	t.check_trash()
 
 
 if __name__ == "__main__":

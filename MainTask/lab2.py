@@ -19,13 +19,17 @@ def main():
 	parser.add_argument('-st', '-show_trash', action='store_true')
 	parser.add_argument('-wt', action='store_true')
 	parser.add_argument('-recover', nargs='*')
-
-	parser.add_argument('-i', nargs='*')
-	parser.add_argument('-ir', nargs='?')          
-	parser.add_argument('-r', nargs='?')
-	parser.add_argument('-silent', action='store_true')
-	#parser.add_argument('-reg', nargs=2, type=str, help='-reg [regular] [directory]')
 	parser.add_argument('-reg_t', nargs=2, type=str, help='-reg [regular] [directory]')
+	parser.add_argument('-silent', action='store_true')
+	parser.add_argument('-i','-interactive', action='store_true')
+	parser.add_argument('-dry_run', action='store_true')
+
+
+	#parser.add_argument('-i', nargs='*')
+	parser.add_argument('-ir', nargs='?')          
+	parser.add_argument('-r', nargs='?')	
+	#parser.add_argument('-reg', nargs=2, type=str, help='-reg [regular] [directory]')
+	
 	
 	try:
 		arguments = parser.parse_args(sys.argv[1:],)
@@ -33,43 +37,42 @@ def main():
 		print "There is no such parameter!"
 		return
 
-	location = os.getcwd()
+	current_directory = os.getcwd()
 
 	conf = ConfigParser.RawConfigParser()            
 	conf.read('/home/sergey/labs/lab2/MainTask/smart_rm.conf') #os.path.expanduser('~/.myapp.cfg')])
-	trash_location = conf.get("main", "trash_location")
-	storage_time = conf.get("main", "storage_time")
-	trash_maximum_size = conf.get("main", "trash_maximum_size")
+	trash_location = conf.get("main", "trash_location")	
 	recover_conflict = conf.get("main", "recover_conflict")
+	politic_state = conf.get("main", "politics")
+	storage_time = conf.get("politics", "storage_time") * 1 * 3600 #86400
+	trash_maximum_size = conf.get("politics", "trash_maximum_size")
 
-	t = trash.Trash(trash_location, location, storage_time, trash_maximum_size, recover_conflict, silent=False)
-
-
-	storage_time = int(storage_time) * 1 * 3600 #86400
-	logging.info(storage_time)
+	t = trash.Trash(trash_location, current_directory, politic_state, storage_time, trash_maximum_size, recover_conflict, arguments.silent, arguments.i, arguments.dry_run)
 
 	if not os.path.exists(trash_location):		
 		os.mkdir(trash_location)	
 
 
 	logging.debug("arguments: " + str(arguments))
-	logging.debug("location: " + str(location))	
+	logging.debug("current_directory: " + str(current_directory))	
 
 
 	if arguments.files:
 		t.delete_to_trash(arguments.files)
-
-	#elif arguments.t:       
-		#trash.delete_to_trash(arguments.t, location, trash_location, arguments.silent)
-
+	
 	elif arguments.st:		
 		t.show_trash()
 
 	elif arguments.wt:
 		t.wipe_trash()
 
+	elif arguments.reg_t:
+		t.delete_to_trash_by_reg('\\' + arguments.reg_t[0], arguments.reg_t[1])
+
 	elif arguments.recover:
 		t.recover_from_trash(arguments.recover)
+
+
 
 	elif arguments.i:
 		deleter.delete(arguments.i, interactive = True) 
@@ -82,8 +85,6 @@ def main():
 	
 	elif arguments.r:
 		deleter.recursive_delete(arguments.r)	
-	elif arguments.reg_t:
-		t.delete_to_trash_by_reg('\\' + arguments.reg_t[0], arguments.reg_t[1])
 	else:
 		print "Error! There are no parameters!"
 

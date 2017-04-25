@@ -9,13 +9,15 @@ import logging
 
 class Trash(object):
 
-	def __init__ (self, trash_location, current_directory, storage_time, trash_maximum_size, recover_conflict, silent=False):
+	def __init__ (self, trash_location, current_directory, politic_state, storage_time, trash_maximum_size, recover_conflict, silent, i, dry_run):
 		self.trash_location = trash_location 
 		self.current_directory = current_directory
+		self.politic_state =  politic_state
 		self.trash_maximum_size = trash_maximum_size
 		self.recover_conflict = recover_conflict
 		self.silent = silent 
-
+		self.interactive = i
+		self.dry_run = dry_run 
 	
 	def __load_from_filelist(self):	
 		f = open(self.trash_location + "/parameters/filelist", 'a+')               
@@ -31,7 +33,16 @@ class Trash(object):
 		f.write(json.dumps(self.dict))
 		f.close()		
 
-	
+	def __confirmed(self, filename):		
+		while True:
+			answer = raw_input("-Are you sure you want to move \"{0}\" to the Trash?\n".format(filename))
+			if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:
+				return True
+			elif answer in {'No', 'no', 'NO', 'net', 'n'}:
+				return False
+			else: print "Unknown answer"
+
+		
 	def delete_to_trash(self, filenames):
 
 		def separate_the_name(filename):
@@ -72,11 +83,11 @@ class Trash(object):
 
 		for filename in filenames:
 			self.file_location, self.file = separate_the_name(filename)	
-
-			if can_be_deleted(filename):				
-				to_trash_mover(filename)
-				add_to_filelist()
-				
+			if can_be_deleted(filename) and ((self.interactive and self.__confirmed(self.file)) or not self.interactive):
+				if not self.dry_run:
+					to_trash_mover(filename)
+					add_to_filelist()
+					
 				if not self.silent:
 					print "\"{0}\" successfully moved to trash".format(self.file)	
 			else:

@@ -1,2 +1,2 @@
-arguments: Namespace(dry_run=True, files=['2'], i=True, ir=None, r=None, recover=None, reg_t=None, silent=False, st=False, wt=False)
-current_directory: /home/sergey
+arguments: Namespace(dry_run=False, files=[], i=False, ir=None, r=None, recover=None, reg=None, silent=False, st=False, wt=True)
+current_directory: /home/sergey/labs/lab2

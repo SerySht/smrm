@@ -136,7 +136,6 @@ class Trash(object):
 		self.__save_to_filelist()
 
 
-
 	def wipe_trash(self):
 		deleter.recursive_delete(self.trash_location)
 		os.mkdir(self.trash_location)
@@ -144,39 +143,33 @@ class Trash(object):
 			print "Trash wiped!"
 
 
-
 	def show_trash(self):
 		self.__load_from_filelist()
-		if self.d != {}:
-			for filename in self.d:		
-				for f in self.d[filename]:
+		if self.dict != {}:
+			for filename in self.dict:		
+				for f in self.dict[filename]:
 					print "\"{0}\" was deleted from: {1} at {2}".format(str(filename), f["location"],time.ctime(float(f["time"])))					
 		else:	
 			print "Trash is empty!"
 
 
-
-	def check_trash(self):
-
-		self.load_from_filelist()
+	def time_politic_check(self):
+		self.load_from_filelist()		
 		t = time.time()
-		c = self.d.copy()
-		for filename in self.d:	
+		copy_of_dict = self.dict.copy()
+		for filename in self.dict:	
 			i = -1	
-			for f in self.d[filename]:
+			for f in self.dict[filename]:
 				i += 1
 				if (t - float(f['time'])) > int(self.storage_time):				
 					os.remove(self.trash_location + '/' + f["key"])
-					c[filename].pop(i) 	
-					if len(c[filename]) == 0:
-						c.pop(filename)
+					copy_of_dict[filename].pop(i) 	
+					if len(copy_of_dict[filename]) == 0:
+						copy_of_dict.pop(filename)
 				else:				
 					logging.info("\"{0}\" will be deleted in {1} sec".format(filename, int(self.storage_time) - int(t - float(f['time']))))	
-		self.d = c
+		self.dict = copy_of_dict
 		self.save_to_filelist()
-
-
-
 
 	
 	def delete_to_trash_by_reg(self, regular, directory, interactive = False):		

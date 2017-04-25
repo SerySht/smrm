@@ -24,7 +24,7 @@ def main():
 	parser.add_argument('-ir', nargs='?')          
 	parser.add_argument('-r', nargs='?')
 	parser.add_argument('-silent', action='store_true')
-	parser.add_argument('-reg', nargs=2, type=str, help='-reg [regular] [directory]')
+	#parser.add_argument('-reg', nargs=2, type=str, help='-reg [regular] [directory]')
 	parser.add_argument('-reg_t', nargs=2, type=str, help='-reg [regular] [directory]')
 	
 	try:
@@ -77,17 +77,17 @@ def main():
 	elif arguments.ir:
 		deleter.recursive_delete(arguments.ir, interactive = True) 
 	
-	elif arguments.reg:
-		deleter.delete_by_reg(arguments.reg[0], arguments.reg[1])
+	#elif arguments.reg:
+		#deleter.delete_by_reg(arguments.reg[0], arguments.reg[1])
 	
 	elif arguments.r:
 		deleter.recursive_delete(arguments.r)	
 	elif arguments.reg_t:
-		t.delete_to_trash_by_reg('\\' + arguments.reg_t[0], arguments.reg_t[1], location, trash_location)
+		t.delete_to_trash_by_reg('\\' + arguments.reg_t[0], arguments.reg_t[1])
 	else:
 		print "Error! There are no parameters!"
 
-	t.check_trash()
+	#t.check_trash()
 
 
 if __name__ == "__main__":

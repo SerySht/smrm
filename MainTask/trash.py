@@ -184,7 +184,7 @@ class Trash(object):
 		self.dict = copy_of_dict
 		self.save_to_filelist()
 
-	def size_politic_chec(self):
+	def size_politic_check(self):
 		self.load_from_filelist()
 
 
@@ -207,8 +207,10 @@ class Trash(object):
 					p.inc()
 					delete_to_trash_by_reg_(regular, directory + '/' + f)
 			p.show()
-	
+			
+		
 		delete_to_trash_by_reg_(regular, directory)
+
 
 class Progress(object):
 	def __init__ (self, filename):

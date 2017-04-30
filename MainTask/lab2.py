@@ -4,7 +4,7 @@ import trash
 import deleter
 import argparse
 import logging
-import ConfigParser
+import config
 
 
 
@@ -24,6 +24,11 @@ def main():
 	parser.add_argument('-i','-interactive', action='store_true')
 	parser.add_argument('-dry_run', action='store_true')
 	parser.add_argument('files', nargs='*')	
+	
+	parser.add_argument('--trash_location')
+	parser.add_argument('--recover_conflict')
+	parser.add_argument('--storage_time')
+	parser.add_argument('--trash_maximum_size')
 
 	#parser.add_argument('-i', nargs='*')
 	parser.add_argument('-ir', nargs='?')          
@@ -37,19 +42,24 @@ def main():
 		print "There is no such parameter!"
 		return
 
+
 	current_directory = os.getcwd()
 
-	conf = ConfigParser.RawConfigParser()            
-	conf.read('/home/sergey/labs/lab2/MainTask/smart_rm.conf') #os.path.expanduser('~/.myapp.cfg')])
-	trash_location = conf.get("main", "trash_location")	
-	recover_conflict = conf.get("main", "recover_conflict")
-	storage_time = conf.get("politics", "storage_time") * 1 * 3600 #86400
-	trash_maximum_size = conf.get("politics", "trash_maximum_size")
+	conf = config.load()
+	
+	if arguments.trash_location:
+		conf['trash_location'] = arguments.trash_location
+	if arguments.recover_conflict:
+		conf['recover_conflict'] = arguments.recover_conflict
+	if arguments.storage_time:
+		conf['storage_time'] = arguments.storage_time
+	if arguments.trash_maximum_size:
+		conf['trash_maximum_size'] = arguments.trash_maximum_size
 
-	t = trash.Trash(trash_location, current_directory, storage_time, trash_maximum_size, recover_conflict, arguments.silent, arguments.i, arguments.dry_run)
+	t = trash.Trash(conf['trash_location'], current_directory, conf['storage_time'], conf['trash_maximum_size'], conf['recover_conflict'], arguments.silent, arguments.i, arguments.dry_run)
 
-	if not os.path.exists(trash_location):		
-		os.mkdir(trash_location)	
+	if not os.path.exists(conf['trash_location']):		
+		os.mkdir(conf['trash_location'])	
 
 
 	logging.debug("arguments: " + str(arguments))

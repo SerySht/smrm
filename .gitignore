@@ -1,2 +1,4 @@
 MainTask/Trash
 *.pyc
+*.log
+*.json

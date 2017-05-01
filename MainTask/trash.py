@@ -41,6 +41,14 @@ class Trash(object):
 				return False
 			else: print "Unknown answer"
 
+	def __get_size(self, filename):
+		if not os.path.isdir(filename):
+			return os.path.getsize(filename)
+		total_size = 0
+		for r, d, files in os.walk(filename):
+			for f in files:				
+				total_size += os.path.getsize(r+'/'+f)
+		return total_size
 		
 	def delete_to_trash(self, filenames):
 
@@ -62,7 +70,9 @@ class Trash(object):
 				return current_directory + '/' + file_location
 			return current_directory
 		
-		def to_trash_mover(filename):			
+		def to_trash_mover(filename):
+			self.size_politic_check(filename)
+
 			self.key = str(os.stat(filename).st_ino)			
 			os.rename(filename, self.trash_location + '/' + self.key)
 
@@ -72,12 +82,12 @@ class Trash(object):
 				self.dict[self.file] = [{'location':location_check(self.current_directory, self.file_location), 
 											'key':self.key, 
 											'time':str(time.time()), 
-											'size':os.path.getsize(self.trash_location+ '/' + self.key)}]
+											'size':self.__get_size(self.trash_location+ '/' + self.key)}]
 			else:
 				self.dict[self.file].append({'location':location_check(self.current_directory, self.file_location), 
 											'key':self.key, 'time':str(time.time()),
 											'time':str(time.time()),
-											'size':os.path.getsize(self.trash_location+'/'+ self.key)})
+											'size':self.__get_size(self.trash_location+'/'+ self.key)})
 			self.__save_to_filelist()	
 
 		for filename in filenames:
@@ -184,13 +194,13 @@ class Trash(object):
 		self.dict = copy_of_dict
 		self.save_to_filelist()
 
-	def size_politic_check(self):
-		self.load_from_filelist()
+	def size_politic_check(self, filename):
+		size_of_trash = self.__get_size(self.trash_location)		
+		if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):
+			print "innnnn"
+			self.wipe_trash()
 
 
-
-		self.save_to_filelist()
-	i = 0
 
 	def delete_to_trash_by_reg(self, regular, directory):
 		p = Progress(directory)

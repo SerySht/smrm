@@ -31,7 +31,7 @@ def main():
 	parser.add_argument('--trash_maximum_size')
 
 	#parser.add_argument('-i', nargs='*')
-	parser.add_argument('-ir', nargs='?')          
+	#parser.add_argument('-ir', nargs='?')          
 	parser.add_argument('-r', nargs='?')	
 	#parser.add_argument('-reg', nargs=2, type=str, help='-reg [regular] [directory]')
 	

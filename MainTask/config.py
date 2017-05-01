@@ -8,7 +8,7 @@ def load(directory = '/home/sergey/labs/lab2/MainTask/smrm.conf'):
 	
 	trash_location = conf.get("main", "trash_location")	
 	recover_conflict = conf.get("main", "recover_conflict")
-	storage_time = conf.get("politics", "storage_time") * 1 * 3600 #86400
+	storage_time = conf.get("politics", "storage_time") 
 	trash_maximum_size = conf.get("politics", "trash_maximum_size")
 
 	json_config = {'trash_location':trash_location, 

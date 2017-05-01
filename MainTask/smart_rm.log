@@ -1,2 +1,0 @@
-arguments: Namespace(dry_run=False, files=['test'], i=False, r=None, recover=None, recover_conflict=None, reg=None, silent=False, st=False, storage_time=None, trash_location=None, trash_maximum_size=None, wt=False)
-current_directory: /home/sergey

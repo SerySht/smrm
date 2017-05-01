@@ -11,7 +11,8 @@ class Trash(object):
 
 	def __init__ (self, trash_location, current_directory, storage_time, trash_maximum_size, recover_conflict, silent, i, dry_run):
 		self.trash_location = trash_location 
-		self.current_directory = current_directory		
+		self.current_directory = current_directory	
+		self.storage_time = int(storage_time)	
 		self.trash_maximum_size = trash_maximum_size
 		self.recover_conflict = recover_conflict
 		self.silent = silent 
@@ -26,7 +27,6 @@ class Trash(object):
 			self.dict = {}  
 		f.close() 		
 
-	
 	def __save_to_filelist(self):
 		f = open(self.trash_location + "/filelist", 'w')  
 		f.write(json.dumps(self.dict))
@@ -120,7 +120,7 @@ class Trash(object):
 
 				num = int(filename[filename.rfind('(')+1:filename.rfind(')')])
 				return filename.replace(str(num), str(num+1))
-		 	return filename				
+			return filename				
 
 		def mover_from_trash(i, filename):	#pustie spiski
 			if not os.path.exists(self.list_of_files[i]["location"] + '/' + filename):
@@ -171,33 +171,29 @@ class Trash(object):
 		if self.dict != {}:
 			for filename in self.dict:		
 				for f in self.dict[filename]:
-					print "\"{0}\" was deleted from: {1} at {2}".format(str(filename), f["location"],time.ctime(float(f["time"])))					
-		else:	
+					print "\"{0}\" was deleted from: {1} at {2}".format(str(filename), f["location"], time.ctime(float(f["time"])))					
+				
+		if not self.silent:	
 			print "Trash is empty!"
 
 
 	def time_politic_check(self):
-		self.load_from_filelist()		
-		t = time.time()
-		copy_of_dict = self.dict.copy()
+		self.__load_from_filelist()			
+		
 		for filename in self.dict:	
-			i = -1	
-			for f in self.dict[filename]:
-				i += 1
-				if (t - float(f['time'])) > int(self.storage_time):				
-					os.remove(self.trash_location + '/' + f["key"])
-					copy_of_dict[filename].pop(i) 	
-					if len(copy_of_dict[filename]) == 0:
-						copy_of_dict.pop(filename)
-				else:				
-					logging.info("\"{0}\" will be deleted in {1} sec".format(filename, int(self.storage_time) - int(t - float(f['time']))))	
-		self.dict = copy_of_dict
-		self.save_to_filelist()
+			for i in range(len(self.dict[filename])):	
+				lists_by_name = self.dict[filename]
+				if (time.time() - float(lists_by_name[i]['time'])) > self.storage_time:				
+					if not os.path.isdir(self.trash_location + '/' + lists_by_name[i]["key"]):
+						os.remove(self.trash_location + '/' + lists_by_name[i]["key"])
+					else: shutil.rmtree(self.trash_location + '/' + lists_by_name[i]["key"])					
+					self.dict[filename].pop(i)	
+		self.__save_to_filelist()
+
 
 	def size_politic_check(self, filename):
 		size_of_trash = self.__get_size(self.trash_location)		
-		if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):
-			print "innnnn"
+		if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):			
 			self.wipe_trash()
 
 
@@ -205,21 +201,14 @@ class Trash(object):
 	def delete_to_trash_by_reg(self, regular, directory):
 		p = Progress(directory)
 
-		def delete_to_trash_by_reg_(regular, directory):		
-
-			files = os.listdir(directory)
-			for f in files:		
-				if not os.path.isdir(directory + '/' + f): 			
-					if (re.match(regular, f) and not self.interactive) or (re.match(regular, f) and (self.interactive and self.__confirmed(f))):
-						p.inc()
-						self.delete_to_trash([directory + '/'+f])
-				else:
-					p.inc()
-					delete_to_trash_by_reg_(regular, directory + '/' + f)
-			p.show()
-			
+		for r, d, files in os.walk(directory):
+			for f in files:				
+				if (re.match(regular, f) and not self.interactive) or (re.match(regular, f) and (self.interactive and self.__confirmed(f))):
+					p.inc()					
+					self.delete_to_trash([r + '/'+ f])
+			p.show()			
 		
-		delete_to_trash_by_reg_(regular, directory)
+		
 
 
 class Progress(object):

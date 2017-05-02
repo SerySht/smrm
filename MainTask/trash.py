@@ -52,23 +52,21 @@ class Trash(object):
 		
 	def delete_to_trash(self, filenames):
 
-		def separate_the_name(filename):
+		def location_parser(current_directory, filename):
 			i = filename.rfind('/')	
-			if i > 0: 
-				return filename[:i+1], filename[i+1:]
-			return '', filename
+			if i == -1: 
+				return current_directory + '/', filename
+			else:
+				location, filename = filename[:i+1], filename[i+1:]				
+				if len(location)>0 and location[0] == '/':
+					return location,  filename
+				else: return current_directory + '/' + location, filename
+
 
 		def can_be_deleted(filename):
-			return os.access(filename, os.W_OK)
-
-		def location_check(current_directory, file_location):
-			if file_location != '':
-				if file_location.find(current_directory) == 0:
-					return file_location
-				elif file_location[0] == '/':
-					return file_location	
-				return current_directory + '/' + file_location
-			return current_directory
+			print filename
+			return os.access(filename, os.W_OK) and filename.find('/home') == 0
+	
 		
 		def to_trash_mover(filename):
 			self.size_politic_check(filename)
@@ -79,28 +77,29 @@ class Trash(object):
 		def add_to_filelist():
 			self.__load_from_filelist() 	
 			if self.dict.get(self.file) == None:
-				self.dict[self.file] = [{'location':location_check(self.current_directory, self.file_location), 
+				self.dict[self.file] = [{'location':self.file_location, 
 											'key':self.key, 
 											'time':str(time.time()), 
 											'size':self.__get_size(self.trash_location+ '/' + self.key)}]
 			else:
-				self.dict[self.file].append({'location':location_check(self.current_directory, self.file_location), 
+				self.dict[self.file].append({'location':self.file_location, 
 											'key':self.key, 'time':str(time.time()),
 											'time':str(time.time()),
 											'size':self.__get_size(self.trash_location+'/'+ self.key)})
 			self.__save_to_filelist()	
 
 		for filename in filenames:
-			self.file_location, self.file = separate_the_name(filename)	
-			if can_be_deleted(filename) and ((self.interactive and self.__confirmed(self.file)) or not self.interactive):
+			self.file_location, self.file = location_parser(self.current_directory, filename)
+
+			if can_be_deleted(self.file_location + self.file) and ((self.interactive and self.__confirmed(self.file)) or not self.interactive):
 				if not self.dry_run:
 					to_trash_mover(filename)
 					add_to_filelist()
 					
-				if not self.silent:
+				if not self.silent or self.dry_run:
 					print "\"{0}\" successfully moved to trash".format(self.file)	
-			else:
-				print self.file," can't be deleted!"
+			elif not self.silent:
+				print self.file,"can't be deleted!"
 
 
 	def recover_from_trash(self, filenames):
@@ -124,8 +123,7 @@ class Trash(object):
 
 		def mover_from_trash(i, filename):	#pustie spiski
 			if not os.path.exists(self.list_of_files[i]["location"] + '/' + filename):
-				os.rename(self.trash_location + '/' + self.list_of_files[i]['key'], 
-						self.list_of_files[i]["location"] + '/' + filename)				
+				os.rename(self.trash_location + '/' + self.list_of_files[i]['key'], self.list_of_files[i]["location"] + '/' + filename)				
 			else:
 				new_filename = self.list_of_files[i]["location"] + '/' + filename
 				while os.path.exists(new_filename): 
@@ -134,8 +132,8 @@ class Trash(object):
 				os.rename(self.trash_location + '/' + self.list_of_files[i]['key'], new_filename)
 			
 			self.list_of_files.pop(i)   
-
 		
+
 		self.__load_from_filelist()
 
 		for filename in filenames:
@@ -154,14 +152,20 @@ class Trash(object):
 						get_which_one()
 						print filename, "recovered from the trash"
 
-				self.dict[filename] = self.list_of_files				
+				self.dict[filename] = self.list_of_files
+				if len(self.list_of_files) == 0:
+					print "in"
+					self.dict.pop(filename)
+				
+						
 				
 		self.__save_to_filelist()
 
 
 	def wipe_trash(self):
-		deleter.recursive_delete(self.trash_location)
-		os.mkdir(self.trash_location)
+		if not self.dry_run:
+			deleter.recursive_delete(self.trash_location)
+			os.mkdir(self.trash_location)
 		if not self.silent:
 			print "Trash wiped!"
 
@@ -173,7 +177,7 @@ class Trash(object):
 				for f in self.dict[filename]:
 					print "\"{0}\" was deleted from: {1} at {2}".format(str(filename), f["location"], time.ctime(float(f["time"])))					
 				
-		if not self.silent:	
+		elif not self.silent:	
 			print "Trash is empty!"
 
 
@@ -206,7 +210,8 @@ class Trash(object):
 				if (re.match(regular, f) and not self.interactive) or (re.match(regular, f) and (self.interactive and self.__confirmed(f))):
 					p.inc()					
 					self.delete_to_trash([r + '/'+ f])
-			p.show()			
+			if not self.silent:
+				p.show()			
 		
 		
 

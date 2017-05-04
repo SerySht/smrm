@@ -63,8 +63,7 @@ class Trash(object):
 				else: return current_directory + '/' + location, filename
 
 
-		def can_be_deleted(filename):
-			print filename
+		def can_be_deleted(filename):			
 			return os.access(filename, os.W_OK) and filename.find('/home') == 0
 	
 		
@@ -153,8 +152,7 @@ class Trash(object):
 						print filename, "recovered from the trash"
 
 				self.dict[filename] = self.list_of_files
-				if len(self.list_of_files) == 0:
-					print "in"
+				if len(self.list_of_files) == 0:					
 					self.dict.pop(filename)
 				
 						

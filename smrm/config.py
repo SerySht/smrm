@@ -2,7 +2,7 @@ import ConfigParser
 import json
 
 
-def load(directory = '/home/sergey/labs/lab2/MainTask/smrm.conf'):
+def load(directory = '/home/sergey/labs/lab2/smrm/smrm.conf'):
 	conf = ConfigParser.RawConfigParser()            
 	conf.read(directory) 
 	

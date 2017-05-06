@@ -68,12 +68,14 @@ class Trash(object):
                 location, filename = filename[:i+1], filename[i+1:]             
                 if len(location)>0 and location[0] == '/':
                     return location,  filename
-                else: return current_directory + '/' + location, filename
+                else: 
+                    return current_directory + '/' + location, filename
 
         def can_be_deleted(filename):            
-            if os.access(filename, os.W_OK) and filename.find('/home') == 0 and filename.find('/home/sergey/labs/lab2/smrm') == -1:
+            if os.access(filename, os.W_OK) and filename.find('/home') == 0:
                 return True
-            else: raise Exception   
+            else: 
+                raise Exception   
         
         def to_trash_mover(filename):
             self.size_politic_check(filename)
@@ -156,7 +158,8 @@ class Trash(object):
                     if not self.dry_run: mover_from_trash(0, filename)  
                     else: print filename, "recovered from the trash"                
                 else:                                       
-                    if not self.dry_run: mover_from_trash(get_which_one(), filename)
+                    if not self.dry_run: 
+                        mover_from_trash(get_which_one(), filename)
                     else: 
                         get_which_one()
                         print filename, "recovered from the trash"

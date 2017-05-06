@@ -18,8 +18,11 @@ class TestTrash(unittest.TestCase):
 
         self.t.delete_to_trash(["bekmek"])
 
-        f = open(self.tl + "/Trash/filelist", 'a+')       
-        d = json.load(f)
+        f = open(self.tl + "/Trash/filelist", 'a+')  
+        try:     
+            d = json.load(f)
+        except ValueError:
+            print "Failed to get dict"
         self.assertNotEqual(d.get("bekmek"), None) 
 
     def test_recover_from_trash(self):

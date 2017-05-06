@@ -8,7 +8,7 @@ import logging
 
 class Trash(object):
 
-    def __init__ (self, trash_location = os.getenv("HOME"), current_directory = os.getenv("HOME"), storage_time='', trash_maximum_size='', recover_conflict='not_replace', silent=False, i=False, dry_run = False):
+    def __init__ (self, trash_location = os.getenv("HOME"), current_directory = os.getenv("HOME"), storage_time='', trash_maximum_size='', recover_conflict='not_replace', silent=False, i=False, dry_run = False, force = False):
 
         if storage_time == '':
             self.storage_time = ''
@@ -21,7 +21,8 @@ class Trash(object):
         self.recover_conflict = recover_conflict
         self.silent = silent 
         self.interactive = i
-        self.dry_run = dry_run         
+        self.dry_run = dry_run 
+        self.force = force        
         
         if not os.path.exists(self.trash_location):      
             os.mkdir(self.trash_location)    
@@ -72,6 +73,7 @@ class Trash(object):
 
         def can_be_deleted(filename): 
             return os.access(filename, os.W_OK) and filename.find('/home') == 0
+            pass
     
         
         def to_trash_mover(filename):
@@ -94,7 +96,7 @@ class Trash(object):
             self.__save_to_filelist()   
 
         for filename in filenames:
-            self.file_location, self.file = location_parser(self.current_directory, filename)
+            self.sfile_location, self.file = location_parser(self.current_directory, filename)
 
             if can_be_deleted(self.file_location + self.file) and ((self.interactive and self.__confirmed(self.file)) or not self.interactive):
                 if not self.dry_run:
@@ -103,7 +105,7 @@ class Trash(object):
                     
                 if not self.silent or self.dry_run:
                     print "\"{0}\" successfully moved to trash".format(self.file)   
-            elif not self.silent:
+            elif not self.silent and not self.force:
                 print self.file,"can't be deleted!"
         self.time_politic_check()
 

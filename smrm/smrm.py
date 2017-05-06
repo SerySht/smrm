@@ -16,6 +16,7 @@ def main():
     parser.add_argument('--silent', action='store_true')   
     parser.add_argument('-i','--interactive', action='store_true')
     parser.add_argument('--dry_run', action='store_true')
+    parser.add_argument('--force', action='store_true')
     parser.add_argument('files', nargs='*') 
     
     parser.add_argument('--trash_location')
@@ -44,8 +45,10 @@ def main():
     if arguments.log_location:
         conf['log_location'] = arguments.log_location
    
-    logging.basicConfig(format = u'%(message)s',filemode="w",filename='smart_rm.log',level=logging.DEBUG)
-    
+
+    logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",filename=conf['log_location'],level=logging.DEBUG)
+    logging.debug(arguments)
+
     t = trash.Trash(conf['trash_location'], 
                     current_directory, 
                     conf['storage_time'], 
@@ -53,7 +56,8 @@ def main():
                     conf['recover_conflict'], 
                     arguments.silent, 
                     arguments.interactive, 
-                    arguments.dry_run)
+                    arguments.dry_run,
+                    arguments.force)
 
     if arguments.files:
         t.delete_to_trash(arguments.files)  

@@ -13,9 +13,9 @@ def load(directory = '/home/sergey/labs/lab2/smrm/smrm.conf'):
         trash_location = os.getenv("HOME")
 
     if conf.has_option("main", "log_location"):
-        log_location = conf.get("main", "log_location")
+        log_location = conf.get("main", "log_location") + '/smrm.log'
     else:
-        log_location = os.getenv("HOME")
+        log_location = os.getenv("HOME")  + '/smrm.log'
     
     if conf.has_option("main", "recover_conflict"):
         recover_conflict = conf.get("main", "recover_conflict")

@@ -70,11 +70,10 @@ class Trash(object):
                     return location,  filename
                 else: return current_directory + '/' + location, filename
 
-
-        def can_be_deleted(filename): 
-            return os.access(filename, os.W_OK) and filename.find('/home') == 0
-            pass
-    
+        def can_be_deleted(filename):            
+            if os.access(filename, os.W_OK) and filename.find('/home') == 0 and filename.find('/home/sergey/labs/lab2/smrm') == -1:
+                return True
+            else: raise Exception   
         
         def to_trash_mover(filename):
             self.size_politic_check(filename)
@@ -95,17 +94,19 @@ class Trash(object):
                                             'size':self.__get_size(self.trash_location+'/'+ self.key)})
             self.__save_to_filelist()   
 
-        for filename in filenames:
-            self.sfile_location, self.file = location_parser(self.current_directory, filename)
+        try:
+            for filename in filenames:
+                self.file_location, self.file = location_parser(self.current_directory, filename)
 
-            if can_be_deleted(self.file_location + self.file) and ((self.interactive and self.__confirmed(self.file)) or not self.interactive):
-                if not self.dry_run:
-                    to_trash_mover(filename)
-                    add_to_filelist()
-                    
-                if not self.silent or self.dry_run:
-                    print "\"{0}\" successfully moved to trash".format(self.file)   
-            elif not self.silent and not self.force:
+                if can_be_deleted(self.file_location + self.file) and ((self.interactive and self.__confirmed(self.file)) or not self.interactive):
+                    if not self.dry_run:
+                        to_trash_mover(filename)
+                        add_to_filelist()
+                        
+                    if not self.silent or self.dry_run:
+                        print "\"{0}\" successfully moved to trash".format(self.file)                 
+        except:
+            if not self.silent and not self.force:
                 print self.file,"can't be deleted!"
         self.time_politic_check()
 

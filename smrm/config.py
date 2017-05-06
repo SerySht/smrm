@@ -1,5 +1,6 @@
 import ConfigParser
 import json
+import os
 
 
 def load(directory = '/home/sergey/labs/lab2/smrm/smrm.conf'):
@@ -9,12 +10,12 @@ def load(directory = '/home/sergey/labs/lab2/smrm/smrm.conf'):
     if conf.has_option("main", "trash_location"):
         trash_location = conf.get("main", "trash_location")
     else: 
-        trash_location = ''
+        trash_location = os.getenv("HOME")
 
     if conf.has_option("main", "log_location"):
         log_location = conf.get("main", "log_location")
     else:
-        log_location = ''
+        log_location = os.getenv("HOME")
     
     if conf.has_option("main", "recover_conflict"):
         recover_conflict = conf.get("main", "recover_conflict")

@@ -44,12 +44,16 @@ def main():
     if arguments.log_location:
         conf['log_location'] = arguments.log_location
    
-    #logging.basicConfig(format = u'%(message)s',filemode="w",filename=log_location + '/smart_rm.log',level=logging.DEBUG)
+    logging.basicConfig(format = u'%(message)s',filemode="w",filename='smart_rm.log',level=logging.DEBUG)
     
-    t = trash.Trash(conf['trash_location'], current_directory, conf['storage_time'], conf['trash_maximum_size'], conf['recover_conflict'], arguments.silent, arguments.interactive, arguments.dry_run)
-
-   
-
+    t = trash.Trash(conf['trash_location'], 
+                    current_directory, 
+                    conf['storage_time'], 
+                    conf['trash_maximum_size'], 
+                    conf['recover_conflict'], 
+                    arguments.silent, 
+                    arguments.interactive, 
+                    arguments.dry_run)
 
     if arguments.files:
         t.delete_to_trash(arguments.files)  
@@ -62,10 +66,7 @@ def main():
     elif arguments.recover:
         t.recover_from_trash(arguments.recover)
     else:
-        print "Error! There are no parameters!"
-
-    t.time_politic_check()
-
+        print "Error! There are no parameters!"    
 
 if __name__ == "__main__":
     main()

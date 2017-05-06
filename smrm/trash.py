@@ -8,25 +8,23 @@ import logging
 
 class Trash(object):
 
-    def __init__ (self, trash_location, current_directory, storage_time, trash_maximum_size, recover_conflict, silent, i, dry_run):
-        if trash_location != '':
-            self.trash_location = trash_location 
-        else:
-            self.trash_location = current_directory
+    def __init__ (self, trash_location = os.getenv("HOME"), current_directory = os.getenv("HOME"), storage_time='', trash_maximum_size='', recover_conflict='not_replace', silent=False, i=False, dry_run = False):
 
         if storage_time == '':
             self.storage_time = ''
         else: 
             self.storage_time = int(storage_time) *3600
 
+        self.trash_location = trash_location + "/Trash"
         self.current_directory = current_directory
         self.trash_maximum_size = trash_maximum_size
         self.recover_conflict = recover_conflict
         self.silent = silent 
         self.interactive = i
-        self.dry_run = dry_run 
+        self.dry_run = dry_run         
+        
         if not os.path.exists(self.trash_location):      
-            os.mkdir(conf['trash_location'])    
+            os.mkdir(self.trash_location)    
     
     def __load_from_filelist(self): 
         f = open(self.trash_location + "/filelist", 'a+')               
@@ -55,7 +53,7 @@ class Trash(object):
             return os.path.getsize(filename)
         total_size = 0
         for r, d, files in os.walk(filename):
-            for f in files:             
+            for f in files:                     
                 total_size += os.path.getsize(r+'/'+f)
         return total_size
         
@@ -72,13 +70,12 @@ class Trash(object):
                 else: return current_directory + '/' + location, filename
 
 
-        def can_be_deleted(filename):           
+        def can_be_deleted(filename): 
             return os.access(filename, os.W_OK) and filename.find('/home') == 0
     
         
         def to_trash_mover(filename):
             self.size_politic_check(filename)
-
             self.key = str(os.stat(filename).st_ino)            
             os.rename(filename, self.trash_location + '/' + self.key)
 
@@ -108,50 +105,51 @@ class Trash(object):
                     print "\"{0}\" successfully moved to trash".format(self.file)   
             elif not self.silent:
                 print self.file,"can't be deleted!"
+        self.time_politic_check()
 
 
     def recover_from_trash(self, filenames):
 
         def get_which_one():
             print "Which one you want to recover?"  
-            for i in range(len(self.list_of_files)):
-                print "#{0} from {1} deleted at {2}".format(i+1, self.list_of_files[i]["location"], time.ctime(float(self.list_of_files[i]["time"])))
+            for i in range(len(self.lists_by_name)):
+                print "#{0} from {1} deleted at {2}".format(i+1, self.lists_by_name[i]["location"], time.ctime(float(self.lists_by_name[i]["time"])))
             return int(raw_input()) - 1 
 
         def conflict_solver(filename):
-            if self.recover_conflict != 'replace':
-                try:
-                    int(filename[filename.rfind('(')+1:filename.rfind(')')])
-                except ValueError:
-                    return filename + '(1)'
+            try:
+                int(filename[filename.rfind('(')+1:filename.rfind(')')])
+            except ValueError:
+                return filename + '(1)'
 
-                num = int(filename[filename.rfind('(')+1:filename.rfind(')')])
-                return filename.replace(str(num), str(num+1))
-            return filename             
+            num = int(filename[filename.rfind('(')+1:filename.rfind(')')])
+            return filename.replace(str(num), str(num+1))
+                     
 
-        def mover_from_trash(i, filename):  #pustie spiski
-            if not os.path.exists(self.list_of_files[i]["location"] + '/' + filename):
-                os.rename(self.trash_location + '/' + self.list_of_files[i]['key'], self.list_of_files[i]["location"] + '/' + filename)             
+        def mover_from_trash(i, filename):  
+            if not os.path.exists(self.lists_by_name[i]["location"] + '/' + filename):
+                os.rename(self.trash_location + '/' + self.lists_by_name[i]['key'], self.lists_by_name[i]["location"] + '/' + filename)             
             else:
-                new_filename = self.list_of_files[i]["location"] + '/' + filename
-                while os.path.exists(new_filename): 
-                    new_filename = conflict_solver(new_filename)
+                new_filename = self.lists_by_name[i]["location"] + '/' + filename
+                if self.recover_conflict != 'replace':
+                    while os.path.exists(new_filename): 
+                        new_filename = conflict_solver(new_filename)
                 
-                os.rename(self.trash_location + '/' + self.list_of_files[i]['key'], new_filename)
+                os.rename(self.trash_location + '/' + self.lists_by_name[i]['key'], new_filename)
             
-            self.list_of_files.pop(i)   
+            self.lists_by_name.pop(i)   
         
 
         self.__load_from_filelist()
 
         for filename in filenames:
-            self.list_of_files = self.dict.get(filename)                
-            if self.list_of_files == None:
+            self.lists_by_name = self.dict.get(filename)                
+            if self.lists_by_name == None:
                 print "There is no such file!!!"
                 continue    
             
             else:               
-                if len(self.list_of_files) == 1:
+                if len(self.lists_by_name) == 1:
                     if not self.dry_run: mover_from_trash(0, filename)  
                     else: print filename, "recovered from the trash"                
                 else:                                       
@@ -160,13 +158,14 @@ class Trash(object):
                         get_which_one()
                         print filename, "recovered from the trash"
 
-                self.dict[filename] = self.list_of_files
-                if len(self.list_of_files) == 0:                    
+                self.dict[filename] = self.lists_by_name
+                if len(self.lists_by_name) == 0:                    
                     self.dict.pop(filename)
                 
                         
                 
         self.__save_to_filelist()
+        self.time_politic_check()
 
 
     def wipe_trash(self):
@@ -174,7 +173,7 @@ class Trash(object):
             shutil.rmtree(self.trash_location)
             os.mkdir(self.trash_location)
         if not self.silent:
-            print "Trash wiped!"
+            print "Trash wiped!"        
 
 
     def show_trash(self):
@@ -186,9 +185,10 @@ class Trash(object):
                 
         elif not self.silent:   
             print "Trash is empty!"
+        self.time_politic_check()
 
 
-    def time_politic_check(self):
+    def time_politic_check(self):        
         if self.storage_time != '':
             self.__load_from_filelist()         
             
@@ -204,7 +204,7 @@ class Trash(object):
 
 
     def size_politic_check(self, filename):
-        if self.trash_location != '':
+        if self.trash_maximum_size!= '':            
             size_of_trash = self.__get_size(self.trash_location)        
             if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
                 self.wipe_trash()
@@ -221,8 +221,9 @@ class Trash(object):
                     self.delete_to_trash([r + '/'+ f])
             if not self.silent:
                 p.show()            
-        
-        
+        self.time_politic_check()
+    
+  
 
 
 class Progress(object):

@@ -60,7 +60,7 @@ class Trash(object):
         
     def delete_to_trash(self, filenames):
 
-        def location_parser(current_directory, filename):
+        def location_parser(current_directory, filename): #====os.path.abspath(path)
             i = filename.rfind('/') 
             if i == -1: 
                 return current_directory + '/', filename

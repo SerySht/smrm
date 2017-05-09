@@ -65,7 +65,7 @@ class Trash(object):
                  
         
         def to_trash_mover(filepath):           
-            trash_filepath = os.path.join(self.trash_location, str(os.stat(filepath).st_ino)) #may be changed on other way      
+            trash_filepath = os.path.join(self.trash_location, str(os.stat(filepath).st_ino))      
             os.rename(filepath, trash_filepath)
             
             self.__load_from_filelist()           
@@ -80,12 +80,11 @@ class Trash(object):
                 if not self.dry_run:
                     to_trash_mover(filepath)
                     
-                       
-                #if not self.silent or self.dry_run:
-                    #print "\"{0}\" successfully moved to trash".format(self.file)                 
+                if not self.silent or self.dry_run:
+                    print "\"{0}\" successfully moved to trash".format(os.path.basename(filepath))                
     
-        #if not self.silent and not self.force:
-            #print self.file,"can't be deleted!"
+            elif not self.silent and not self.force:  #add why
+                print os.path.basename(filepath),"can't be deleted!"
         
 
 

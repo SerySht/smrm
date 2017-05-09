@@ -22,23 +22,22 @@ class Trash(object):
         self.silent = silent 
         self.interactive = i
         self.dry_run = dry_run 
-        self.force = force        
+        self.force = force  
+        self.filelist_location = os.path.join(self.trash_location, 'filelist')      
         
         if not os.path.exists(self.trash_location):      
             os.mkdir(self.trash_location)    
     
     def __load_from_filelist(self): 
-        f = open(self.trash_location + "/filelist", 'a+')               
-        try:
-            self.dict = json.load(f)
-        except ValueError:
-            self.dict = {}  
-        f.close()       
-
+        with open(self.filelist_location, 'a+') as filelist:       
+            try:
+                self.filelist_dict = json.load(filelist)
+            except ValueError:
+                self.filelist_dict = {}  
+      
     def __save_to_filelist(self):
-        f = open(self.trash_location + "/filelist", 'w')  
-        f.write(json.dumps(self.dict))
-        f.close()       
+        with open(self.filelist_location, 'w') as filelist:              
+            filelist.write(json.dumps(self.filelist_dict))           
 
     def __confirmed(self, filename):        
         while True:
@@ -58,31 +57,29 @@ class Trash(object):
                 total_size += os.path.getsize(r+'/'+f)
         return total_size
         
+    
     def delete_to_trash(self, filenames):      
 
         def can_be_deleted(filename):            
-            if os.access(filename, os.W_OK) and filename.find('/home') == 0:
-                return True
-            else: 
-                raise Exception   
+            return os.access(filename, os.W_OK) 
+                 
         
-        def to_trash_mover(filename):
-            #self.size_politic_check(filename)
-            self.key = str(os.stat(filename).st_ino)            
-            os.rename(filename, os.path.join(self.trash_location, self.key))
+        def to_trash_mover(filepath):           
+            trash_filepath = os.path.join(self.trash_location, str(os.stat(filepath).st_ino)) #may be changed on other way      
+            os.rename(filepath, trash_filepath)
+            
+            self.__load_from_filelist()           
+            self.filelist_dict[trash_filepath] = filepath
+            self.__save_to_filelist()               
 
-        def add_to_filelist(filename):
-            self.__load_from_filelist()     
-            self.dict[os.path.join(self.trash_location, self.key)] = filename
-            self.__save_to_filelist()   
 
         for filename in filenames:
-            filename = os.path.abspath(filename) 
+            filepath = os.path.abspath(filename) 
 
-            if can_be_deleted(filename) and ((self.interactive and self.__confirmed(filename)) or not self.interactive):
+            if can_be_deleted(filepath) and ((self.interactive and self.__confirmed(filepath)) or not self.interactive):
                 if not self.dry_run:
-                    to_trash_mover(filename)
-                    add_to_filelist(filename)
+                    to_trash_mover(filepath)
+                    
                        
                 #if not self.silent or self.dry_run:
                     #print "\"{0}\" successfully moved to trash".format(self.file)                 
@@ -95,10 +92,10 @@ class Trash(object):
 
     def recover_from_trash(self, filenames):
 
-        def get_which_one():
+        def get_which_one(recover_list):
             print "Which one you want to recover?"  
-            for i in range(len(self.lists_by_name)):
-                print "#{0} from {1} deleted at {2}".format(i+1, self.lists_by_name[i]["location"], time.ctime(float(self.lists_by_name[i]["time"])))
+            for i in range(len(recover_list)):
+                print recover_list[i][1]
             return int(raw_input()) - 1 
 
         def conflict_solver(filename):
@@ -111,33 +108,37 @@ class Trash(object):
             return filename.replace(str(num), str(num+1))
                      
 
-        def mover_from_trash(i, filename):  
-            if not os.path.exists(self.lists_by_name[i]["location"] + '/' + filename):
-                os.rename(self.trash_location + '/' + self.lists_by_name[i]['key'], self.lists_by_name[i]["location"] + '/' + filename)             
+        def mover_from_trash(trash_filepath, filepath):        
+
+            if not os.path.exists(filepath):
+                os.rename(trash_filepath, filepath)             
             else:
-                new_filename = self.lists_by_name[i]["location"] + '/' + filename
+                new_filepath = filepath
                 if self.recover_conflict != 'replace':
-                    while os.path.exists(new_filename): 
-                        new_filename = conflict_solver(new_filename)
+                    while os.path.exists(new_filepath): 
+                        new_filepath = conflict_solver(new_filepath)
                 
-                os.rename(self.trash_location + '/' + self.lists_by_name[i]['key'], new_filename)
-            
-            self.lists_by_name.pop(i)   
+                os.rename(trash_filepath, new_filepath)            
+            self.filelist_dict.pop(trash_filepath)            
         
 
         self.__load_from_filelist()
 
-        for filename in filenames:
-            #print self.dict.items()
-            name = [locations for locations in self.dict.items() if os.path.basename(locations[1]) == filename ]
-            print name
-         
-            '''
-            self.lists_by_name = self.dict.get(filename)                
-            if self.lists_by_name == None:
+        for filename in filenames:            
+            recover_list = [item for item in self.filelist_dict.items() if os.path.basename(item[1]) == filename ]
+            print recover_list
+
+            if recover_list == []:
                 print "There is no such file!!!"
-                continue    
-            
+                continue
+
+            if len(recover_list) == 1:
+                mover_from_trash(recover_list[0][0], recover_list[0][1])
+            else:
+                i = get_which_one(recover_list)
+                mover_from_trash(recover_list[i][0], recover_list[i][1])
+
+            '''
             else:               
                 if len(self.lists_by_name) == 1:
                     if not self.dry_run: mover_from_trash(0, filename)  
@@ -156,7 +157,7 @@ class Trash(object):
                         
                 
         self.__save_to_filelist()
-        self.time_politic_check()
+        #self.time_politic_check()
 
     
     def wipe_trash(self):
@@ -169,14 +170,10 @@ class Trash(object):
 
     def show_trash(self):
         self.__load_from_filelist()
-        if self.dict != {}:
-            for filename in self.dict:      
-                for f in self.dict[filename]:
-                    print "\"{0}\" was deleted from: {1} at {2}".format(str(filename), f["location"], time.ctime(float(f["time"])))                 
-                
-        elif not self.silent:   
-            print "Trash is empty!"
-        self.time_politic_check()
+        if self.filelist_dict != {}:
+            filelist = [item[1] for item in self.filelist_dict.items()]
+            for f in filelist:
+                print os.path.basename(f), " deleted from ", f
 
 
     def time_politic_check(self):        

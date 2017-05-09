@@ -58,18 +58,7 @@ class Trash(object):
                 total_size += os.path.getsize(r+'/'+f)
         return total_size
         
-    def delete_to_trash(self, filenames):
-
-        def location_parser(current_directory, filename): #====os.path.abspath(path)
-            i = filename.rfind('/') 
-            if i == -1: 
-                return current_directory + '/', filename
-            else:
-                location, filename = filename[:i+1], filename[i+1:]             
-                if len(location)>0 and location[0] == '/':
-                    return location,  filename
-                else: 
-                    return current_directory + '/' + location, filename
+    def delete_to_trash(self, filenames):      
 
         def can_be_deleted(filename):            
             if os.access(filename, os.W_OK) and filename.find('/home') == 0:
@@ -78,39 +67,30 @@ class Trash(object):
                 raise Exception   
         
         def to_trash_mover(filename):
-            self.size_politic_check(filename)
+            #self.size_politic_check(filename)
             self.key = str(os.stat(filename).st_ino)            
-            os.rename(filename, self.trash_location + '/' + self.key)
+            os.rename(filename, os.path.join(self.trash_location, self.key))
 
-        def add_to_filelist():
+        def add_to_filelist(filename):
             self.__load_from_filelist()     
-            if self.dict.get(self.file) == None:
-                self.dict[self.file] = [{'location':self.file_location, 
-                                            'key':self.key, 
-                                            'time':str(time.time()), 
-                                            'size':self.__get_size(self.trash_location+ '/' + self.key)}]
-            else:
-                self.dict[self.file].append({'location':self.file_location, 
-                                            'key':self.key, 'time':str(time.time()),
-                                            'time':str(time.time()),
-                                            'size':self.__get_size(self.trash_location+'/'+ self.key)})
+            self.dict[os.path.join(self.trash_location, self.key)] = filename
             self.__save_to_filelist()   
 
-        try:
-            for filename in filenames:
-                self.file_location, self.file = location_parser(self.current_directory, filename)
+        for filename in filenames:
+            filename = os.path.abspath(filename) 
 
-                if can_be_deleted(self.file_location + self.file) and ((self.interactive and self.__confirmed(self.file)) or not self.interactive):
-                    if not self.dry_run:
-                        to_trash_mover(filename)
-                        add_to_filelist()
-                        
-                    if not self.silent or self.dry_run:
-                        print "\"{0}\" successfully moved to trash".format(self.file)                 
-        except:
-            if not self.silent and not self.force:
-                print self.file,"can't be deleted!"
-        self.time_politic_check()
+            if can_be_deleted(filename) and ((self.interactive and self.__confirmed(filename)) or not self.interactive):
+                if not self.dry_run:
+                    to_trash_mover(filename)
+                    add_to_filelist(filename)
+                       
+                #if not self.silent or self.dry_run:
+                    #print "\"{0}\" successfully moved to trash".format(self.file)                 
+    
+        #if not self.silent and not self.force:
+            #print self.file,"can't be deleted!"
+        
+
 
 
     def recover_from_trash(self, filenames):
@@ -148,6 +128,11 @@ class Trash(object):
         self.__load_from_filelist()
 
         for filename in filenames:
+            #print self.dict.items()
+            name = [locations for locations in self.dict.items() if os.path.basename(locations[1]) == filename ]
+            print name
+         
+            '''
             self.lists_by_name = self.dict.get(filename)                
             if self.lists_by_name == None:
                 print "There is no such file!!!"
@@ -167,13 +152,13 @@ class Trash(object):
                 self.dict[filename] = self.lists_by_name
                 if len(self.lists_by_name) == 0:                    
                     self.dict.pop(filename)
-                
+                '''
                         
                 
         self.__save_to_filelist()
         self.time_politic_check()
 
-
+    
     def wipe_trash(self):
         if not self.dry_run:
             shutil.rmtree(self.trash_location)

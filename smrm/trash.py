@@ -29,6 +29,7 @@ class Trash(object):
             os.mkdir(self.trash_path) 
         self.filelist_location = os.path.join(self.trash_path, 'filelist')        
     
+    
     def load_from_filelist(self): 
         with open(self.filelist_location, 'a+') as filelist:       
             try:
@@ -93,10 +94,9 @@ class Trash(object):
 
         recover_list = [item for item in self.filelist_dict.items() if os.path.basename(item[1]) == target]            
 
-        if recover_list == []:
-            print "There is no such file!!!"           
-
-        if len(recover_list) == 1:
+        if len(recover_list) == 0:
+            print "There is no such file!!!"  
+        elif len(recover_list) == 1:
             self.mover_from_trash(recover_list[0][0], recover_list[0][1])
         else:
             i = self.get_which_one(recover_list)
@@ -124,26 +124,26 @@ class Trash(object):
                                                                     os.path.getctime(filelist[i][0]))   #fix time
 
 
-    # def time_politic_check(self):        
-    #     if self.storage_time != '':
-    #         self.load_from_filelist()         
+    def time_politic_check(self):        
+        if self.storage_time != '':
+            self.load_from_filelist()         
             
-    #         for filename in self.dict:  
-    #             for i in range(len(self.dict[filename])):   
-    #                 lists_by_name = self.dict[filename]
-    #                 if (time.time() - float(lists_by_name[i]['time'])) > self.storage_time:             
-    #                     if not os.path.isdir(self.trash_path + '/' + lists_by_name[i]["key"]):
-    #                         os.remove(self.trash_path + '/' + lists_by_name[i]["key"])
-    #                     else: shutil.rmtree(self.trash_path + '/' + lists_by_name[i]["key"])                    
-    #                     self.dict[filename].pop(i)  
-    #         self.save_to_filelist()
+            for filename in self.dict:  
+                for i in range(len(self.dict[filename])):   
+                    lists_by_name = self.dict[filename]
+                    if (time.time() - float(lists_by_name[i]['time'])) > self.storage_time:             
+                        if not os.path.isdir(self.trash_path + '/' + lists_by_name[i]["key"]):
+                            os.remove(self.trash_path + '/' + lists_by_name[i]["key"])
+                        else: shutil.rmtree(self.trash_path + '/' + lists_by_name[i]["key"])                    
+                        self.dict[filename].pop(i)  
+            self.save_to_filelist()
 
 
-    # def size_politic_check(self, filename):
-    #     if self.trash_maximum_size!= '':            
-    #         size_of_trash = self.__get_size(self.trash_path)        
-    #         if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
-    #             self.wipe_trash()
+    def size_politic_check(self, filename):
+        if self.trash_maximum_size!= '':            
+            size_of_trash = self.__get_size(self.trash_path)        
+            if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
+                self.wipe_trash()
 
 
 
@@ -157,7 +157,7 @@ class Trash(object):
                     self.delete_to_trash(os.path.join(r,f))
             if not self.silent:
                 p.show()            
-        #self.time_politic_check()
+        
     
   
 

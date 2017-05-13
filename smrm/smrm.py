@@ -28,7 +28,7 @@ def main():
    
     arguments = parser.parse_args(sys.argv[1:])  
     current_directory = os.getcwd()
-    conf = trashconfig.load("home/sergey/labs/lab2/smrm/smrm.conf")
+    conf = trashconfig.load("smrm.conf")
     
     if arguments.trash:
         conf['trash_path'] = arguments.trash

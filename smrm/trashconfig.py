@@ -4,7 +4,9 @@ import os
 
 
 def load(directory):
-   
+
+    if not os.path.exists(directory):
+           
     if os.path.splitext(directory)[1] == ".json":
         with open(directory, 'r') as config:
             d.load(config)

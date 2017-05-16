@@ -111,6 +111,7 @@ class Trash(object):
             shutil.rmtree(self.trash_path)
             os.mkdir(self.trash_path)
         if not self.silent:
+            logging.info("Trash wiped")
             print "Trash wiped!"        
 
 

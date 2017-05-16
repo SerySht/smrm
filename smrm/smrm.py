@@ -19,17 +19,19 @@ def main():
     parser.add_argument('-dry', action='store_true', help='dry run')
     parser.add_argument('-f', '--force', action='store_true', help='ignore nonexistent files"')
      
-    
+    parser.add_argument('--config', help='config path')
     parser.add_argument('--trash', help='trash path')
     parser.add_argument('--log', help='log path')
     parser.add_argument('--recover_conflict', help='recover policy')
     parser.add_argument('--storage_time', help='time policy')
     parser.add_argument('--trash_maximum_size', help='trash size policy')
    
-    arguments = parser.parse_args(sys.argv[1:])  
-    current_directory = os.getcwd()
-    conf = trashconfig.load("smrm.conf")
+    arguments = parser.parse_args(sys.argv[1:])
     
+    if arguments.config:
+        conf = trashconfig.load(arguments.config)
+    else:
+        conf = trashconfig.load("/home/sergey/labs/lab2/smrm/smrm.conf")    
     if arguments.trash:
         conf['trash_path'] = arguments.trash
     if arguments.log:
@@ -42,15 +44,15 @@ def main():
         conf['trash_maximum_size'] = arguments.trash_maximum_size
    
    
-
-    logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",filename=conf['log_path'],level=logging.DEBUG)
+    log_path = conf.get('log_path', os.path.join(os.getcwd(), "smrm.log"))
+    logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",filename=log_path, level=logging.DEBUG)
     logging.info(arguments)
 
-    my_trash = trash.Trash(conf['trash_path'], 
-                    current_directory, 
-                    conf['storage_time'], 
-                    conf['trash_maximum_size'], 
-                    conf['recover_conflict'], 
+    my_trash = trash.Trash(conf.get('trash_path', os.path.join(os.getcwd(), "Trash")), 
+                    os.getcwd(), 
+                    conf.get('storage_time', ''), 
+                    conf.get('trash_maximum_size',''), 
+                    conf.get('recover_conflict', 'not_replace'), 
                     arguments.silent, 
                     arguments.interactive, 
                     arguments.dry,
@@ -70,9 +72,7 @@ def main():
         my_trash.show_trash()
     elif arguments.wipe_trash:
         my_trash.wipe_trash()
-    else:
-        print "Error! There are no parameters!"    
-
+    
 if __name__ == "__main__":
     main()
     

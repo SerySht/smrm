@@ -3,31 +3,55 @@ import trash
 import os
 import shutil
 import json
+from utils import confirmed, get_size, conflict_solver, Progress
 
 
 
-class TestTrash(unittest.TestCase):
-    tl = '/home/sergey/labs/lab2/smrm'
 
-    t = trash.Trash(trash_location = tl ,current_directory = tl)
-    t.wipe_trash()
+class TestUtils(unittest.TestCase):
+    
+    def test_conflict_solver(self):
+         self.assertEqual(conflict_solver("name"), "name(1)")
+         self.assertEqual(conflict_solver("name(1)"), "name(2)")
+         self.assertEqual(conflict_solver("name(2)"), "name(3)")
+
+
+# class TestTrash(unittest.TestCase):
+    
+#     t = trash.Trash(trash_path = "/home/sergey/Trash" , current_directory = "/home/sergey")
+
+#     def setUp(self):
+        
+#         self.t.wipe_trash()
+#         if not os.path.exists("/home/sergey/test"):
+#             os.mkdir("/home/sergey/test")
+
+#         self.file = "/home/sergey/test/1"
+#         with open(self.file, "w"):
+#             pass
+
+#     # def tearDown(self):
+#     #     if os.path.exists("test"):
+#     #         shutil.rmtree("test") 
+#     #     self.t.wipe_trash()
+
+
    
-    def test_delete_to_trash(self):
-        if not os.path.exists('bekmek'):      
-            os.mkdir('bekmek') 
+#     def test_delete_to_trash(self):
+        
+#         self.t.delete_to_trash(self.file)
 
-        self.t.delete_to_trash(["bekmek"])
+#         f = open("/home/sergey/Trash/filelist", 'r')  
+#         try:     
+#             d = json.load(f)
+#         except ValueError:
+#             print "Failed to get dict"
+#             return False
+#         self.assertNotEqual(d.get(self.file), None) 
 
-        f = open(self.tl + "/Trash/filelist", 'a+')  
-        try:     
-            d = json.load(f)
-        except ValueError:
-            print "Failed to get dict"
-        self.assertNotEqual(d.get("bekmek"), None) 
-
-    def test_recover_from_trash(self):
-        self.t.recover_from_trash(["bekmek"])
-        self.assertTrue(os.path.exists("/home/sergey/labs/lab2/smrm/bekmek"))
+#     # def test_recover_from_trash(self):
+#     #     self.t.recover_from_trash(["bekmek"])
+#     #     self.assertTrue(os.path.exists("/home/sergey/labs/lab2/smrm/bekmek"))
 
 
 

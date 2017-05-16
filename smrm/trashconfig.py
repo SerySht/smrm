@@ -3,41 +3,37 @@ import json
 import os
 
 
-def load(directory):
+def load(directory = "smrm.conf"):
 
-    if not os.path.exists(directory):
-           
-    if os.path.splitext(directory)[1] == ".json":
-        with open(directory, 'r') as config:
-            d.load(config)
+    if os.path.exists(directory):
+        conf_dict = {}
+
+        if os.path.splitext(directory)[1] == ".json":
+            with open(directory, 'r') as config:
+                conf_dict.load(config)
+        else:
+            conf = ConfigParser.RawConfigParser()            
+            conf.read(directory)
+            
+            if conf.has_option("main", "trash_path"):
+                conf_dict["trash_path"] = conf.get("main", "trash_path")        
+
+            if conf.has_option("main", "log_path"):
+                conf_dict['log_path'] = conf.get("main", "log_path")            
+            
+            if conf.has_option("main", "recover_conflict"):
+                conf_dict['recover_conflict'] = conf.get("main", "recover_conflict")            
+            
+            if conf.has_option("politics", "storage_time"):
+                conf_dict['storage_time'] = conf.get("politics", "storage_time") 
+            
+            if conf.has_option("politics", "trash_maximum_size"):
+                conf_dict['trash_maximum_size'] = conf.get("politics", "trash_maximum_size")
+            
+            return conf_dict
     else:
-        conf = ConfigParser.RawConfigParser()            
-        conf.read(directory)
-        d = {}
-        
-        if conf.has_option("main", "trash_path"):
-            d["trash_path"] = conf.get("main", "trash_path")
-        else: 
-            d["trash_path"] = os.path.join(os.getenv("HOME"), "Trash")
+        print "Config not found, using default parameters"
+        return {}
+   
 
-        if conf.has_option("main", "log_path"):
-            d['log_path'] = conf.get("main", "log_path")
-        else:
-            d['log_path'] = os.path.join(os.getenv("HOME"), 'smrm.log')
-        
-        if conf.has_option("main", "recover_conflict"):
-            d['recover_conflict'] = conf.get("main", "recover_conflict")
-        else: 
-            d['recover_conflict'] = 'not_replace'    
-        
-        if conf.has_option("politics", "storage_time"):
-            d['storage_time'] = conf.get("politics", "storage_time") 
-        else: 
-            d['storage_time'] = ''
-
-        if conf.has_option("politics", "trash_maximum_size"):
-            d['trash_maximum_size'] = conf.get("politics", "trash_maximum_size")
-        else:
-            d['trash_maximum_size'] = ''
-
-    return d          
+               

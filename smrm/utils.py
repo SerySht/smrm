@@ -14,7 +14,7 @@ def get_size(filepath):
     if not os.path.isdir(filepath):
         return os.path.getsize(filepath)
     total_size = 0
-    for r, d, files in os.walk(filename):
+    for r, d, files in os.walk(filepath):
         for f in files:                     
             total_size += os.path.getsize(os.path.join(r, f))
     return total_size

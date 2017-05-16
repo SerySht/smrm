@@ -16,6 +16,31 @@ class TestUtils(unittest.TestCase):
          self.assertEqual(conflict_solver("name(2)"), "name(3)")
 
 
+    def test_get_size(self):
+        test_path = "/home/sergey/test"
+        
+        if not os.path.exists(test_path):
+            os.mkdir(test_path)
+
+        files = ["a", "b", "c"]
+        for filename in files:
+            with open("%s"%os.path.join(test_path, filename), 'wb') as f: 
+                f.seek(11111-1)
+                f.write("\0")
+            
+        self.assertEqual(get_size(test_path), 33333)        
+        shutil.rmtree(test_path)
+
+
+    def test_confirmed(self):
+        original_raw_input = __builtins__.raw_input
+        __builtins__.raw_input = lambda _: 'yes'
+        self.assertEqual(confirmed("kek"), True)
+        __builtins__.raw_input = lambda _: 'no'
+        self.assertEqual(confirmed("kek"), False)
+        __builtins__.raw_input = original_raw_input
+
+
 # class TestTrash(unittest.TestCase):
     
 #     t = trash.Trash(trash_path = "/home/sergey/Trash" , current_directory = "/home/sergey")

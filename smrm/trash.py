@@ -9,11 +9,11 @@ from utils import confirmed, get_size, conflict_solver, Progress
 
 class Trash(object):
 
-    def __init__ (self, trash_path, current_directory = os.getcwd(), storage_time='', trash_maximum_size='', recover_conflict='not_replace', silent=False, i=False, dry_run = False, force = False):
+    def __init__ (self, trash_path, current_directory = os.getcwd(), storage_time='', 
+                    trash_maximum_size='', recover_conflict='not_replace', 
+                    silent=False, i=False, dry_run = False, force = False):
 
-        if storage_time == '':
-            self.storage_time = ''
-        else: 
+        if storage_time != '':             
             self.storage_time = int(storage_time) 
 
         self.trash_path = trash_path
@@ -28,6 +28,8 @@ class Trash(object):
         if not os.path.exists(self.trash_path):      
             os.mkdir(self.trash_path) 
         self.filelist_location = os.path.join(self.trash_path, 'filelist')        
+        
+        logging.info(trash_path)
     
     
     def load_from_filelist(self): 
@@ -54,27 +56,31 @@ class Trash(object):
 
     def delete_to_trash(self, target):
         filepath = os.path.abspath(target)
-
-        if os.access(filepath, os.W_OK) and ((self.interactive and confirmed(filepath)) or not self.interactive):
-            if not self.dry_run:
-                self.mover_to_trash(filepath)
-                
-            #if not self.silent or self.dry_run:
-                #print "\"{0}\" moved to trash".format(os.path.basename(filepath))                
-
-        elif not self.silent and not self.force:  #add why
-            print os.path.basename(filepath),"can't be deleted!"
+        if os.path.exists(filepath) or self.force:
+            if not self.interactive or confirmed(target):
+                if os.access(filepath, os.W_OK): 
+                    if not self.dry_run:
+                        self.mover_to_trash(filepath)
+                    else:
+                        print "\"{0}\" moved to trash".format(os.path.basename(filepath))                
+                else:
+                    logging.error("File not exists or no access to file")
+            else:
+                logging.info("Deleting canceled")
+        else:
+            logging.error("File not exists")
+            
         
 
     def get_which_one(self, recover_list):
         print "Which one you want to recover?"  
         for i in range(len(recover_list)):
-            print "#{0} \"{1}\" deleted from {2} at {3}".format(i+1, os.path.basename(recover_list[i][1]), 
+            print '#{0} "{1}" deleted from {2} at {3}'.format(i+1, os.path.basename(recover_list[i][1]), 
                                                                 os.path.split(recover_list[i][1])[0],
-                                                                    os.path.getctime(recover_list[i][0]))   #fix time
-        return int(raw_input()) - 1    
+                                                                time.ctime(os.path.getctime(recover_list[i][0])))  
+        return int(raw_input()) - 1   
+        
 
-    
     def mover_from_trash(self, trash_filepath, filepath):        
 
         if not os.path.exists(filepath):
@@ -95,24 +101,24 @@ class Trash(object):
         recover_list = [item for item in self.filelist_dict.items() if os.path.basename(item[1]) == target]            
 
         if len(recover_list) == 0:
-            print "There is no such file!!!"  
+            if not self.silent:
+                print "There is no such file!!!" 
+            logging.error ("There is no file in trash") 
+        
         elif len(recover_list) == 1:
             self.mover_from_trash(recover_list[0][0], recover_list[0][1])
         else:
-            i = self.get_which_one(recover_list)
+            i = int(self.get_which_one(recover_list))
             self.mover_from_trash(recover_list[i][0], recover_list[i][1])
                     
         self.save_to_filelist()
        
 
-    
     def wipe_trash(self):
         if not self.dry_run:
             shutil.rmtree(self.trash_path)
             os.mkdir(self.trash_path)
-        if not self.silent:
-            logging.info("Trash wiped")
-            print "Trash wiped!"        
+            logging.info("Trash wiped")               
 
 
     def show_trash(self):
@@ -120,44 +126,58 @@ class Trash(object):
         if self.filelist_dict != {}:
             filelist = [item for item in self.filelist_dict.items()]
             for i in range(len(filelist)):
-                print "\"{0}\" deleted from {1} at {2}".format(os.path.basename(filelist[i][1]), 
+                print '"{0}" deleted from {1} at {2}'.format(os.path.basename(filelist[i][1]), 
                                                                 os.path.split(filelist[i][1])[0],
-                                                                    os.path.getctime(filelist[i][0]))   #fix time
+                                                                time.ctime(os.path.getctime(filelist[i][0])))  
+        else:
+            logging.info("Trash is empty")
 
-
-    def time_politic_check(self):        
-        if self.storage_time != '':
-            self.load_from_filelist()         
+    
+    # def time_politic_check(self):        
+    #     if self.storage_time != '':
+    #         self.load_from_filelist()         
             
-            for filename in self.dict:  
-                for i in range(len(self.dict[filename])):   
-                    lists_by_name = self.dict[filename]
-                    if (time.time() - float(lists_by_name[i]['time'])) > self.storage_time:             
-                        if not os.path.isdir(self.trash_path + '/' + lists_by_name[i]["key"]):
-                            os.remove(self.trash_path + '/' + lists_by_name[i]["key"])
-                        else: shutil.rmtree(self.trash_path + '/' + lists_by_name[i]["key"])                    
-                        self.dict[filename].pop(i)  
-            self.save_to_filelist()
+    #         for filename in self.dict:  
+    #             for i in range(len(self.dict[filename])):   
+    #                 lists_by_name = self.dict[filename]
+    #                 if (time.time() - float(lists_by_name[i]['time'])) > self.storage_time:             
+    #                     if not os.path.isdir(self.trash_path + '/' + lists_by_name[i]["key"]):
+    #                         os.remove(self.trash_path + '/' + lists_by_name[i]["key"])
+    #                     else: shutil.rmtree(self.trash_path + '/' + lists_by_name[i]["key"])                    
+    #                     self.dict[filename].pop(i)  
+    #         self.save_to_filelist()
 
 
-    def size_politic_check(self, filename):
-        if self.trash_maximum_size!= '':            
-            size_of_trash = self.__get_size(self.trash_path)        
-            if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
-                self.wipe_trash()
+    # def size_politic_check(self, filename):
+    #     if self.trash_maximum_size!= '':            
+    #         size_of_trash = self.__get_size(self.trash_path)        
+    #         if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
+    #             self.wipe_trash()
 
 
+
+    def politic_check(self):
+        if self.storage_time != '' and self.trash_maximum_size !='':
+            pass
+        elif self.storage_time != '':
+            if self.trash_maximum_size!= '':            
+             size_of_trash = self.__get_size(self.trash_path)        
+             if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
+                 self.wipe_trash()
+        elif self.trash_maximum_size != '':
+            pass
 
     def delete_to_trash_by_reg(self, regular, directory):
-        p = Progress(os.path.abspath(directory))
+        progress = Progress(os.path.abspath(directory))
 
-        for r, d, files in os.walk(directory):
+        for path, directories, files in os.walk(directory):
             for f in files:             
-                if (re.match(regular, f) and not self.interactive) or (re.match(regular, f) and (self.interactive and self.__confirmed(f))):
-                    p.inc()                 
-                    self.delete_to_trash(os.path.join(r,f))
+                if re.match(regular, f):
+                    if not self.interactive or self.confirmed(f):
+                        progress.inc()                 
+                        self.delete_to_trash(os.path.join(path, f))
             if not self.silent:
-                p.show()            
+                progress.show()     
         
     
   

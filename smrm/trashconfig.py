@@ -32,7 +32,7 @@ def load(directory = "smrm.conf"):
             
             return conf_dict
     else:
-        print "Config not found, using default parameters"
+        logging.error ("Config not found, using default parameters")
         return {}
    
 

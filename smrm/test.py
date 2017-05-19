@@ -41,47 +41,64 @@ class TestUtils(unittest.TestCase):
         __builtins__.raw_input = original_raw_input
 
 
-# class TestTrash(unittest.TestCase):
+
+class TestTrash(unittest.TestCase):
     
-#     t = trash.Trash(trash_path = "/home/sergey/Trash" , current_directory = "/home/sergey")
+    t = trash.Trash(trash_path = "/home/sergey/Trash" , current_directory = "/home/sergey")
 
-#     def setUp(self):
-        
-#         self.t.wipe_trash()
-#         if not os.path.exists("/home/sergey/test"):
-#             os.mkdir("/home/sergey/test")
+    def setUp(self):
+        self.t.wipe_trash()
+        if not os.path.exists("/home/sergey/test"):
+            os.mkdir("/home/sergey/test")
 
-#         self.file = "/home/sergey/test/1"
-#         with open(self.file, "w"):
-#             pass
+        self.file = "/home/sergey/test/1"
+        with open(self.file, "w"):
+            pass
 
-#     # def tearDown(self):
-#     #     if os.path.exists("test"):
-#     #         shutil.rmtree("test") 
-#     #     self.t.wipe_trash()
+    # def tearDown(self):       
+    #     if os.path.exists("/home/sergey/test"):
+    #         shutil.rmtree("/home/sergey/test") 
+    #     self.t.wipe_trash()
 
 
    
-#     def test_delete_to_trash(self):
+    def test_delete_to_trash(self):      
         
-#         self.t.delete_to_trash(self.file)
+        self.t.delete_to_trash(self.file)
 
-#         f = open("/home/sergey/Trash/filelist", 'r')  
-#         try:     
-#             d = json.load(f)
-#         except ValueError:
-#             print "Failed to get dict"
-#             return False
-#         self.assertNotEqual(d.get(self.file), None) 
-
-#     # def test_recover_from_trash(self):
-#     #     self.t.recover_from_trash(["bekmek"])
-#     #     self.assertTrue(os.path.exists("/home/sergey/labs/lab2/smrm/bekmek"))
+        f = open("/home/sergey/Trash/filelist", 'r')  
+        try:     
+            d = json.load(f)
+        except ValueError:
+            print "Failed to get dict"
+            return False
+        self.assertNotEqual(d, {}) 
 
 
+    def test_recover_from_trash_unique_file(self):        
+        self.t.delete_to_trash(self.file)
+        self.t.recover_from_trash("1")
+        self.assertEqual(os.path.exists(self.file), True)
+
+    def test_recover_from_trash_not_unique_file(self):
+        self.file = "/home/sergey/test/kek"
+        self.t.delete_to_trash(self.file)
+        with open(self.file, "w"):
+            pass
+        self.t.delete_to_trash(self.file)
+
+        #original_raw_input = __builtins__.raw_input
+        #__builtins__.raw_input = lambda _: 1
+        self.t.recover_from_trash("kek")        
+       # __builtins__.raw_input = original_raw_input
+        
+        self.t.recover_from_trash("kek")
+        self.assertEqual(os.path.exists(self.file), True)
+        #self.assertEqual(os.path.exists(self.file + "(1)"), True)
 
 
-
+    def test_wipe_trash(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

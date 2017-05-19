@@ -46,7 +46,7 @@ def main():
    
     log_path = conf.get('log_path', os.path.join(os.getcwd(), "smrm.log"))
     logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",filename=log_path, level=logging.DEBUG)
-    logging.info(arguments)
+    logging.debug(arguments)
 
     my_trash = trash.Trash(conf.get('trash_path', os.path.join(os.getcwd(), "Trash")), 
                     os.getcwd(), 

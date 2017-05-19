@@ -18,6 +18,7 @@ class Trash(object):
 
         self.trash_path = trash_path
         self.current_directory = current_directory
+        self.storage_time = storage_time
         self.trash_maximum_size = trash_maximum_size
         self.recover_conflict = recover_conflict
         self.silent = silent 

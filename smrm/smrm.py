@@ -6,7 +6,7 @@ import logging
 import trashconfig
 
 
-def main():     
+def main(): 
     
     parser = argparse.ArgumentParser() 
     parser.add_argument('files', nargs='*', help='delete file(s)')     
@@ -31,7 +31,7 @@ def main():
     if arguments.config:
         conf = trashconfig.load(arguments.config)
     else:
-        conf = trashconfig.load("/home/sergey/labs/lab2/smrm/smrm.conf")    
+        conf = trashconfig.load()    
     if arguments.trash:
         conf['trash_path'] = arguments.trash
     if arguments.log:
@@ -41,19 +41,16 @@ def main():
     if arguments.storage_time:
         conf['storage_time'] = arguments.storage_time
     if arguments.trash_maximum_size:
-        conf['trash_maximum_size'] = arguments.trash_maximum_size
+        conf['trash_maximum_size'] = arguments.trash_maximum_size   
    
-   
-    log_path = conf.get('log_path', os.path.join(os.getcwd(), "smrm.log"))
-    logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",filename=log_path, level=logging.DEBUG)
+    logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",
+                                filename=conf.get('log_path'), level=logging.DEBUG)
     logging.debug(arguments)
 
-    my_trash = trash.Trash(conf.get('trash_path', os.path.join(os.getcwd(), "Trash")), 
-                    os.getcwd(), 
-                    conf.get('storage_time', ''), 
-                    conf.get('trash_maximum_size',''), 
-                    conf.get('recover_conflict', 'not_replace'), 
-                    arguments.silent, 
+    my_trash = trash.Trash(conf['trash_path'], os.getcwd(), conf['storage_time'], 
+                    conf['trash_maximum_size'], 
+                    conf['recover_conflict'], 
+                    conf['silent'], 
                     arguments.interactive, 
                     arguments.dry,
                     arguments.force)
@@ -73,9 +70,6 @@ def main():
     elif arguments.wipe_trash:
         my_trash.wipe_trash()
     
-    my_trash.politic_check()
-
-
 if __name__ == "__main__":
     main()
     

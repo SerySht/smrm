@@ -82,7 +82,10 @@ class TestTrash(unittest.TestCase):
 
     def test_recover_from_trash_not_unique_file(self):
         self.file = "/home/sergey/test/kek"
+        with open(self.file, "w"):
+            pass
         self.t.delete_to_trash(self.file)
+        
         with open(self.file, "w"):
             pass
         self.t.delete_to_trash(self.file)
@@ -98,7 +101,9 @@ class TestTrash(unittest.TestCase):
 
 
     def test_wipe_trash(self):
-        pass
+        self.t.wipe_trash()
+        self.assertEqual(os.path.exists("/home/sergey/Trash/filelist"), False)
+
 
 if __name__ == '__main__':
     unittest.main()

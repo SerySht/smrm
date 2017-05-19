@@ -121,10 +121,12 @@ class Trash(object):
             logging.info("Trash wiped")               
 
 
-    def show_trash(self):
+    def show_trash(self, n):  #add n check
         self.load_from_filelist()
         if self.filelist_dict != {}:
-            filelist = [item for item in self.filelist_dict.items()]
+            if n == -1:
+                n = len(self.filelist_dict.items()) 
+            filelist = [item for item in self.filelist_dict.items()[-n:]]
             for i in range(len(filelist)):
                 print '"{0}" deleted from {1} at {2}'.format(os.path.basename(filelist[i][1]), 
                                                                 os.path.split(filelist[i][1])[0],
@@ -156,17 +158,18 @@ class Trash(object):
 
 
 
-    def politic_check(self):
-        if self.storage_time != '' and self.trash_maximum_size !='':
-            pass
-        elif self.storage_time != '':
-            if self.trash_maximum_size!= '':            
-             size_of_trash = self.__get_size(self.trash_path)        
-             if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
-                 self.wipe_trash()
-        elif self.trash_maximum_size != '':
-            pass
+    # def politic_check(self):
+    #     if self.storage_time != '' and self.trash_maximum_size !='':
+    #         pass
+    #     elif self.storage_time != '':
+    #         if self.trash_maximum_size!= '':            
+    #          size_of_trash = self.__get_size(self.trash_path)        
+    #          if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
+    #              self.wipe_trash()
+    #     elif self.trash_maximum_size != '':
+    #         pass
 
+    
     def delete_to_trash_by_reg(self, regular, directory):
         progress = Progress(os.path.abspath(directory))
 

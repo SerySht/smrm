@@ -77,7 +77,8 @@ class Trash(object):
         for i in range(len(recover_list)):
             print '#{0} "{1}" deleted from {2} at {3}'.format(i+1, os.path.basename(recover_list[i][1]), 
                                                                 os.path.split(recover_list[i][1])[0],
-                                                                time.ctime(os.path.getctime(recover_list[i][0])))  
+                                                               time.ctime(os.path.getctime(recover_list[i][0])))  
+        
         return int(raw_input()) - 1   
         
 
@@ -121,11 +122,9 @@ class Trash(object):
             logging.info("Trash wiped")               
 
 
-    def show_trash(self, n):  #add n check
+    def show_trash(self, n):  
         self.load_from_filelist()
         if self.filelist_dict != {}:
-            if n == -1:
-                n = len(self.filelist_dict.items()) 
             filelist = [item for item in self.filelist_dict.items()[-n:]]
             for i in range(len(filelist)):
                 print '"{0}" deleted from {1} at {2}'.format(os.path.basename(filelist[i][1]), 
@@ -135,42 +134,39 @@ class Trash(object):
             logging.info("Trash is empty")
 
     
-    # def time_politic_check(self):        
-    #     if self.storage_time != '':
-    #         self.load_from_filelist()         
-            
-    #         for filename in self.dict:  
-    #             for i in range(len(self.dict[filename])):   
-    #                 lists_by_name = self.dict[filename]
-    #                 if (time.time() - float(lists_by_name[i]['time'])) > self.storage_time:             
-    #                     if not os.path.isdir(self.trash_path + '/' + lists_by_name[i]["key"]):
-    #                         os.remove(self.trash_path + '/' + lists_by_name[i]["key"])
-    #                     else: shutil.rmtree(self.trash_path + '/' + lists_by_name[i]["key"])                    
-    #                     self.dict[filename].pop(i)  
-    #         self.save_to_filelist()
+    
+    def politic_check(self):
+        
+        def time_p():
+            self.load_from_filelist()
+            for f in self.filelist_dict.keys():
+                if (time.time() - os.path.getctime(f)) > self.storage_time:
+                    if not os.path.isdir(f):
+                        os.remove(f)
+                    else:
+                        shutil.rmtree(f)                        
+                    self.filelist_dict.pop(f)
+                    self.save_to_filelist()
+                else:
+                    print time.time() - os.path.getctime(f) 
+
+        def size_p():
+            if get_size(self.trash_path) > self.trash_maximum_size:
+                self.wipe_trash()
 
 
-    # def size_politic_check(self, filename):
-    #     if self.trash_maximum_size!= '':            
-    #         size_of_trash = self.__get_size(self.trash_path)        
-    #         if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
-    #             self.wipe_trash()
+        if self.storage_time != '' and self.trash_maximum_size != '':
+            time_p()
+            size_p()
+            return
+        if self.storage_time != '':
+            time_p()
+        if self.trash_maximum_size != '':
+            size_p()
 
-
-
-    # def politic_check(self):
-    #     if self.storage_time != '' and self.trash_maximum_size !='':
-    #         pass
-    #     elif self.storage_time != '':
-    #         if self.trash_maximum_size!= '':            
-    #          size_of_trash = self.__get_size(self.trash_path)        
-    #          if size_of_trash + self.__get_size(filename) > int(self.trash_maximum_size):            
-    #              self.wipe_trash()
-    #     elif self.trash_maximum_size != '':
-    #         pass
 
     
-    def delete_to_trash_by_reg(self, regular, directory):
+    def delete_to_trash_by_reg(sielf, regular, directory):
         progress = Progress(os.path.abspath(directory))
 
         for path, directories, files in os.walk(directory):
@@ -183,5 +179,5 @@ class Trash(object):
                 progress.show()     
         
     
-  
+
 

@@ -44,7 +44,7 @@ class TestUtils(unittest.TestCase):
 
 class TestTrash(unittest.TestCase):
     
-    t = trash.Trash(trash_path = "/home/sergey/Trash" , current_directory = "/home/sergey")
+    t = trash.Trash(trash_path = "/home/sergey/Trash" , current_directory = "/home/sergey", silent=True)
 
     def setUp(self):
         self.t.wipe_trash()
@@ -80,6 +80,7 @@ class TestTrash(unittest.TestCase):
         self.t.recover_from_trash("1")
         self.assertEqual(os.path.exists(self.file), True)
 
+    
     def test_recover_from_trash_not_unique_file(self):
         self.file = "/home/sergey/test/kek"
         with open(self.file, "w"):
@@ -93,7 +94,7 @@ class TestTrash(unittest.TestCase):
         #original_raw_input = __builtins__.raw_input
         #__builtins__.raw_input = lambda _: 1
         self.t.recover_from_trash("kek")        
-       # __builtins__.raw_input = original_raw_input
+        #__builtins__.raw_input = original_raw_input
         
         self.t.recover_from_trash("kek")
         self.assertEqual(os.path.exists(self.file), True)
@@ -103,6 +104,10 @@ class TestTrash(unittest.TestCase):
     def test_wipe_trash(self):
         self.t.wipe_trash()
         self.assertEqual(os.path.exists("/home/sergey/Trash/filelist"), False)
+
+
+    def test_delete_to_trash_by_reg(self):
+        pass
 
 
 if __name__ == '__main__':

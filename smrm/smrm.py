@@ -10,7 +10,7 @@ def main():
     
     parser = argparse.ArgumentParser() 
     parser.add_argument('files', nargs='*', help='delete file(s)')     
-    parser.add_argument('-st', '--show_trash', nargs="?", const=-1, help='show trash')
+    parser.add_argument('-st', '--show_trash', nargs="?", const="0", help='show trash')
     parser.add_argument('-wt', '--wipe_trash', action='store_true', help='wipe trash')
     parser.add_argument('-r','--recover', nargs='*', help='recover file(s)')
     parser.add_argument('-re','--regular', nargs=2, type=str, help='delete by regular in directory')
@@ -73,6 +73,9 @@ def main():
     elif arguments.wipe_trash:
         my_trash.wipe_trash()
     
+    my_trash.politic_check()
+
+
 if __name__ == "__main__":
     main()
     

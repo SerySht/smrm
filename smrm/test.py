@@ -6,6 +6,7 @@ import json
 from utils import confirmed, get_size, conflict_solver, Progress
 
 
+test_dir =os.path.join(os.getenv('HOME'), "test")
 
 
 class TestUtils(unittest.TestCase):
@@ -17,19 +18,17 @@ class TestUtils(unittest.TestCase):
 
 
     def test_get_size(self):
-        test_path = "/home/sergey/test"
-        
-        if not os.path.exists(test_path):
-            os.mkdir(test_path)
+        if not os.path.exists(test_dir):
+            os.mkdir(test_dir)
 
         files = ["a", "b", "c"]
         for filename in files:
-            with open("%s"%os.path.join(test_path, filename), 'wb') as f: 
+            with open("%s"%os.path.join(test_dir, filename), 'wb') as f: 
                 f.seek(11111-1)
                 f.write("\0")
             
-        self.assertEqual(get_size(test_path), 33333)        
-        shutil.rmtree(test_path)
+        self.assertEqual(get_size(test_dir), 33333)        
+        shutil.rmtree(test_dir)
 
 
     def test_confirmed(self):
@@ -43,35 +42,29 @@ class TestUtils(unittest.TestCase):
 
 
 class TestTrash(unittest.TestCase):
+    if not os.path.exists(test_dir):
+        os.mkdir(test_dir)
     
-    t = trash.Trash(trash_path = "/home/sergey/Trash" , current_directory = "/home/sergey", silent=True)
+    t = trash.Trash(trash_path = test_dir + "/Trash" , current_directory = test_dir, silent=True)
 
     def setUp(self):
         self.t.wipe_trash()
-        if not os.path.exists("/home/sergey/test"):
-            os.mkdir("/home/sergey/test")
-
-        self.file = "/home/sergey/test/1"
+        self.file = test_dir + "/1" 
         with open(self.file, "w"):
             pass
 
+
     # def tearDown(self):       
-    #     if os.path.exists("/home/sergey/test"):
-    #         shutil.rmtree("/home/sergey/test") 
+    #     if os.path.exists(test_dir):
+    #         shutil.rmtree(test_dir) 
     #     self.t.wipe_trash()
 
-
-   
+    
     def test_delete_to_trash(self):      
         
         self.t.delete_to_trash(self.file)
-
-        f = open("/home/sergey/Trash/filelist", 'r')  
-        try:     
-            d = json.load(f)
-        except ValueError:
-            print "Failed to get dict"
-            return False
+        f = open(test_dir +"/Trash/filelist", 'r')         
+        d = json.load(f)
         self.assertNotEqual(d, {}) 
 
 
@@ -82,7 +75,7 @@ class TestTrash(unittest.TestCase):
 
     
     def test_recover_from_trash_not_unique_file(self):
-        self.file = "/home/sergey/test/kek"
+        self.file = test_dir + "/kek"
         with open(self.file, "w"):
             pass
         self.t.delete_to_trash(self.file)
@@ -103,7 +96,7 @@ class TestTrash(unittest.TestCase):
 
     def test_wipe_trash(self):
         self.t.wipe_trash()
-        self.assertEqual(os.path.exists("/home/sergey/Trash/filelist"), False)
+        self.assertEqual(os.path.exists(test_dir + "/Trash/filelist"), False)
 
 
     def test_delete_to_trash_by_reg(self):

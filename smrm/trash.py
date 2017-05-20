@@ -4,7 +4,7 @@ import shutil
 import time
 import re
 import logging
-from utils import confirmed, get_size, conflict_solver, Progress
+from utils import *
 
 
 class Trash(object):
@@ -42,7 +42,7 @@ class Trash(object):
       
     
     def save_to_filelist(self):
-        with open(self.filelist_location, 'w') as filelist:              
+        with open(self.filelist_location, 'w+') as filelist:              
             filelist.write(json.dumps(self.filelist_dict))            
         
     
@@ -63,13 +63,14 @@ class Trash(object):
                     if not self.dry_run:
                         self.mover_to_trash(filepath)
                     else:
-                        print "\"{0}\" moved to trash".format(os.path.basename(filepath))                
+                        print "\"{0}\" will be moved to trash".format(os.path.basename(filepath))                
                 else:
                     logging.error("File not exists or no access to file")
             else:
                 logging.info("Deleting canceled")
         else:
             logging.error("File not exists")
+        self.politic_check()
             
         
 
@@ -83,18 +84,20 @@ class Trash(object):
         return int(raw_input()) - 1   
         
 
-    def mover_from_trash(self, trash_filepath, filepath):        
-
-        if not os.path.exists(filepath):
-            os.rename(trash_filepath, filepath)             
-        else:
-            new_filepath = filepath
+    def mover_from_trash(self, trash_filepath, filepath):
+        if os.path.exists(filepath):
             if self.recover_conflict != 'replace':
-                while os.path.exists(new_filepath): 
-                    new_filepath = conflict_solver(new_filepath)
-            
-            os.rename(trash_filepath, new_filepath)            
-        self.filelist_dict.pop(trash_filepath)            
+                while os.path.exists(filepath): 
+                    filepath = conflict_solver(filepath)
+                     
+        if not self.dry_run:
+                os.rename(trash_filepath, filepath)
+                self.filelist_dict.pop(trash_filepath) 
+                logging.info("Recovered %s"%filepath)
+        else:
+            print filepath, "will be recovered" 
+
+                    
     
 
     def recover_from_trash(self, target):       
@@ -114,15 +117,18 @@ class Trash(object):
             self.mover_from_trash(recover_list[i][0], recover_list[i][1])
                     
         self.save_to_filelist()
-       
+        self.politic_check()
 
+    
     def wipe_trash(self):
         if not self.dry_run:
             shutil.rmtree(self.trash_path)
             os.mkdir(self.trash_path)
             logging.info("Trash wiped")               
+        else:
+            print "Trash will be wiped"
 
-
+    
     def show_trash(self, n):  
         self.load_from_filelist()
         if self.filelist_dict != {}:
@@ -133,7 +139,7 @@ class Trash(object):
                                                                 time.ctime(os.path.getctime(filelist[i][0])))  
         else:
             logging.info("Trash is empty")
-
+        self.politic_check()
     
     
     def politic_check(self):
@@ -141,7 +147,7 @@ class Trash(object):
         def time_p():
             self.load_from_filelist()
             for f in self.filelist_dict.keys():
-                if (time.time() - os.path.getctime(f)) > self.storage_time:
+                if (time.time() - os.path.getctime(f)) > self.storage_time*3600:
                     if not os.path.isdir(f):
                         os.remove(f)
                     else:
@@ -178,7 +184,7 @@ class Trash(object):
                         self.delete_to_trash(os.path.join(path, f))
             if not self.silent:
                 progress.show()     
-        
+        self.politic_check()
     
 
 

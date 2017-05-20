@@ -70,6 +70,7 @@ def main():
     elif arguments.wipe_trash:
         my_trash.wipe_trash()
     
+
 if __name__ == "__main__":
     main()
     

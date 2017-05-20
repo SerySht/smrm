@@ -3,7 +3,7 @@ import json
 import os
 
 trash_path = os.path.join(os.getenv('HOME'), "Trash")
-log_path =  os.path.join(os.getcwd(),'smrm.log')
+log_path =  os.path.join(trash_path,'smrm.log')
 default_config_path = os.path.join(os.getenv('HOME'), ".smrmconfig.json")
 
 

@@ -3,12 +3,10 @@ import trash
 import os
 import shutil
 import json
-import tempfile
 from utils import confirmed, get_size, conflict_solver, Progress
 
 
-test_dir = tempfile.mkdtemp()
-print test_dir
+test_dir =os.path.join(os.getenv('HOME'), "test")
 
 
 class TestUtils(unittest.TestCase):
@@ -60,7 +58,7 @@ class TestTrash(unittest.TestCase):
     #     if os.path.exists(test_dir):
     #         shutil.rmtree(test_dir) 
     #     self.t.wipe_trash()
-    
+
     
     def test_delete_to_trash(self):      
         

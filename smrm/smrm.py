@@ -44,16 +44,18 @@ def main():
         conf['trash_maximum_size'] = arguments.trash_maximum_size   
    
     logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",
-                                filename=conf.get('log_path'), level=logging.DEBUG)
+                                filename=conf['log_path'], level=logging.DEBUG)
     logging.debug(arguments)
 
-    my_trash = trash.Trash(conf['trash_path'], os.getcwd(), conf['storage_time'], 
-                    conf['trash_maximum_size'], 
-                    conf['recover_conflict'], 
-                    conf['silent'], 
-                    arguments.interactive, 
-                    arguments.dry,
-                    arguments.force)
+    my_trash = trash.Trash(conf['trash_path'], 
+                            os.getcwd(), 
+                            conf['storage_time'], 
+                            conf['trash_maximum_size'], 
+                            conf['recover_conflict'], 
+                            conf['silent'], 
+                            arguments.interactive, 
+                            arguments.dry,
+                            arguments.force)
 
     if arguments.files:
         for f in arguments.files:
@@ -65,12 +67,16 @@ def main():
 
     elif arguments.regular:
         my_trash.delete_to_trash_by_reg('\\' + arguments.regular[0], arguments.regular[1])    
+    
     elif arguments.show_trash:      
         my_trash.show_trash(int(arguments.show_trash))
+    
     elif arguments.wipe_trash:
         my_trash.wipe_trash()
-    
+    my_trash.policy_check()
+
 
 if __name__ == "__main__":
     main()
+      
     

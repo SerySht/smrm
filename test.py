@@ -1,10 +1,10 @@
 import unittest
-import trash
+import smrm.trash as trash
 import os
 import shutil
 import json
 import tempfile
-from utils import confirmed, get_size, conflict_solver, Progress
+from smrm.utils import confirmed, get_size, conflict_solver, Progress
 
 
 test_dir = tempfile.mkdtemp()
@@ -51,29 +51,25 @@ class TestTrash(unittest.TestCase):
 
     def setUp(self):
         self.t.wipe_trash()
-        self.file = test_dir + "/1" 
-        with open(self.file, "w"):
-            pass
+        self.file1 = test_dir + "/1"
+        self.file2 = test_dir + "/2"
+        self.file3 = test_dir + "/kek"   
+        with open(self.file1, "w"):pass
+        with open(self.file2, "w"):pass
+        with open(self.file3, "w"):pass
 
 
-    # def tearDown(self):       
-    #     if os.path.exists(test_dir):
-    #         shutil.rmtree(test_dir) 
-    #     self.t.wipe_trash()
-    
-    
-    def test_delete_to_trash(self):      
-        
-        self.t.delete_to_trash(self.file)
+    def test_delete_to_trash(self):        
+        self.t.delete_to_trash(self.file1)
         f = open(test_dir +"/Trash/filelist", 'r')         
         d = json.load(f)
         self.assertNotEqual(d, {}) 
 
 
     def test_recover_from_trash_unique_file(self):        
-        self.t.delete_to_trash(self.file)
+        self.t.delete_to_trash(self.file1)
         self.t.recover_from_trash("1")
-        self.assertEqual(os.path.exists(self.file), True)
+        self.assertEqual(os.path.exists(self.file1), True)
 
     
     def test_recover_from_trash_not_unique_file(self):

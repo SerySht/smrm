@@ -8,7 +8,7 @@ from smrm.utils import confirmed, get_size, conflict_solver, Progress
 
 
 test_dir = tempfile.mkdtemp()
-print test_dir
+#print test_dir
 
 
 class TestUtils(unittest.TestCase):
@@ -73,23 +73,18 @@ class TestTrash(unittest.TestCase):
 
     
     def test_recover_from_trash_not_unique_file(self):
-        self.file = test_dir + "/kek"
-        with open(self.file, "w"):
-            pass
-        self.t.delete_to_trash(self.file)
-        
-        with open(self.file, "w"):
-            pass
-        self.t.delete_to_trash(self.file)
+        self.t.delete_to_trash(self.file1)
+        with open(self.file1, "w"):pass
+        self.t.delete_to_trash(self.file1)
 
-        #original_raw_input = __builtins__.raw_input
-        #__builtins__.raw_input = lambda _: 1
-        self.t.recover_from_trash("kek")        
-        #__builtins__.raw_input = original_raw_input
+        original_raw_input = __builtins__.raw_input
+        __builtins__.raw_input = lambda : 1
+        self.t.recover_from_trash("1")        
+        __builtins__.raw_input = original_raw_input
         
-        self.t.recover_from_trash("kek")
-        self.assertEqual(os.path.exists(self.file), True)
-        #self.assertEqual(os.path.exists(self.file + "(1)"), True)
+        self.t.recover_from_trash("1")
+        self.assertEqual(os.path.exists(self.file1), True)
+        self.assertEqual(os.path.exists(self.file1 + "(1)"), True)
 
 
     def test_wipe_trash(self):
@@ -98,7 +93,9 @@ class TestTrash(unittest.TestCase):
 
 
     def test_delete_to_trash_by_reg(self):
-        pass
+        self.t.delete_to_trash_by_reg('\d+', test_dir)
+        self.assertEqual(os.path.exists(self.file1), False)
+        self.assertEqual(os.path.exists(self.file2), False)
 
 
 if __name__ == '__main__':

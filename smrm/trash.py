@@ -174,13 +174,13 @@ class Trash(object):
 
 
     
-    def delete_to_trash_by_reg(sielf, regular, directory):
+    def delete_to_trash_by_reg(self, regular, directory):
         progress = Progress(os.path.abspath(directory))
 
         for path, directories, files in os.walk(directory):
             for f in files:             
                 if re.match(regular, f):
-                    if not self.interactive or self.confirmed(f):
+                    if not self.interactive or confirmed(f):
                         progress.inc()                 
                         self.delete_to_trash(os.path.join(path, f))
             if not self.silent:

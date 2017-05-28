@@ -7,8 +7,19 @@ import tempfile
 from smrm.utils import confirmed, get_size, conflict_solver, Progress
 
 
-test_dir = tempfile.mkdtemp()
+test_dir = tempfile.mkdtemp()  #test dir remove to classs
 #print test_dir
+
+ 
+# delete test dir 
+# delete absolute import 
+# delete work with console in Trash
+# may be make separate logging
+# ADD EXIT CODES!!!!!!!!
+# deleting trash into trash???
+#make predupre}\{ (notice)(exit code) about using default config
+
+
 
 
 class TestUtils(unittest.TestCase):

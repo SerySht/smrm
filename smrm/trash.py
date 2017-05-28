@@ -14,6 +14,7 @@ class Trash(object):
                     trash_maximum_size=False, recover_conflict='not_replace', 
                     silent=False, interactive=False, dry_run = False, force = False):
 
+        
         if storage_time != '':             
             self.storage_time = int(storage_time) 
 
@@ -81,7 +82,10 @@ class Trash(object):
                                                                 os.path.split(recover_list[i][1])[0],
                                                                 time.ctime(os.path.getctime(recover_list[i][0])))  
         
-        return int(raw_input()) - 1   #add check
+        i = int(raw_input()) - 1 
+        if i > len(recover_list) - 1:
+            get_which_one(recover_list)
+        return i
         
 
     def mover_from_trash(self, trash_filepath, filepath):

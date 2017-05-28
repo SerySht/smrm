@@ -1,7 +1,6 @@
 import os
 
 
-
 def confirmed(filename):        
     answer = raw_input("-Are you sure you want to move \"{0}\" to the Trash?\n".format(filename))
     if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:

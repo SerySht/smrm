@@ -1,6 +1,7 @@
 import os
 import sys
 import trash
+import trash
 import argparse
 import logging
 import trashconfig

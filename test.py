@@ -7,22 +7,25 @@ import tempfile
 from smrm.utils import confirmed, get_size, conflict_solver, Progress
 
 
-test_dir = tempfile.mkdtemp()  #test dir remove to classs
-#print test_dir
-
- 
-# delete test dir 
-# delete absolute import 
 # delete work with console in Trash
 # may be make separate logging
 # ADD EXIT CODES!!!!!!!!
 # deleting trash into trash???
 #make predupre}\{ (notice)(exit code) about using default config
-
-
+#add more tests (for directories)
+#may be russian files?
+#delete absolute import 
 
 
 class TestUtils(unittest.TestCase):
+
+    def setUp(self):
+        self.test_dir = tempfile.mkdtemp() 
+
+
+    def tearDown(self):
+        shutil.rmtree(self.test_dir)
+
     
     def test_conflict_solver(self):
          self.assertEqual(conflict_solver("name"), "name(1)")
@@ -31,17 +34,14 @@ class TestUtils(unittest.TestCase):
 
 
     def test_get_size(self):
-        if not os.path.exists(test_dir):
-            os.mkdir(test_dir)
-
         files = ["a", "b", "c"]
         for filename in files:
-            with open("%s"%os.path.join(test_dir, filename), 'wb') as f: 
+            with open("%s"%os.path.join(self.test_dir, filename), 'wb') as f: 
                 f.seek(11111-1)
                 f.write("\0")
             
-        self.assertEqual(get_size(test_dir), 33333)        
-        shutil.rmtree(test_dir)
+        self.assertEqual(get_size(self.test_dir), 33333)  
+        
 
 
     def test_confirmed(self):
@@ -55,24 +55,25 @@ class TestUtils(unittest.TestCase):
 
 
 class TestTrash(unittest.TestCase):
-    if not os.path.exists(test_dir):
-        os.mkdir(test_dir)
     
-    t = trash.Trash(trash_path = test_dir + "/Trash" , current_directory = test_dir, silent=True)
-
+   
     def setUp(self):
+        self.test_dir = tempfile.mkdtemp() 
+        self.t = trash.Trash(trash_path = self.test_dir + "/Trash" , current_directory = self.test_dir, silent=True)
         self.t.wipe_trash()
-        self.file1 = test_dir + "/1"
-        self.file2 = test_dir + "/2"
-        self.file3 = test_dir + "/kek"   
+        self.file1 = self.test_dir + "/1"
+        self.file2 = self.test_dir + "/2"
+        self.file3 = self.test_dir + "/kek"   
         with open(self.file1, "w"):pass
         with open(self.file2, "w"):pass
         with open(self.file3, "w"):pass
 
+    def tearDown(self):
+        shutil.rmtree(self.test_dir)
 
     def test_delete_to_trash(self):        
         self.t.delete_to_trash(self.file1)
-        f = open(test_dir +"/Trash/filelist", 'r')         
+        f = open(self.test_dir +"/Trash/filelist", 'r')         
         d = json.load(f)
         self.assertNotEqual(d, {}) 
 
@@ -100,11 +101,11 @@ class TestTrash(unittest.TestCase):
 
     def test_wipe_trash(self):
         self.t.wipe_trash()
-        self.assertEqual(os.path.exists(test_dir + "/Trash/filelist"), False)
+        self.assertEqual(os.path.exists(self.test_dir + "/Trash/filelist"), False)
 
 
     def test_delete_to_trash_by_reg(self):
-        self.t.delete_to_trash_by_reg('\d+', test_dir)
+        self.t.delete_to_trash_by_reg('\d+', self.test_dir)
         self.assertEqual(os.path.exists(self.file1), False)
         self.assertEqual(os.path.exists(self.file2), False)
 

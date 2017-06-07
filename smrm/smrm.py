@@ -1,14 +1,13 @@
 import os
 import sys
 import trash
-import trash
 import argparse
 import logging
 import trashconfig
+import utils
 
 
-def main(): 
-    
+def main():
     parser = argparse.ArgumentParser() 
     parser.add_argument('files', nargs='*', help='delete file(s)')     
     parser.add_argument('-st', '--show_trash', nargs="?", const="0", help='show trash')
@@ -70,7 +69,7 @@ def main():
         my_trash.delete_to_trash_by_reg('\\' + arguments.regular[0], arguments.regular[1])    
     
     elif arguments.show_trash:      
-        my_trash.show_trash(int(arguments.show_trash))
+        utils.output(my_trash.show_trash(int(arguments.show_trash)))
     
     elif arguments.wipe_trash:
         my_trash.wipe_trash()

@@ -25,8 +25,12 @@ def conflict_solver(filepath):
         num = int(filepath[filepath.rfind('(')+1:filepath.rfind(')')])
     except ValueError:
         return filepath + '(1)'   
-    return filepath.replace(str(num), str(num+1))   
+    return filepath.replace(str(num), str(num+1))
 
+
+def output(lis):
+    for l in lis:
+        print l
 
 
 class Progress(object):

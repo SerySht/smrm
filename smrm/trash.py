@@ -5,7 +5,7 @@ import shutil
 import time
 import re
 import logging
-from utils import confirmed, get_size, conflict_solver, Progress
+from utils import confirmed, get_size, conflict_solver, output, Progress
 
 
 class Trash(object):
@@ -76,12 +76,11 @@ class Trash(object):
         
 
     def get_which_one(self, recover_list):
-        print "Which one you want to recover?"  
+        print "Which one you want to recover?"        
         for i in range(len(recover_list)):
-            print '#{0} "{1}" deleted from {2} at {3}'.format(i+1, os.path.basename(recover_list[i][1]), 
+            print ('#{0} "{1}" deleted from {2} at {3}'.format(i+1, os.path.basename(recover_list[i][1]), 
                                                                 os.path.split(recover_list[i][1])[0],
-                                                                time.ctime(os.path.getctime(recover_list[i][0])))  
-        
+                                                                time.ctime(os.path.getctime(recover_list[i][0])))) 
         i = int(raw_input()) - 1 
         if i > len(recover_list) - 1:
             get_which_one(recover_list)
@@ -134,12 +133,14 @@ class Trash(object):
     
     def show_trash(self, n):  
         self.load_from_filelist()
+        show_list = []
         if self.filelist_dict != {}:
             filelist = [item for item in self.filelist_dict.items()[-n:]]
             for i in range(len(filelist)):
-                print '"{0}" deleted from {1} at {2}'.format(os.path.basename(filelist[i][1]), 
+                show_list.append('"{0}" deleted from {1} at {2}'.format(os.path.basename(filelist[i][1]), 
                                                                 os.path.split(filelist[i][1])[0],
-                                                                time.ctime(os.path.getctime(filelist[i][0])))  
+                                                                time.ctime(os.path.getctime(filelist[i][0])))) 
+            return show_list
         else:
             logging.info("Trash is empty")
         

@@ -87,13 +87,8 @@ class TestTrash(unittest.TestCase):
     def test_recover_from_trash_not_unique_file(self):
         self.t.delete_to_trash(self.file1)
         with open(self.file1, "w"):pass
-        self.t.delete_to_trash(self.file1)
-
-        original_raw_input = __builtins__.raw_input
-        __builtins__.raw_input = lambda : 1
+        self.t.delete_to_trash(self.file1)        
         self.t.recover_from_trash("1")        
-        __builtins__.raw_input = original_raw_input
-        
         self.t.recover_from_trash("1")
         self.assertEqual(os.path.exists(self.file1), True)
         self.assertEqual(os.path.exists(self.file1 + "(1)"), True)

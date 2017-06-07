@@ -4,7 +4,7 @@ import trash
 import argparse
 import logging
 import trashconfig
-import utils
+from utils import output
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
     parser.add_argument('-st', '--show_trash', nargs="?", const="0", help='show trash')
     parser.add_argument('-wt', '--wipe_trash', action='store_true', help='wipe trash')
     parser.add_argument('-r','--recover', nargs='*', help='recover file(s)')
-    parser.add_argument('-re','--regular', nargs=2, type=str, help='delete by regular in directory')
+    parser.add_argument('-re','--regex', nargs=2, type=str, help='delete by regex in directory')
     parser.add_argument('--silent', action='store_true', help='silent mode')   
     parser.add_argument('-i','--interactive', action='store_true', help='interactive mode')
     parser.add_argument('-dry', action='store_true', help='dry run')
@@ -58,21 +58,19 @@ def main():
                             arguments.force)
 
     if arguments.files:
-        for f in arguments.files:
-            my_trash.delete_to_trash(f) 
+        output(*my_trash.delete_to_trash(arguments.files))
     
     elif arguments.recover:
-        for f in arguments.recover:
-            my_trash.recover_from_trash(f)   
+        output(*my_trash.recover_from_trash(arguments.recover))  
 
-    elif arguments.regular:
-        my_trash.delete_to_trash_by_reg('\\' + arguments.regular[0], arguments.regular[1])    
+    elif arguments.regex:
+        output(my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1]))  
     
     elif arguments.show_trash:      
-        utils.output(my_trash.show_trash(int(arguments.show_trash)))
+        output(my_trash.show_trash(int(arguments.show_trash)))
     
     elif arguments.wipe_trash:
-        my_trash.wipe_trash()
+        output(my_trash.wipe_trash())
     my_trash.policy_check()
 
 

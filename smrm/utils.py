@@ -29,11 +29,26 @@ def conflict_solver(filepath):
     return filepath.replace('('+str(num)+')', '('+str(num+1)+')')
 
 
-def output(output_list, exit_code=0):
-    if output_list:
-       for line in output_list:
-            print line
+def output(output_data):
+    exit_code = ExitCodes.GOOD
+    for dat in output_data:           
+        if dat[1] != ExitCodes.GOOD:
+            exit_code = dat[1]
+            print "Error smrm: ", dat[0] 
+        else:
+            print dat[0]
     sys.exit(exit_code)
+
+
+
+class ExitCodes(object):
+    GOOD = 0
+
+    CONFLICT = 1
+
+    UNKNOWN = 2
+
+    NO_FILE = 3
 
 
 class Progress(object):
@@ -49,6 +64,9 @@ class Progress(object):
         if self.proc != int((float(self.num) / self.all_) * 100):
             self.proc = int((float(self.num) / self.all_) * 100)
             print str(self.proc) + '%'
+
+    def end(self):
+        print "100%"        
 
 
 #os.path.dirname(__file__)

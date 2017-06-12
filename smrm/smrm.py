@@ -56,21 +56,28 @@ def main():
                             arguments.interactive, 
                             arguments.dry,
                             arguments.force)
-
-    if arguments.files:
-        output(*my_trash.delete_to_trash(arguments.files))
     
+    output_data = []
+    if arguments.files:        
+        for f in arguments.files:
+            output_data.append(my_trash.delete_to_trash(f))
+        output(output_data)
+
     elif arguments.recover:
-        output(*my_trash.recover_from_trash(arguments.recover))  
+        for f in arguments.recover:
+            output_data.append(my_trash.recover_from_trash(f))
+        output(output_data)
 
     elif arguments.regex:
-        output(my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1]))  
+        output_data.append(my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1]))  
     
     elif arguments.show_trash:      
         output(my_trash.show_trash(int(arguments.show_trash)))
     
     elif arguments.wipe_trash:
         output(my_trash.wipe_trash())
+    else:
+        print "No arguments"
     my_trash.policy_check()
 
 

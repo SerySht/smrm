@@ -17,7 +17,9 @@ conf_dict = {"trash_path": trash_path,
 
 def load(config_path=default_config_path):   
 
-    if not os.path.exists(config_path):      
+    if not os.path.exists(config_path): 
+        print "Wrong config path: using default config"     
+        
         if os.path.exists(default_config_path):
             with open(default_config_path, 'r') as config:
                 conf_dict.update(json.load(config))

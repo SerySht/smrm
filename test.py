@@ -10,9 +10,9 @@ from smrm.utils import confirmed, get_size, conflict_solver, Progress
 # delete work with console in Trash
 # may be make separate logging
 # ADD EXIT CODES!!!!!!!!
-# deleting trash into trash???
-#make predupre}\{ (notice)(exit code) about using default config
-#add more tests (for directories)
+# deleting trash into trash???   #net
+#make predupre}\{ (notice)(exit code) about using default config 
+#add more tests (for directories)     
 #may be russian files?
 #delete absolute import 
 

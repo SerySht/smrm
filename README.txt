@@ -18,4 +18,3 @@ smrm
 --recover_conflict      = recover policy
 --storage_time'         = time policy
 --trash_maximum_size    = trash size policy
-   

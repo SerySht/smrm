@@ -29,19 +29,21 @@ def conflict_solver(filepath):
     return filepath.replace('('+str(num)+')', '('+str(num+1)+')')
 
 
-def output(output_data):
+def output(output_data, silent):    
     exit_code = ExitCodes.GOOD
-    for dat in output_data:           
+    for dat in output_data:       
         if dat[1] != ExitCodes.GOOD:
             exit_code = dat[1]
-            print "Error smrm: ", dat[0] 
+            if not silent:
+                print "Error smrm: ", dat[0] 
         else:
-            print dat[0]
+            if not silent and dat[0] != '':
+                print dat[0]
     sys.exit(exit_code)
 
 
+class ExitCodes(object):  
 
-class ExitCodes(object):
     GOOD = 0
 
     CONFLICT = 1
@@ -52,6 +54,7 @@ class ExitCodes(object):
 
 
 class Progress(object):
+    
     def __init__ (self, filename):
         self.num = 0
         self.all_ = sum([len(files) + len(d) for r, d, files in os.walk(filename)])

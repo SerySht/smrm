@@ -12,21 +12,19 @@ class Trash(object):
 
     def __init__ (self, trash_path, current_directory = os.getcwd(), storage_time=False, 
                     trash_maximum_size=False, recover_conflict='not_replace', 
-                    silent=False, interactive=False, dry_run = False, force = False):
+                    interactive=False, dry_run = False, force = False):
 
         self.trash_path = trash_path
         self.current_directory = current_directory
         self.storage_time = storage_time
         self.trash_maximum_size = trash_maximum_size
-        self.recover_conflict = recover_conflict
-        self.silent = silent 
+        self.recover_conflict = recover_conflict        
         self.interactive = interactive
         self.dry_run = dry_run 
         self.force = force  
         self.filelist_path = os.path.join(self.trash_path, 'filelist') 
         if not os.path.exists(self.trash_path):      
-            os.mkdir(self.trash_path)
-            with open(self.f, "w"):pass
+            os.mkdir(self.trash_path)          
         
         logging.info("Trash path {}".format(trash_path))     
     
@@ -70,6 +68,8 @@ class Trash(object):
                         exit_code = self.mover_to_trash(filepath) 
                         if exit_code == ExitCodes.GOOD:
                             info_message = target + ' moved to trash'
+                        else:
+                            info_message = "Unknown error"
                     else:
                         info_message = target  + ' wil be moved to trash'                            
                 else:                  
@@ -83,13 +83,11 @@ class Trash(object):
 
         logging.info(info_message)    
         return info_message, exit_code
-        
 
-
-    
 
     def get_last_deleted(self, recover_list):       
         oldest_file = recover_list[0] 
+        j = 0
         for i in range(len(recover_list)):                 
             if os.path.getctime(recover_list[i][0]) > os.path.getctime(oldest_file[0]):
                 oldest_file = recover_list[i]
@@ -204,7 +202,7 @@ class Trash(object):
                         oldest_file = f          
 
                 self.filelist_dict.pop(oldest_file)  
-                logging.ifo("Policy: deleted " + oldest_file)         
+                logging.info("Policy: deleted " + oldest_file)         
                 if not os.path.isdir(oldest_file):
                     os.remove(oldest_file)                        
                 else:
@@ -214,7 +212,7 @@ class Trash(object):
 
 
     
-    def delete_to_trash_by_reg(self, regular, directory):
+    def delete_to_trash_by_reg(self, regular, directory, silent=False):
         progress = Progress(os.path.abspath(directory))
         info_message = ''
         exit_code = ExitCodes.GOOD
@@ -225,11 +223,8 @@ class Trash(object):
                     if not self.interactive or confirmed(f):
                         progress.inc()                 
                         info_message, exit_code = self.delete_to_trash(os.path.join(path, f))
-            if not self.silent:
-                progress.show()  
-        progress.end()   
+            if not silent:
+                progress.show()
+        if not silent:  
+            progress.end()   
         return "", exit_code
- 
-    
-
-

@@ -81,7 +81,10 @@ class Trash(object):
             info_message = target + " not exists"
             exit_code = ExitCodes.NO_FILE
 
-        logging.info(info_message)    
+        if exit_code != ExitCodes.GOOD:
+            logging.error(info_message)
+        else:
+            logging.info(info_message)    
         return info_message, exit_code
 
 
@@ -106,20 +109,19 @@ class Trash(object):
                     filepath = conflict_solver(filepath)                   
         
         if not self.dry_run:
-                try:
-                    os.rename(trash_filepath, filepath)
-                except OSError:
-                    info_message = 'Something go wrong...'
-                    exit_code = ExitCodes.UNKNOWN
-                else:                                                  
-                    self.filelist_dict.pop(trash_filepath)
-                    info_message = "Recovered " + os.path.basename(filepath)
-                    logging.info(info_message)
-                                
+            try:
+                os.rename(trash_filepath, filepath)
+            except OSError:
+                info_message = 'Something go wrong...'
+                exit_code = ExitCodes.UNKNOWN
+            else:                                                  
+                self.filelist_dict.pop(trash_filepath)
+                info_message = "Recovered " + os.path.basename(filepath)
+                logging.info(info_message)                                
         else:
             info_message = os.path.basename(filepath) + " will be recovered" 
         
-        self.__save_to_filelist()  
+        self.__save_to_filelist()         
         return info_message, exit_code          
     
 
@@ -140,7 +142,7 @@ class Trash(object):
             info_message, exit_code  =  self.mover_from_trash(recover_list[0][0], recover_list[0][1])           
         else:
             i = int(self.get_last_deleted(recover_list))
-            info_mesage, exit_code = self.mover_from_trash(recover_list[i][0], recover_list[i][1])  
+            info_message, exit_code = self.mover_from_trash(recover_list[i][0], recover_list[i][1])  
 
         return info_message, exit_code 
 
@@ -150,9 +152,9 @@ class Trash(object):
             shutil.rmtree(self.trash_path)
             os.mkdir(self.trash_path)
             logging.info("Trash wiped") 
-            return [("Trash wiped", 0)]          
+            return "Trash wiped", 0         
         else:
-            return [("Trash will be wiped", 0)]
+            return "Trash will be wiped", 0
 
     
     def show_trash(self, n=0):  
@@ -167,9 +169,9 @@ class Trash(object):
                                                                 time.ctime(os.path.getctime(filelist[i][0]))), 0)) 
         
         else:
-            return [("Trash is empty", 0)]
+            return "Trash is empty", 0
             logging.info("Trash is empty")
-        return return_list
+        return return_list, 0
 
     
     def get_trash_list(self):

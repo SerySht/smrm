@@ -35,7 +35,10 @@ def output(output_data, silent):
         if dat[1] != ExitCodes.GOOD:
             exit_code = dat[1]
             if not silent:
-                print "Error smrm: ", dat[0] 
+                if exit_code == ExitCodes.CONFLICT:
+                    print "Name confilct solved: ", dat[0]
+                else:
+                    print "Error smrm: ", dat[0] 
         else:
             if not silent and dat[0] != '':
                 print dat[0]

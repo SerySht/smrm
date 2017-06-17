@@ -61,25 +61,23 @@ def main():
     output_data = []
     if arguments.files:        
         for f in arguments.files:
-            output_data.append(my_trash.delete_to_trash(f))
-        output(output_data, conf['silent'])
+            output_data.append(my_trash.delete_to_trash(f))        
 
     elif arguments.recover:
         for f in arguments.recover:
-            output_data.append(my_trash.recover_from_trash(f))
-        output(output_data, conf['silent'])
+            output_data.append(my_trash.recover_from_trash(f))        
 
     elif arguments.regex:
-        output_data.append(my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))  
-        output(output_data, conf['silent'])
+        output_data.append(my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))        
 
     elif arguments.show_trash:      
-        output(my_trash.show_trash(int(arguments.show_trash)), conf['silent'])
+        output_data.append(my_trash.show_trash(int(arguments.show_trash)))
     
     elif arguments.wipe_trash:
-        output(my_trash.wipe_trash(), conf['silent'])
+        output_data.append(my_trash.wipe_trash())
     else:
-        output([("No arguments", 2)], conf['silent'])
+        output_data = [("No arguments", 2)]
+    output(output_data, conf["silent"])
     my_trash.policy_check()
 
 

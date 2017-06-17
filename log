@@ -1,0 +1,33 @@
+INFO     [2017-06-17 12:11:45,032] Trash path /tmp/tmpWGSeU8/Trash
+INFO     [2017-06-17 12:11:45,034] /tmp/tmpWGSeU8/1 moved to trash
+INFO     [2017-06-17 12:11:45,035] Trash path /tmp/tmpgUoRcy/Trash
+INFO     [2017-06-17 12:11:45,037] /tmp/tmpgUoRcy/1 moved to trash
+INFO     [2017-06-17 12:11:45,038] /tmp/tmpgUoRcy/2 moved to trash
+INFO     [2017-06-17 12:11:45,039] /tmp/tmpgUoRcy/Trash/302628 moved to trash
+INFO     [2017-06-17 12:11:45,040] /tmp/tmpgUoRcy/Trash/302629 moved to trash
+INFO     [2017-06-17 12:11:45,042] Trash path /tmp/tmpI4542N/Trash
+INFO     [2017-06-17 12:11:45,043] Trash path /tmp/tmpI4542N/Trash
+INFO     [2017-06-17 12:11:45,043] 
+INFO     [2017-06-17 12:11:45,044] Trash path /tmp/tmpxo6YuM/Trash
+INFO     [2017-06-17 12:11:45,044] Trash path /tmp/tmpxo6YuM/Trash
+INFO     [2017-06-17 12:11:45,045] /tmp/tmpxo6YuM/1 wil be moved to trash
+INFO     [2017-06-17 12:11:45,046] Trash path /tmp/tmps0vahH/Trash
+ERROR    [2017-06-17 12:11:45,046] /tmp/tmps0vahH/not_existing not exists
+INFO     [2017-06-17 12:11:45,047] Trash path /tmp/tmpLnkFy4/Trash
+INFO     [2017-06-17 12:11:45,050] /tmp/tmpLnkFy4/1 moved to trash
+INFO     [2017-06-17 12:11:45,051] Trash path /tmp/tmpst2MBn/Trash
+INFO     [2017-06-17 12:11:45,053] /tmp/tmpst2MBn/1 moved to trash
+INFO     [2017-06-17 12:11:45,053] Recovered 1
+ERROR    [2017-06-17 12:11:45,054] There is no 3 in trash
+INFO     [2017-06-17 12:11:45,055] Trash path /tmp/tmpqCrEJE/Trash
+INFO     [2017-06-17 12:11:45,057] /tmp/tmpqCrEJE/1 moved to trash
+INFO     [2017-06-17 12:11:45,058] /tmp/tmpqCrEJE/2 moved to trash
+INFO     [2017-06-17 12:11:45,058] Recovered 1
+INFO     [2017-06-17 12:11:45,059] Recovered 2
+INFO     [2017-06-17 12:11:45,060] Trash path /tmp/tmppsgwfC/Trash
+INFO     [2017-06-17 12:11:45,062] /tmp/tmppsgwfC/1 moved to trash
+INFO     [2017-06-17 12:11:45,063] /tmp/tmppsgwfC/1 moved to trash
+INFO     [2017-06-17 12:11:45,064] Recovered 1
+INFO     [2017-06-17 12:11:45,066] Recovered 1(1)
+INFO     [2017-06-17 12:11:45,068] Trash path /tmp/tmpWr11Vh/Trash
+INFO     [2017-06-17 12:11:45,068] Trash wiped

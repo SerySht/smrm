@@ -82,7 +82,9 @@ class Trash(object):
         else:           
             info_message = target + " not exists"
             exit_code = ExitCodes.NO_FILE
-
+        if self.force:
+            exit_code = ExitCodes.GOOD
+            info_message = ""
         if exit_code != ExitCodes.GOOD:
             logging.error(info_message)
         else:

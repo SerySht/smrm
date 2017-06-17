@@ -117,6 +117,11 @@ class TestTrash(unittest.TestCase):
         self.assertEqual(os.path.exists(self.file2), False)
 
     
+    def test_delete_to_trash_force(self):
+        self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash" , current_directory = self.test_dir, force=True)
+        self.assertEqual(self.test_trash_dr.delete_to_trash(self.test_dir + "/not_existing"), ("",0))
+       
+
     def test_dry_run(self):
         self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash" , current_directory = self.test_dir, dry_run=True)
         self.test_trash_dr.delete_to_trash(self.file1)

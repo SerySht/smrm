@@ -1,10 +1,10 @@
 import os
 import sys
-import trash
+from . import trash
 import argparse
 import logging
-import trashconfig
-from utils import output
+from . import trashconfig
+from .utils import output
 
 
 def main():

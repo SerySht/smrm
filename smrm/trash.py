@@ -5,7 +5,7 @@ import shutil
 import time
 import re
 import logging
-from utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes 
+from .utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes 
 
 
 class Trash(object):

@@ -7,16 +7,6 @@ import tempfile
 from smrm.utils import confirmed, get_size, conflict_solver, Progress
 
 
-# delete work with console in Trash
-# may be make separate logging
-# ADD EXIT CODES!!!!!!!!
-# deleting trash into trash???   #net
-#make predupre}\{ (notice)(exit code) about using default config 
-#add more tests (for directories)     
-#may be russian files?
-#delete absolute import 
-
-
 class TestUtils(unittest.TestCase):
 
     def setUp(self):
@@ -128,9 +118,6 @@ class TestTrash(unittest.TestCase):
         self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash" , current_directory = self.test_dir, dry_run=True)
         self.test_trash_dr.delete_to_trash(self.file1)
         self.assertTrue(os.path.exists(self.file1))
-
-
-
 
 
 if __name__ == '__main__':

@@ -27,7 +27,7 @@ class Trash(object):
             os.mkdir(self.trash_path)          
         
         logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",
-                                filename="/home/sergey/log", level=logging.DEBUG)
+                                filename=log_path, level=logging.DEBUG)
         logging.info("Trash path {}".format(trash_path))     
     
     

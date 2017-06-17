@@ -55,6 +55,7 @@ def main():
                             conf['trash_maximum_size'], 
                             conf['recover_conflict'],                           
                             arguments.interactive, 
+                            conf['log_path'],
                             arguments.dry,
                             arguments.force)
     

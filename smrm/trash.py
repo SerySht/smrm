@@ -12,7 +12,7 @@ class Trash(object):
 
     def __init__ (self, trash_path, current_directory = os.getcwd(), storage_time=False, 
                     trash_maximum_size=False, recover_conflict='not_replace', 
-                    interactive=False, dry_run = False, force = False):
+                    interactive=False, log_path = os.getcwd() + "/log", dry_run = False, force = False):
 
         self.trash_path = trash_path
         self.current_directory = current_directory
@@ -26,6 +26,8 @@ class Trash(object):
         if not os.path.exists(self.trash_path):      
             os.mkdir(self.trash_path)          
         
+        logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',filemode="w",
+                                filename="/home/sergey/log", level=logging.DEBUG)
         logging.info("Trash path {}".format(trash_path))     
     
     

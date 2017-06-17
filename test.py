@@ -69,9 +69,12 @@ class TestTrash(unittest.TestCase):
         self.assertFalse(os.path.exists(self.file1))
 
 
-    def test_exit_code_of_delete_to_trash(self):
+    def test_exit_code_of_delete_to_trash_zero(self):
         text, code = self.test_trash.delete_to_trash(self.file1)
         self.assertEqual(code, 0)
+
+
+    def test_exit_code_of_delete_to_trash_three(self):   
         text, code = self.test_trash.delete_to_trash(self.test_dir + '/not_existing')
         self.assertEqual(code, 3)
 
@@ -85,7 +88,7 @@ class TestTrash(unittest.TestCase):
         self.assertEqual(os.path.exists(self.file2), True)
 
     
-    def test_recover_from_trash_conflict(self):
+    def test_recover_from_trash_name_conflict(self):
         self.test_trash.delete_to_trash(self.file1)
         with open(self.file1, "w"):pass
         self.test_trash.delete_to_trash(self.file1)        

@@ -59,7 +59,7 @@ class TestTrash(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.test_dir)
-
+        
 
     def test_delete_to_trash(self):        
         self.test_trash.delete_to_trash(self.file1)
@@ -115,6 +115,7 @@ class TestTrash(unittest.TestCase):
         self.test_trash.delete_to_trash_by_reg('\d+', self.test_dir, silent=True)
         self.assertEqual(os.path.exists(self.file1), False)
         self.assertEqual(os.path.exists(self.file2), False)
+     
 
     
     def test_delete_to_trash_force(self):

@@ -6,7 +6,9 @@ import time
 import re
 import logging
 from .utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes 
+from multiprocessing import Process, Lock
 
+lock = Lock()
 
 class Trash(object):
 
@@ -32,17 +34,19 @@ class Trash(object):
     
     
     def __load_from_filelist(self): 
+        lock.acquire()
         with open(self.filelist_path, 'a+') as filelist:       
             try:
                 self.filelist_dict = json.load(filelist)
             except ValueError:
                 self.filelist_dict = {}  
-      
+        lock.release()
     
     def __save_to_filelist(self):
+        lock.acquire()
         with open(self.filelist_path, 'w+') as filelist:              
             filelist.write(json.dumps(self.filelist_dict))            
-        
+        lock.release()
     
     def mover_to_trash(self, filepath): 
                   
@@ -51,7 +55,7 @@ class Trash(object):
                 os.rename(filepath, trash_filepath)
             except OSError:
                 return ExitCodes.UNKNOWN 
-            else:
+            else:                
                 self.__load_from_filelist()           
                 self.filelist_dict[trash_filepath] = filepath
                 self.__save_to_filelist()   
@@ -170,17 +174,17 @@ class Trash(object):
             for i in range(len(filelist)):
                 return_list.append(('"{0}" deleted from {1} at {2}'.format(os.path.basename(filelist[i][1]), 
                                                                 os.path.split(filelist[i][1])[0],
-                                                                time.ctime(os.path.getctime(filelist[i][0]))), 0)) 
+                                                                time.ctime(os.path.getctime(filelist[i][0]))), 0, filelist[i][0], filelist[i][1] )) 
         
-        else:
-            return "Trash is empty", 0
+        else:            
             logging.info("Trash is empty")
-        return return_list, 0
+        return return_list
 
     
-    def get_trash_list(self):
-        self.__load_from_filelist()
-        return list(self.filelist_dict.items())    
+    def delete_trash(self):
+        if os.path.exists(self.trash_path):
+             shutil.rmtree(self.trash_path)
+
 
     
     def policy_check(self):        
@@ -228,9 +232,13 @@ class Trash(object):
                 if re.match(regular, f):
                     if not self.interactive or confirmed(f):
                         progress.inc()                 
-                        info_message, exit_code = self.delete_to_trash(os.path.join(path, f))
+                        p = Process(target=self.delete_to_trash, args=(os.path.join(path, f),))
+                        p.start()
             if not silent:
                 progress.show()
         if not silent:  
-            progress.end()   
+            progress.end()  
+        p.join()
         return "", exit_code
+
+

@@ -72,7 +72,7 @@ def main():
         output_data.append(my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))        
 
     elif arguments.show_trash:      
-        output_data.append(my_trash.show_trash(int(arguments.show_trash)))
+        output_data  = my_trash.show_trash(int(arguments.show_trash))
     
     elif arguments.wipe_trash:
         output_data.append(my_trash.wipe_trash())

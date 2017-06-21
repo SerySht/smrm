@@ -68,4 +68,6 @@ def load(config_path=Default.config_path):
 
     return conf_dict  
 
-               
+
+def get_default_path():
+    return Default.config_path                

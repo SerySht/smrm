@@ -238,7 +238,7 @@ class Trash(object):
                 progress.show()
         if not silent:  
             progress.end()  
-        p.join()
+        #p.join()
         return "", exit_code
 
 

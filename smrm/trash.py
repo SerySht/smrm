@@ -226,19 +226,20 @@ class Trash(object):
         progress = Progress(os.path.abspath(directory))
         info_message = ''
         exit_code = ExitCodes.GOOD
-
-        for path, directories, files in os.walk(directory):
+        for path, directories, files in os.walk(directory):         
             for f in files:             
-                if re.match(regular, f):
+                if re.match(regular, f):                   
                     if not self.interactive or confirmed(f):
-                        progress.inc()                 
-                        p = Process(target=self.delete_to_trash, args=(os.path.join(path, f),))
-                        p.start()
+                        progress.inc()     
+                        message = self.delete_to_trash(os.path.join(path, f)) 
+                        info_message = info_message + '\n' + message[0]         
+                        #p = Process(target=self.delete_to_trash, args=(os.path.join(path, f),))
+                        #p.start()
             if not silent:
                 progress.show()
         if not silent:  
             progress.end()  
         #p.join()
-        return "", exit_code
+        return info_message, exit_code
 
 

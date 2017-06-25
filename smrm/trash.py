@@ -6,9 +6,10 @@ import time
 import re
 import logging
 from .utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes 
-from multiprocessing import Process, Lock
+import multiprocessing
+import time
 
-lock = Lock()
+
 
 class Trash(object):
 
@@ -33,36 +34,38 @@ class Trash(object):
         logging.info("Trash path {}".format(trash_path))     
     
     
-    def __load_from_filelist(self): 
-        lock.acquire()
+    def __load_from_filelist(self):         
         with open(self.filelist_path, 'a+') as filelist:       
             try:
                 self.filelist_dict = json.load(filelist)
             except ValueError:
                 self.filelist_dict = {}  
-        lock.release()
+      
     
     def __save_to_filelist(self):
-        lock.acquire()
+       
         with open(self.filelist_path, 'w+') as filelist:              
             filelist.write(json.dumps(self.filelist_dict))            
-        lock.release()
+       
     
-    def mover_to_trash(self, filepath): 
-                  
+    def mover_to_trash(self, filepath, mp):                  
             trash_filepath = os.path.join(self.trash_path, str(os.stat(filepath).st_ino)) 
             try: 
                 os.rename(filepath, trash_filepath)
             except OSError:
                 return ExitCodes.UNKNOWN 
-            else:                
-                self.__load_from_filelist()           
-                self.filelist_dict[trash_filepath] = filepath
-                self.__save_to_filelist()   
+            else:  
+                if not mp:                        
+                    self.__load_from_filelist()           
+                    self.filelist_dict[trash_filepath] = filepath
+                    self.__save_to_filelist()   
+                else:                   
+                    return [trash_filepath, filepath]
+           
             return ExitCodes.GOOD
 
 
-    def delete_to_trash(self, target):  
+    def delete_to_trash(self, target, mp=False):        
         info_message = ''
         exit_code = ExitCodes.GOOD
 
@@ -70,8 +73,9 @@ class Trash(object):
         if os.path.exists(filepath) or self.force:
             if not self.interactive or confirmed(target):
                 if os.access(filepath, os.W_OK): 
-                    if not self.dry_run:
-                        exit_code = self.mover_to_trash(filepath) 
+                    if not self.dry_run: 
+                    #danger change                      
+                        return self.mover_to_trash(filepath, mp) 
                         if exit_code == ExitCodes.GOOD:
                             info_message = target + ' moved to trash'
                         else:
@@ -92,7 +96,8 @@ class Trash(object):
         if exit_code != ExitCodes.GOOD:
             logging.error(info_message)
         else:
-            logging.info(info_message)    
+            logging.info(info_message)
+        
         return info_message, exit_code
 
 
@@ -223,6 +228,7 @@ class Trash(object):
 
     
     def delete_to_trash_by_reg(self, regular, directory, silent=False):
+        t = time.time()
         progress = Progress(os.path.abspath(directory))
         info_message = ''
         exit_code = ExitCodes.GOOD
@@ -230,16 +236,84 @@ class Trash(object):
             for f in files:             
                 if re.match(regular, f):                   
                     if not self.interactive or confirmed(f):
-                        progress.inc()     
-                        message = self.delete_to_trash(os.path.join(path, f)) 
-                        info_message = info_message + '\n' + message[0]         
+                        self.delete_to_trash(os.path.join(path, f)) 
+                           
                         #p = Process(target=self.delete_to_trash, args=(os.path.join(path, f),))
                         #p.start()
+
             if not silent:
                 progress.show()
         if not silent:  
             progress.end()  
-        #p.join()
+       
+        print time.time() - t
         return info_message, exit_code
 
 
+
+    def get_dir_list(self, directory):
+        dir_list = []
+        for path, directories, files in os.walk(directory):
+
+            for dir in directories:           
+                dir_list.append(os.path.join(path, dir))
+        return dir_list
+
+    
+    def reg(self, directory, regular, lock):        
+        content = os.listdir(directory)
+        filelist_dict1 = {}
+        for f in content:
+            if not os.path.isdir(directory + "/" + f):
+                if re.match(regular, f):                                               
+                    return_list = self.delete_to_trash(os.path.join(directory, f), mp=True)
+                    filelist_dict1[return_list[0]] = return_list[1]
+        lock.acquire()
+        self.__load_from_filelist()
+        
+        self.filelist_dict.update(filelist_dict1)
+        self.__save_to_filelist()
+        lock.release()
+
+    def delete_to_trash_by_reg2(self, regular, directory, silent=False):        
+        t = time.time()   
+           
+        
+        lock = multiprocessing.Lock()   
+
+        listdir = self.get_dir_list(directory)
+        listdir.append(directory)
+
+        proc_list = []
+        
+        while len(listdir) > 0:        
+            
+           
+            
+                          
+                p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, lock)) 
+                proc_list.append(p)
+                p.start()      
+            
+            # else:
+            #     p = proc_list.pop()
+            #     #print "in else"       
+            #     #print p  
+            #     #print p.is_alive()         
+            #     p.join(7)
+            #     p.terminate()
+            #     #print "end join"
+            
+
+        for p in proc_list:           
+            p.join()
+       
+        print time.time() - t     
+        # while q.empty() is False:            
+        #     self.filelist_dict.update(q.get())
+        
+        self.__load_from_filelist()
+        print len(self.filelist_dict)
+
+
+        print time.time() - t 

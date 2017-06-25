@@ -69,7 +69,8 @@ def main():
             output_data.append(my_trash.recover_from_trash(f))        
 
     elif arguments.regex:
-        output_data.append(my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))        
+        my_trash.delete_to_trash_by_reg2('\\' + arguments.regex[0], arguments.regex[1], conf['silent'])
+        #output_data.append(my_trash.delete_to_trash_by_reg2('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))        
 
     elif arguments.show_trash:      
         output_data  = my_trash.show_trash(int(arguments.show_trash))

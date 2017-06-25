@@ -1,31 +1,33 @@
-INFO     [2017-06-21 05:04:50,272] Trash path /tmp/tmpCIf4Tj/Trash
-INFO     [2017-06-21 05:04:50,274] /tmp/tmpCIf4Tj/1 moved to trash
-INFO     [2017-06-21 05:04:50,275] Trash path /tmp/tmpjIboJk/Trash
-INFO     [2017-06-21 05:04:50,282] /tmp/tmpjIboJk/1 moved to trash
-INFO     [2017-06-21 05:04:50,282] /tmp/tmpjIboJk/2 moved to trash
-INFO     [2017-06-21 05:04:50,285] Trash path /tmp/tmpiwydqe/Trash
-INFO     [2017-06-21 05:04:50,286] Trash path /tmp/tmpiwydqe/Trash
-INFO     [2017-06-21 05:04:50,287] 
-INFO     [2017-06-21 05:04:50,287] Trash path /tmp/tmpF_0t2b/Trash
-INFO     [2017-06-21 05:04:50,288] Trash path /tmp/tmpF_0t2b/Trash
-INFO     [2017-06-21 05:04:50,292] /tmp/tmpF_0t2b/1 wil be moved to trash
-INFO     [2017-06-21 05:04:50,293] Trash path /tmp/tmptzL32H/Trash
-ERROR    [2017-06-21 05:04:50,293] /tmp/tmptzL32H/not_existing not exists
-INFO     [2017-06-21 05:04:50,294] Trash path /tmp/tmpqlbKbq/Trash
-INFO     [2017-06-21 05:04:50,294] /tmp/tmpqlbKbq/1 moved to trash
-INFO     [2017-06-21 05:04:50,295] Trash path /tmp/tmpMv3RyP/Trash
-INFO     [2017-06-21 05:04:50,296] /tmp/tmpMv3RyP/1 moved to trash
-INFO     [2017-06-21 05:04:50,296] Recovered 1
-ERROR    [2017-06-21 05:04:50,297] There is no 3 in trash
-INFO     [2017-06-21 05:04:50,297] Trash path /tmp/tmp3qBIRQ/Trash
-INFO     [2017-06-21 05:04:50,298] /tmp/tmp3qBIRQ/1 moved to trash
-INFO     [2017-06-21 05:04:50,298] /tmp/tmp3qBIRQ/2 moved to trash
-INFO     [2017-06-21 05:04:50,298] Recovered 1
-INFO     [2017-06-21 05:04:50,299] Recovered 2
-INFO     [2017-06-21 05:04:50,299] Trash path /tmp/tmpBKg820/Trash
-INFO     [2017-06-21 05:04:50,299] /tmp/tmpBKg820/1 moved to trash
-INFO     [2017-06-21 05:04:50,300] /tmp/tmpBKg820/1 moved to trash
-INFO     [2017-06-21 05:04:50,300] Recovered 1
-INFO     [2017-06-21 05:04:50,301] Recovered 1(1)
-INFO     [2017-06-21 05:04:50,302] Trash path /tmp/tmp_5YeTS/Trash
-INFO     [2017-06-21 05:04:50,302] Trash wiped
+INFO     [2017-06-25 17:16:11,773] Trash path /tmp/tmpL8WRtW/Trash
+INFO     [2017-06-25 17:16:11,775] /tmp/tmpL8WRtW/1 moved to trash
+INFO     [2017-06-25 17:16:11,775] Trash path /tmp/tmpwtcCUF/Trash
+INFO     [2017-06-25 17:16:11,776] /tmp/tmpwtcCUF/1 moved to trash
+INFO     [2017-06-25 17:16:11,776] /tmp/tmpwtcCUF/2 moved to trash
+INFO     [2017-06-25 17:16:11,776] /tmp/tmpwtcCUF/Trash/151538 moved to trash
+INFO     [2017-06-25 17:16:11,777] /tmp/tmpwtcCUF/Trash/151539 moved to trash
+INFO     [2017-06-25 17:16:11,777] Trash path /tmp/tmpfqQFZW/Trash
+INFO     [2017-06-25 17:16:11,777] Trash path /tmp/tmpfqQFZW/Trash
+INFO     [2017-06-25 17:16:11,777] 
+INFO     [2017-06-25 17:16:11,778] Trash path /tmp/tmpfwTW1b/Trash
+INFO     [2017-06-25 17:16:11,778] Trash path /tmp/tmpfwTW1b/Trash
+INFO     [2017-06-25 17:16:11,778] /tmp/tmpfwTW1b/1 wil be moved to trash
+INFO     [2017-06-25 17:16:11,778] Trash path /tmp/tmp8c1m5Y/Trash
+ERROR    [2017-06-25 17:16:11,778] /tmp/tmp8c1m5Y/not_existing not exists
+INFO     [2017-06-25 17:16:11,778] Trash path /tmp/tmpe3ohsi/Trash
+INFO     [2017-06-25 17:16:11,779] /tmp/tmpe3ohsi/1 moved to trash
+INFO     [2017-06-25 17:16:11,779] Trash path /tmp/tmpPFIDoK/Trash
+INFO     [2017-06-25 17:16:11,779] /tmp/tmpPFIDoK/1 moved to trash
+INFO     [2017-06-25 17:16:11,779] Recovered 1
+ERROR    [2017-06-25 17:16:11,780] There is no 3 in trash
+INFO     [2017-06-25 17:16:11,782] Trash path /tmp/tmpxuSW_d/Trash
+INFO     [2017-06-25 17:16:11,782] /tmp/tmpxuSW_d/1 moved to trash
+INFO     [2017-06-25 17:16:11,782] /tmp/tmpxuSW_d/2 moved to trash
+INFO     [2017-06-25 17:16:11,782] Recovered 1
+INFO     [2017-06-25 17:16:11,783] Recovered 2
+INFO     [2017-06-25 17:16:11,783] Trash path /tmp/tmpGBnsbB/Trash
+INFO     [2017-06-25 17:16:11,783] /tmp/tmpGBnsbB/1 moved to trash
+INFO     [2017-06-25 17:16:11,783] /tmp/tmpGBnsbB/1 moved to trash
+INFO     [2017-06-25 17:16:11,783] Recovered 1
+INFO     [2017-06-25 17:16:11,784] Recovered 1(1)
+INFO     [2017-06-25 17:16:11,784] Trash path /tmp/tmpWg89Gj/Trash
+INFO     [2017-06-25 17:16:11,784] Trash wiped

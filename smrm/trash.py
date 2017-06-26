@@ -42,8 +42,7 @@ class Trash(object):
                 self.filelist_dict = {}  
       
     
-    def __save_to_filelist(self):
-       
+    def __save_to_filelist(self):       
         with open(self.filelist_path, 'w+') as filelist:              
             filelist.write(json.dumps(self.filelist_dict))            
        
@@ -74,8 +73,10 @@ class Trash(object):
             if not self.interactive or confirmed(target):
                 if os.access(filepath, os.W_OK): 
                     if not self.dry_run: 
-                    #danger change                      
-                        return self.mover_to_trash(filepath, mp) 
+                        if not mp: 
+                            exit_code = self.mover_to_trash(filepath, mp)   
+                        else:                   
+                            return self.mover_to_trash(filepath, mp) 
                         if exit_code == ExitCodes.GOOD:
                             info_message = target + ' moved to trash'
                         else:
@@ -227,57 +228,31 @@ class Trash(object):
 
 
     
-    def delete_to_trash_by_reg(self, regular, directory, silent=False):
-        t = time.time()
-        progress = Progress(os.path.abspath(directory))
-        info_message = ''
-        exit_code = ExitCodes.GOOD
-        for path, directories, files in os.walk(directory):         
-            for f in files:             
-                if re.match(regular, f):                   
-                    if not self.interactive or confirmed(f):
-                        self.delete_to_trash(os.path.join(path, f)) 
-                           
-                        #p = Process(target=self.delete_to_trash, args=(os.path.join(path, f),))
-                        #p.start()
-
-            if not silent:
-                progress.show()
-        if not silent:  
-            progress.end()  
-       
-        print time.time() - t
-        return info_message, exit_code
-
-
-
     def get_dir_list(self, directory):
         dir_list = []
         for path, directories, files in os.walk(directory):
-
             for dir in directories:           
                 dir_list.append(os.path.join(path, dir))
         return dir_list
 
     
-    def reg(self, directory, regular, lock):        
+    def reg(self, directory, regular, lock, queue):        
         content = os.listdir(directory)
         filelist_dict1 = {}
         for f in content:
-            if not os.path.isdir(directory + "/" + f):
+            if not os.path.isdir(os.path.join(directory, f)):
                 if re.match(regular, f):                                               
-                    return_list = self.delete_to_trash(os.path.join(directory, f), mp=True)
-                    filelist_dict1[return_list[0]] = return_list[1]
+                    returned_list = self.delete_to_trash(os.path.join(directory, f), mp=True)                    
+                    filelist_dict1[returned_list[0]] = returned_list[1]
+                    queue.put(returned_list[1])
         lock.acquire()
-        self.__load_from_filelist()
-        
+        self.__load_from_filelist()        
         self.filelist_dict.update(filelist_dict1)
         self.__save_to_filelist()
         lock.release()
 
-    def delete_to_trash_by_reg2(self, regular, directory, silent=False):        
-        t = time.time()   
-           
+    
+    def delete_to_trash_by_reg(self, regular, directory, silent=False):         
         
         lock = multiprocessing.Lock()   
 
@@ -285,35 +260,24 @@ class Trash(object):
         listdir.append(directory)
 
         proc_list = []
-        
-        while len(listdir) > 0:        
-            
-           
-            
-                          
-                p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, lock)) 
-                proc_list.append(p)
-                p.start()      
-            
-            # else:
-            #     p = proc_list.pop()
-            #     #print "in else"       
-            #     #print p  
-            #     #print p.is_alive()         
-            #     p.join(7)
-            #     p.terminate()
-            #     #print "end join"
-            
-
+        queue = multiprocessing.Queue()
+        while len(listdir) > 0:                         
+            p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, lock,queue)) 
+            proc_list.append(p)
+            p.start()          
+         
         for p in proc_list:           
-            p.join()
-       
-        print time.time() - t     
-        # while q.empty() is False:            
-        #     self.filelist_dict.update(q.get())
+            p.join() 
         
-        self.__load_from_filelist()
-        print len(self.filelist_dict)
 
+        return_list = []
+        while queue.empty() is False:
+            return_list.append(queue.get() + "  was moved to trash") 
+        
+        if len(return_list) == 0:
+            if os.path.exists(directory):
+                return_list.append("No matches")
+            else:
+                return_list.append("Directory not exists")
 
-        print time.time() - t 
+        return return_list

@@ -236,43 +236,46 @@ class Trash(object):
         return dir_list
 
     
-    def reg(self, directory, regular, lock, queue):        
+    def reg(self, directory, regular, d):        
         content = os.listdir(directory)
-        filelist_dict1 = {}
+        
         for f in content:
             if not os.path.isdir(os.path.join(directory, f)):
                 if re.match(regular, f):                                               
                     returned_list = self.delete_to_trash(os.path.join(directory, f), mp=True)                    
-                    filelist_dict1[returned_list[0]] = returned_list[1]
-                    queue.put(returned_list[1])
-        lock.acquire()
-        self.__load_from_filelist()        
-        self.filelist_dict.update(filelist_dict1)
-        self.__save_to_filelist()
-        lock.release()
+                    d[returned_list[0]] = returned_list[1]
+                    
+       
+        
+        
 
     
-    def delete_to_trash_by_reg(self, regular, directory, silent=False):         
-        
-        lock = multiprocessing.Lock()   
+    def delete_to_trash_by_reg(self, regular, directory, silent=False):  
+          
 
         listdir = self.get_dir_list(directory)
         listdir.append(directory)
 
         proc_list = []
-        queue = multiprocessing.Queue()
+        mgr = multiprocessing.Manager()
+        d = mgr.dict()
+        
         while len(listdir) > 0:                         
-            p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, lock,queue)) 
+            p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, d)) 
             proc_list.append(p)
             p.start()          
          
         for p in proc_list:           
             p.join() 
+
+        self.__load_from_filelist()        
+        self.filelist_dict.update(d)
+        self.__save_to_filelist()
         
 
         return_list = []
-        while queue.empty() is False:
-            return_list.append(queue.get() + "  was moved to trash") 
+        #while queue.empty() is False:
+            #return_list.append(queue.get() + "  was moved to trash") 
         
         if len(return_list) == 0:
             if os.path.exists(directory):

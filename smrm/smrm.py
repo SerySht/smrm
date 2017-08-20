@@ -1,3 +1,5 @@
+# coding: utf8
+
 import os
 import sys
 from . import trash
@@ -5,6 +7,10 @@ import argparse
 import logging
 from . import trashconfig
 from .utils import output
+import time
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 def main():
@@ -69,8 +75,10 @@ def main():
             output_data.append(my_trash.recover_from_trash(f))        
 
     elif arguments.regex:
+        t = time.time()
         my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1], conf['silent'])
         #output_data.append(my_trash.delete_to_trash_by_reg2('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))        
+        print "Time: ", time.time() - t
 
     elif arguments.show_trash:      
         output_data  = my_trash.show_trash(int(arguments.show_trash))

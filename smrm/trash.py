@@ -1,3 +1,6 @@
+# coding: utf8
+
+
 import os
 import sys
 import json
@@ -8,7 +11,8 @@ import logging
 from .utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes 
 import multiprocessing
 import time
-
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 class Trash(object):
@@ -236,7 +240,7 @@ class Trash(object):
         return dir_list
 
     
-    def reg(self, directory, regular, d):        
+    def reg(self, directory, regular, d, l):        
         content = os.listdir(directory)
         
         for f in content:
@@ -244,6 +248,7 @@ class Trash(object):
                 if re.match(regular, f):                                               
                     returned_list = self.delete_to_trash(os.path.join(directory, f), mp=True)                    
                     d[returned_list[0]] = returned_list[1]
+                    l.extend(returned_list)
                     
        
         
@@ -258,10 +263,11 @@ class Trash(object):
 
         proc_list = []
         mgr = multiprocessing.Manager()
+        l = mgr.list()
         d = mgr.dict()
         
         while len(listdir) > 0:                         
-            p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, d)) 
+            p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, d, l)) 
             proc_list.append(p)
             p.start()          
          
@@ -271,9 +277,9 @@ class Trash(object):
         self.__load_from_filelist()        
         self.filelist_dict.update(d)
         self.__save_to_filelist()
-        
+       
 
-        return_list = []
+        return_list = l
         #while queue.empty() is False:
             #return_list.append(queue.get() + "  was moved to trash") 
         
@@ -284,3 +290,22 @@ class Trash(object):
                 return_list.append("Directory not exists")
 
         return return_list
+
+
+
+    def delete_to_trash_by_reg2(self, regular, directory, silent=False):
+        progress = Progress(os.path.abspath(directory))
+        info_message = ''
+        exit_code = ExitCodes.GOOD
+
+        for path, directories, files in os.walk(directory):
+            for f in files:             
+                if re.match(regular, f):
+                    if not self.interactive or confirmed(f):
+                        progress.inc()                 
+                        info_message, exit_code = self.delete_to_trash(os.path.join(path, f))
+            if not silent:
+                progress.show()
+        if not silent:  
+            progress.end()   
+        return "", exit_code

@@ -1,6 +1,3 @@
-# coding: utf8
-
-
 import os
 import sys
 import json
@@ -11,6 +8,7 @@ import logging
 from .utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes 
 import multiprocessing
 import time
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -51,36 +49,31 @@ class Trash(object):
             filelist.write(json.dumps(self.filelist_dict))            
        
     
-    def mover_to_trash(self, filepath, mp):                  
-            trash_filepath = os.path.join(self.trash_path, str(os.stat(filepath).st_ino)) 
-            try: 
-                os.rename(filepath, trash_filepath)
-            except OSError:
-                return ExitCodes.UNKNOWN 
-            else:  
-                if not mp:                        
-                    self.__load_from_filelist()           
-                    self.filelist_dict[trash_filepath] = filepath
-                    self.__save_to_filelist()   
-                else:                   
-                    return [trash_filepath, filepath]
-           
-            return ExitCodes.GOOD
+    def mover_to_trash(self, filepath):                  
+        filepath_in_trash = os.path.join(self.trash_path, str(os.stat(filepath).st_ino)) 
+        try: 
+            os.rename(filepath, filepath_in_trash)
+        except OSError:
+            return ExitCodes.UNKNOWN, filepath_in_trash, filepath           
+        else: 
+            return ExitCodes.GOOD, filepath_in_trash, filepath           
 
 
-    def delete_to_trash(self, target, mp=False):        
+    def delete_to_trash(self, target, is_multiprocessing=False):        
         info_message = ''
-        exit_code = ExitCodes.GOOD
-
         filepath = os.path.abspath(target)
         if os.path.exists(filepath) or self.force:
             if not self.interactive or confirmed(target):
                 if os.access(filepath, os.W_OK): 
                     if not self.dry_run: 
-                        if not mp: 
-                            exit_code = self.mover_to_trash(filepath, mp)   
-                        else:                   
-                            return self.mover_to_trash(filepath, mp) 
+                        exit_code, filepath_in_trash, filepath = self.mover_to_trash(filepath)
+                        
+                        if not is_multiprocessing: 
+                            self.__load_from_filelist()           
+                            self.filelist_dict[filepath_in_trash] = filepath
+                            self.__save_to_filelist()   
+                        
+                        
                         if exit_code == ExitCodes.GOOD:
                             info_message = target + ' moved to trash'
                         else:
@@ -101,9 +94,11 @@ class Trash(object):
         if exit_code != ExitCodes.GOOD:
             logging.error(info_message)
         else:
-            logging.info(info_message)
-        
-        return info_message, exit_code
+            logging.info(info_message)       
+        if is_multiprocessing:
+            return info_message, filepath_in_trash, filepath 
+        else:
+            return info_message, exit_code
 
 
     def get_last_deleted(self, recover_list):       
@@ -116,7 +111,7 @@ class Trash(object):
         return j 
  
         
-    def mover_from_trash(self, trash_filepath, filepath):
+    def mover_from_trash(self, filepath_in_trash, filepath):
         info_message = ''
         exit_code = ExitCodes.GOOD
         
@@ -128,12 +123,12 @@ class Trash(object):
         
         if not self.dry_run:
             try:
-                os.rename(trash_filepath, filepath)
+                os.rename(filepath_in_trash, filepath)
             except OSError:
                 info_message = 'Something go wrong...'
                 exit_code = ExitCodes.UNKNOWN
             else:                                                  
-                self.filelist_dict.pop(trash_filepath)
+                self.filelist_dict.pop(filepath_in_trash)
                 info_message = "Recovered " + os.path.basename(filepath)
                 logging.info(info_message)                                
         else:
@@ -235,60 +230,45 @@ class Trash(object):
     def get_dir_list(self, directory):
         dir_list = []
         for path, directories, files in os.walk(directory):
-            for dir in directories:           
-                dir_list.append(os.path.join(path, dir))
+            for d in directories:           
+                dir_list.append(os.path.join(path, d))
         return dir_list
 
     
-    def reg(self, directory, regular, d, l):        
-        content = os.listdir(directory)
-        
-        for f in content:
+    def reg(self, directory, regular, mp_dict, return_list):              
+        for f in os.listdir(directory):
             if not os.path.isdir(os.path.join(directory, f)):
                 if re.match(regular, f):                                               
-                    returned_list = self.delete_to_trash(os.path.join(directory, f), mp=True)                    
-                    d[returned_list[0]] = returned_list[1]
-                    l.extend(returned_list)
-                    
-       
+                    info_message, filepath_in_trash, filepath = self.delete_to_trash(os.path.join(directory, f), is_multiprocessing=True)                    
+                    mp_dict[filepath_in_trash] = filepath
+                    return_list.append(info_message)  
         
-        
-
     
-    def delete_to_trash_by_reg(self, regular, directory, silent=False):  
-          
-
-        listdir = self.get_dir_list(directory)
-        listdir.append(directory)
-
+    def delete_to_trash_by_reg(self, regular, directory, return_list=None,  silent=False): 
+        listdir = self.get_dir_list(directory) #recursive list of directories
+        listdir.append(directory)  
+        mgr = multiprocessing.Manager()      
+        if return_list is None:            
+            return_list = mgr.list()
+        mp_dict = mgr.dict()
         proc_list = []
-        mgr = multiprocessing.Manager()
-        l = mgr.list()
-        d = mgr.dict()
-        
+
         while len(listdir) > 0:                         
-            p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, d, l)) 
+            p = multiprocessing.Process(target=self.reg, args=(listdir.pop(),regular, mp_dict, return_list)) 
             proc_list.append(p)
             p.start()          
          
         for p in proc_list:           
-            p.join() 
+            p.join()
 
         self.__load_from_filelist()        
-        self.filelist_dict.update(d)
-        self.__save_to_filelist()
-       
-
-        return_list = l
-        #while queue.empty() is False:
-            #return_list.append(queue.get() + "  was moved to trash") 
-        
+        self.filelist_dict.update(mp_dict)
+        self.__save_to_filelist()       
         if len(return_list) == 0:
             if os.path.exists(directory):
                 return_list.append("No matches")
             else:
                 return_list.append("Directory not exists")
-
         return return_list
 
 

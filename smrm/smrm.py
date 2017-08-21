@@ -1,13 +1,10 @@
-# coding: utf8
-
 import os
 import sys
-from . import trash
 import argparse
 import logging
+from . import trash
 from . import trashconfig
 from .utils import output
-import time
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -19,7 +16,7 @@ def main():
     parser.add_argument('-st', '--show_trash', nargs="?", const="0", help='show trash')
     parser.add_argument('-wt', '--wipe_trash', action='store_true', help='wipe trash')
     parser.add_argument('-r','--recover', nargs='*', help='recover file(s)')
-    parser.add_argument('-regex', nargs=2, type=str, help='delete by regex in directory')
+    parser.add_argument('-regex', '--regex', nargs=2, type=str, help='delete by regex in directory')
     parser.add_argument('-silent', action='store_true', help='silent mode')   
     parser.add_argument('-i','--interactive', action='store_true', help='interactive mode')
     parser.add_argument('-dry', action='store_true', help='dry run')
@@ -75,16 +72,15 @@ def main():
             output_data.append(my_trash.recover_from_trash(f))        
 
     elif arguments.regex:
-        t = time.time()
         my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1], conf['silent'])
         #output_data.append(my_trash.delete_to_trash_by_reg2('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))        
-        print "Time: ", time.time() - t
-
+    
     elif arguments.show_trash:      
         output_data  = my_trash.show_trash(int(arguments.show_trash))
     
     elif arguments.wipe_trash:
         output_data.append(my_trash.wipe_trash())
+    
     else:
         output_data = [("No arguments", 2)]
     output(output_data, conf["silent"])

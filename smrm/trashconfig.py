@@ -1,6 +1,3 @@
-# coding: utf8
-
-
 import ConfigParser
 import json
 import os

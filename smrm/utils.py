@@ -46,6 +46,14 @@ def output(output_data, silent):
     sys.exit(exit_code)
 
 
+def get_list_of_directories(directory):
+    dir_list = []
+    for path, directories, files in os.walk(directory):
+        for d in directories:           
+            dir_list.append(os.path.join(path, d))
+    return dir_list
+
+
 class ExitCodes(object):  
 
     GOOD = 0

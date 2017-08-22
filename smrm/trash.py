@@ -5,7 +5,7 @@ import shutil
 import time
 import re
 import logging
-from .utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes 
+from .utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes, get_list_of_directories 
 import multiprocessing
 import time
 
@@ -61,6 +61,7 @@ class Trash(object):
 
     def delete_to_trash(self, target, is_multiprocessing=False):        
         info_message = ''
+        exit_code = ExitCodes.GOOD
         filepath = os.path.abspath(target)
         if os.path.exists(filepath) or self.force:
             if not self.interactive or confirmed(target):
@@ -125,12 +126,13 @@ class Trash(object):
             try:
                 os.rename(filepath_in_trash, filepath)
             except OSError:
-                info_message = 'Something go wrong...'
+                info_message = 'Something go wrong while renaming'
                 exit_code = ExitCodes.UNKNOWN
+                logging.error(info_message) 
             else:                                                  
                 self.filelist_dict.pop(filepath_in_trash)
-                info_message = "Recovered " + os.path.basename(filepath)
-                logging.info(info_message)                                
+                info_message = "Recovered " + os.path.basename(filepath)                
+                logging.info(info_message)                                     
         else:
             info_message = os.path.basename(filepath) + " will be recovered" 
         
@@ -139,12 +141,10 @@ class Trash(object):
     
 
     def recover_from_trash(self, target):       
-        info_message = ''
-        exit_code = ExitCodes.GOOD
         self.__load_from_filelist()
         
-        recover_list = [item for item in self.filelist_dict.items() if os.path.basename(item[1]) == target]            
-        #[(path in trash, original path of file)]
+        #getting [(path in trash, original path of file)]
+        recover_list = [item for item in self.filelist_dict.items() if os.path.basename(item[1]) == target]         
         
         if len(recover_list) == 0:          
             info_message = "There is no {} in trash".format(target)
@@ -154,7 +154,7 @@ class Trash(object):
         elif len(recover_list) == 1:
             info_message, exit_code  =  self.mover_from_trash(recover_list[0][0], recover_list[0][1])           
         else:
-            i = int(self.get_last_deleted(recover_list))
+            i = int(self.get_last_deleted(recover_list)) #for auto recover
             info_message, exit_code = self.mover_from_trash(recover_list[i][0], recover_list[i][1])  
 
         return info_message, exit_code 
@@ -189,7 +189,6 @@ class Trash(object):
     def delete_trash(self):
         if os.path.exists(self.trash_path):
              shutil.rmtree(self.trash_path)
-
 
     
     def policy_check(self):        
@@ -226,15 +225,6 @@ class Trash(object):
         self.__save_to_filelist()
 
 
-    
-    def get_dir_list(self, directory):
-        dir_list = []
-        for path, directories, files in os.walk(directory):
-            for d in directories:           
-                dir_list.append(os.path.join(path, d))
-        return dir_list
-
-    
     def reg(self, directory, regular, mp_dict, return_list):              
         for f in os.listdir(directory):
             if not os.path.isdir(os.path.join(directory, f)):
@@ -245,8 +235,9 @@ class Trash(object):
         
     
     def delete_to_trash_by_reg(self, regular, directory, return_list=None,  silent=False): 
-        listdir = self.get_dir_list(directory) #recursive list of directories
+        listdir = get_list_of_directories(directory) #recursive list of directories
         listdir.append(directory)  
+        
         mgr = multiprocessing.Manager()      
         if return_list is None:            
             return_list = mgr.list()
@@ -272,20 +263,19 @@ class Trash(object):
         return return_list
 
 
+    # def delete_to_trash_by_reg2(self, regular, directory, silent=False):
+    #     progress = Progress(os.path.abspath(directory))
+    #     info_message = ''
+    #     exit_code = ExitCodes.GOOD
 
-    def delete_to_trash_by_reg2(self, regular, directory, silent=False):
-        progress = Progress(os.path.abspath(directory))
-        info_message = ''
-        exit_code = ExitCodes.GOOD
-
-        for path, directories, files in os.walk(directory):
-            for f in files:             
-                if re.match(regular, f):
-                    if not self.interactive or confirmed(f):
-                        progress.inc()                 
-                        info_message, exit_code = self.delete_to_trash(os.path.join(path, f))
-            if not silent:
-                progress.show()
-        if not silent:  
-            progress.end()   
-        return "", exit_code
+    #     for path, directories, files in os.walk(directory):
+    #         for f in files:             
+    #             if re.match(regular, f):
+    #                 if not self.interactive or confirmed(f):
+    #                     progress.inc()                 
+    #                     info_message, exit_code = self.delete_to_trash(os.path.join(path, f))
+    #         if not silent:
+    #             progress.show()
+    #     if not silent:  
+    #         progress.end()   
+    #     return "", exit_code

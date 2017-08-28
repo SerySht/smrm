@@ -6,8 +6,6 @@ from . import trash
 from . import trashconfig
 from .utils import output
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 
 def main():

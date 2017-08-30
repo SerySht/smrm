@@ -213,29 +213,34 @@ class Trash(object):
 
         self.__save_to_filelist()
 
-    def reg(self, directory, regular, mp_dict, return_list):
-        for f in os.listdir(directory):
-            if not os.path.isdir(os.path.join(directory, f)):
-                if re.match(regular, f):
-                    info_message, filepath_in_trash, filepath = self.delete_to_trash(os.path.join(directory, f),
-                                                                                     is_multiprocessing=True)
-                    mp_dict[filepath_in_trash] = filepath
-                    return_list.append(info_message)
+    def reg(self, directory, regular, mp_dict, return_list):     
+        if os.path.exists(directory):   
+            for f in os.listdir(directory):
+                if not os.path.isdir(os.path.join(directory, f)):
+                    if re.match(regular, f):
+                        info_message, filepath_in_trash, filepath = self.delete_to_trash(os.path.join(directory, f),
+                                                                                         is_multiprocessing=True)
+                        mp_dict[filepath_in_trash] = filepath
+                        return_list.append(info_message)
+        else:
+            return_list.append("Directory does not exist")  
+            logging.error("Directory does not exist")
 
-    def delete_to_trash_by_reg(self, regular, directory, return_list=None, silent=False):
-        listdir = get_list_of_directories(directory)  # recursive list of directories
+    def delete_to_trash_by_reg(self, regular, directory, silent=False):
+        listdir = get_list_of_directories(directory) 
         listdir.append(directory)
 
         mgr = multiprocessing.Manager()
-        if return_list is None:
-            return_list = mgr.list()
+        return_list = mgr.list()
         mp_dict = mgr.dict()
         proc_list = []
-
-        while len(listdir) > 0:
-            p = multiprocessing.Process(target=self.reg, args=(listdir.pop(), regular, mp_dict, return_list))
-            proc_list.append(p)
-            p.start()
+        cpu = multiprocessing.cpu_count() 
+        
+        while len(listdir) > 0:          
+            if len(filter(lambda proc: proc.is_alive(), proc_list)) < cpu:     
+                p = multiprocessing.Process(target=self.reg, args=(listdir.pop(), regular, mp_dict, return_list))
+                proc_list.append(p)
+                p.start()
 
         for p in proc_list:
             p.join()
@@ -243,6 +248,7 @@ class Trash(object):
         self.__load_from_filelist()
         self.filelist_dict.update(mp_dict)
         self.__save_to_filelist()
+        
         if len(return_list) == 0:
             if os.path.exists(directory):
                 return_list.append("No matches")

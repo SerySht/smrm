@@ -1,0 +1,31 @@
+INFO     [2017-09-03 18:24:44,753] Trash path /tmp/tmpgfZTA0/Trash
+INFO     [2017-09-03 18:24:44,753] /tmp/tmpgfZTA0/1 moved to trash
+INFO     [2017-09-03 18:24:44,755] Trash path /tmp/tmpR07DPi/Trash
+INFO     [2017-09-03 18:24:44,772] /tmp/tmpR07DPi/2 moved to trash
+INFO     [2017-09-03 18:24:44,773] /tmp/tmpR07DPi/1 moved to trash
+INFO     [2017-09-03 18:24:44,776] Trash path /tmp/tmpeFaIsf/Trash
+INFO     [2017-09-03 18:24:44,776] Trash path /tmp/tmpeFaIsf/Trash
+INFO     [2017-09-03 18:24:44,776] 
+INFO     [2017-09-03 18:24:44,777] Trash path /tmp/tmpSIja2H/Trash
+INFO     [2017-09-03 18:24:44,777] Trash path /tmp/tmpSIja2H/Trash
+INFO     [2017-09-03 18:24:44,777] /tmp/tmpSIja2H/1 wil be moved to trash
+INFO     [2017-09-03 18:24:44,777] Trash path /tmp/tmpzZuHf5/Trash
+ERROR    [2017-09-03 18:24:44,777] /tmp/tmpzZuHf5/not_existing not exists
+INFO     [2017-09-03 18:24:44,777] Trash path /tmp/tmpv0Yr8x/Trash
+INFO     [2017-09-03 18:24:44,777] /tmp/tmpv0Yr8x/1 moved to trash
+INFO     [2017-09-03 18:24:44,777] Trash path /tmp/tmpRXSqj0/Trash
+INFO     [2017-09-03 18:24:44,778] /tmp/tmpRXSqj0/1 moved to trash
+INFO     [2017-09-03 18:24:44,778] Recovered 1
+ERROR    [2017-09-03 18:24:44,778] There is no 3 in trash
+INFO     [2017-09-03 18:24:44,778] Trash path /tmp/tmpt33gId/Trash
+INFO     [2017-09-03 18:24:44,778] /tmp/tmpt33gId/1 moved to trash
+INFO     [2017-09-03 18:24:44,778] /tmp/tmpt33gId/2 moved to trash
+INFO     [2017-09-03 18:24:44,778] Recovered 1
+INFO     [2017-09-03 18:24:44,778] Recovered 2
+INFO     [2017-09-03 18:24:44,779] Trash path /tmp/tmpdSpbGs/Trash
+INFO     [2017-09-03 18:24:44,779] /tmp/tmpdSpbGs/1 moved to trash
+INFO     [2017-09-03 18:24:44,779] /tmp/tmpdSpbGs/1 moved to trash
+INFO     [2017-09-03 18:24:44,779] Recovered 1
+INFO     [2017-09-03 18:24:44,779] Recovered 1(1)
+INFO     [2017-09-03 18:24:44,779] Trash path /tmp/tmplQjdKu/Trash
+INFO     [2017-09-03 18:24:44,780] Trash wiped

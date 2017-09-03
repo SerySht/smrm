@@ -48,7 +48,7 @@ class TestTrash(unittest.TestCase):
    
     def setUp(self):
         self.test_dir = tempfile.mkdtemp() 
-        self.test_trash = trash.Trash(trash_path = self.test_dir + "/Trash" , current_directory = self.test_dir)
+        self.test_trash = trash.Trash(trash_path = self.test_dir + "/Trash")
         self.file1 = self.test_dir + "/1"
         self.file2 = self.test_dir + "/2"
         self.file3 = self.test_dir + "/kek"   
@@ -112,19 +112,19 @@ class TestTrash(unittest.TestCase):
 
 
     def test_delete_to_trash_by_reg(self):
-        self.test_trash.delete_to_trash_by_reg('\d+', self.test_dir, silent=True)
+        self.test_trash.delete_to_trash_by_reg('\d+', self.test_dir)
         self.assertEqual(os.path.exists(self.file1), False)
         self.assertEqual(os.path.exists(self.file2), False)
      
 
     
     def test_delete_to_trash_force(self):
-        self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash" , current_directory = self.test_dir, force=True)
+        self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash",force=True)
         self.assertEqual(self.test_trash_dr.delete_to_trash(self.test_dir + "/not_existing"), ("",0))
        
 
     def test_dry_run(self):
-        self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash" , current_directory = self.test_dir, dry_run=True)
+        self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash", dry_run=True)
         self.test_trash_dr.delete_to_trash(self.file1)
         self.assertTrue(os.path.exists(self.file1))
 

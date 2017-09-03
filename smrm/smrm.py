@@ -1,3 +1,6 @@
+"""
+This module for working with console
+"""
 import os
 import sys
 import argparse
@@ -14,10 +17,11 @@ def main():
     parser.add_argument('-wt', '--wipe_trash', action='store_true', help='wipe trash')
     parser.add_argument('-r', '--recover', nargs='*', help='recover file(s)')
     parser.add_argument('-regex', '--regex', nargs=2, type=str, help='delete by regex in directory')
-    parser.add_argument('-silent', action='store_true', help='silent mode')
+    parser.add_argument('-s','--silent', action='store_true', help='silent mode')
     parser.add_argument('-i', '--interactive', action='store_true', help='interactive mode')
-    parser.add_argument('-dry', action='store_true', help='dry run')
-    parser.add_argument('-f', '--force', action='store_true', help='ignore nonexistent files"')
+    parser.add_argument('-dry', '--dry_run', action='store_true', help='dry run')
+    parser.add_argument('-f', '--force', action='store_true', help='ignore nonexistent files')
+    parser.add_argument('-v', '--verbose', action='store_true', help='verbose mode')
 
     parser.add_argument('--config_path', help='config path')
     parser.add_argument('--trash_path', help='trash path')
@@ -34,6 +38,14 @@ def main():
         conf = trashconfig.load()
     if arguments.silent:
         conf['silent'] = True
+    if arguments.verbose:
+        conf['verbose'] = True 
+    if arguments.force:
+        conf['force'] = True 
+    if arguments.interactive:
+        conf['interactive'] = True 
+    if arguments.dry_run:
+        conf['dry_run'] = True    
     if arguments.trash_path:
         conf['trash_path'] = arguments.trash_path
     if arguments.log_path:
@@ -49,15 +61,7 @@ def main():
                         filename=conf['log_path'], level=logging.DEBUG)
     logging.debug(arguments)
 
-    my_trash = trash.Trash(conf['trash_path'],
-                           os.getcwd(),
-                           conf['storage_time'],
-                           conf['trash_maximum_size'],
-                           conf['recover_conflict'],
-                           arguments.interactive,
-                           conf['log_path'],
-                           arguments.dry,
-                           arguments.force)
+    my_trash = trash.Trash(**conf)
 
     output_data = []
     if arguments.files:

@@ -1,3 +1,6 @@
+"""
+This module contains class Trash, which serves for creation and manipulation with trashes
+"""
 import os
 import sys
 import json
@@ -14,12 +17,15 @@ sys.setdefaultencoding('utf-8')
 
 
 class Trash(object):
-    def __init__(self, trash_path, current_directory=os.getcwd(), storage_time=False,
-                 trash_maximum_size=False, recover_conflict='not_replace',
-                 interactive=False, log_path=os.getcwd() + "/log", dry_run=False, force=False):
+    """
+    Class for creation and manipulation with trash
+    """
+    def __init__(self, trash_path, torage_time=False,
+                 trash_maximum_size=False, storage_time=False, recover_conflict='not_replace',
+                 interactive=False, log_path=os.getcwd() + "/log", silent=False,
+                 verbose = False, dry_run=False, force=False):
 
-        self.trash_path = trash_path
-        self.current_directory = current_directory
+        self.trash_path = trash_path   
         self.storage_time = storage_time
         self.trash_maximum_size = trash_maximum_size
         self.recover_conflict = recover_conflict
@@ -27,6 +33,9 @@ class Trash(object):
         self.dry_run = dry_run
         self.force = force
         self.filelist_path = os.path.join(self.trash_path, 'filelist')
+        self.silent = silent
+        self.verbose = verbose
+        
         if not os.path.exists(self.trash_path):
             os.mkdir(self.trash_path)
 
@@ -34,18 +43,22 @@ class Trash(object):
                             filename=log_path, level=logging.DEBUG)
         logging.info("Trash path {}".format(trash_path))
 
-    def __load_from_filelist(self):
+    
+    def _load_from_filelist(self):
         with open(self.filelist_path, 'a+') as filelist:
             try:
                 self.filelist_dict = json.load(filelist)
             except ValueError:
                 self.filelist_dict = {}
 
-    def __save_to_filelist(self):
+    
+    def _save_to_filelist(self):
         with open(self.filelist_path, 'w+') as filelist:
             filelist.write(json.dumps(self.filelist_dict))
 
+    
     def mover_to_trash(self, filepath):
+        """Gets path of the file and moves it to the Trash"""        
         filepath_in_trash = os.path.join(self.trash_path, str(os.stat(filepath).st_ino))
         try:
             os.rename(filepath, filepath_in_trash)
@@ -54,7 +67,9 @@ class Trash(object):
         else:
             return ExitCodes.GOOD, filepath_in_trash, filepath
 
+
     def delete_to_trash(self, target, is_multiprocessing=False):
+        """Calls mover_to_trash and generates exit code and info message"""
         info_message = ''
         exit_code = ExitCodes.GOOD
         filepath = os.path.abspath(target)
@@ -65,9 +80,9 @@ class Trash(object):
                         exit_code, filepath_in_trash, filepath = self.mover_to_trash(filepath)
 
                         if not is_multiprocessing:
-                            self.__load_from_filelist()
+                            self._load_from_filelist()
                             self.filelist_dict[filepath_in_trash] = filepath
-                            self.__save_to_filelist()
+                            self._save_to_filelist()
 
                         if exit_code == ExitCodes.GOOD:
                             info_message = target + ' moved to trash'
@@ -85,17 +100,23 @@ class Trash(object):
             exit_code = ExitCodes.NO_FILE
         if self.force:
             exit_code = ExitCodes.GOOD
-            info_message = ""
+            info_message = ""        
         if exit_code != ExitCodes.GOOD:
             logging.error(info_message)
         else:
             logging.info(info_message)
+        if self.silent:
+            info_message = ""      
+        if not self.dry_run and not self.verbose and exit_code == ExitCodes.GOOD:
+            info_message = ""
         if is_multiprocessing:
             return info_message, filepath_in_trash, filepath
         else:
             return info_message, exit_code
 
+
     def get_last_deleted(self, recover_list):
+        """Returns last deleted file to trash"""
         oldest_file = recover_list[0]
         j = 0
         for i in range(len(recover_list)):
@@ -104,7 +125,9 @@ class Trash(object):
                 j = i
         return j
 
+
     def mover_from_trash(self, filepath_in_trash, filepath):
+        "Gets path of file in trash and original path and replace file to original path"
         info_message = ''
         exit_code = ExitCodes.GOOD
 
@@ -128,11 +151,13 @@ class Trash(object):
         else:
             info_message = os.path.basename(filepath) + " will be recovered"
 
-        self.__save_to_filelist()
+        self._save_to_filelist()
         return info_message, exit_code
 
+
     def recover_from_trash(self, target):
-        self.__load_from_filelist()
+        """Finds suitable files for target in trash dict and calls mover_from_trash"""
+        self._load_from_filelist()
 
         # getting [(path in trash, original path of file)]
         recover_list = [item for item in self.filelist_dict.items() if os.path.basename(item[1]) == target]
@@ -150,6 +175,7 @@ class Trash(object):
 
         return info_message, exit_code
 
+
     def wipe_trash(self):
         if not self.dry_run:
             shutil.rmtree(self.trash_path)
@@ -159,8 +185,10 @@ class Trash(object):
         else:
             return "Trash will be wiped", 0
 
+
     def show_trash(self, n=0):
-        self.__load_from_filelist()
+        """If gets n shows last n files"""
+        self._load_from_filelist()
         return_list = []
 
         if self.filelist_dict != {}:
@@ -176,12 +204,15 @@ class Trash(object):
             logging.info("Trash is empty")
         return return_list
 
+
     def delete_trash(self):
+        """Removes trash folder"""
         if os.path.exists(self.trash_path):
             shutil.rmtree(self.trash_path)
 
+
     def policy_check(self):
-        self.__load_from_filelist()
+        self._load_from_filelist()
 
         if self.storage_time:
             for f in self.filelist_dict.keys():
@@ -192,7 +223,7 @@ class Trash(object):
                         shutil.rmtree(f)
                     self.filelist_dict.pop(f)
 
-                    self.__save_to_filelist()
+                    self._save_to_filelist()
 
         if self.trash_maximum_size:
             while get_size(self.trash_path) > self.trash_maximum_size:
@@ -211,9 +242,10 @@ class Trash(object):
                 else:
                     shutil.rmtree(oldest_file)
 
-        self.__save_to_filelist()
+        self._save_to_filelist()
 
-    def reg(self, directory, regular, mp_dict, return_list):     
+
+    def _reg(self, directory, regular, mp_dict, return_list):     
         if os.path.exists(directory):   
             for f in os.listdir(directory):
                 if not os.path.isdir(os.path.join(directory, f)):
@@ -226,28 +258,31 @@ class Trash(object):
             return_list.append("Directory does not exist")  
             logging.error("Directory does not exist")
 
-    def delete_to_trash_by_reg(self, regular, directory, silent=False):
+
+    def delete_to_trash_by_reg(self, regular, directory):
+        "Removes by regex in directory"
         listdir = get_list_of_directories(directory) 
         listdir.append(directory)
 
-        mgr = multiprocessing.Manager()
-        return_list = mgr.list()
+        mgr = multiprocessing.Manager()        
         mp_dict = mgr.dict()
+        return_list = mgr.list()
+
         proc_list = []
         cpu = multiprocessing.cpu_count() 
         
         while len(listdir) > 0:          
             if len(filter(lambda proc: proc.is_alive(), proc_list)) < cpu:     
-                p = multiprocessing.Process(target=self.reg, args=(listdir.pop(), regular, mp_dict, return_list))
+                p = multiprocessing.Process(target=self._reg, args=(listdir.pop(), regular, mp_dict, return_list))
                 proc_list.append(p)
                 p.start()
 
         for p in proc_list:
             p.join()
 
-        self.__load_from_filelist()
+        self._load_from_filelist()
         self.filelist_dict.update(mp_dict)
-        self.__save_to_filelist()
+        self._save_to_filelist()
         
         if len(return_list) == 0:
             if os.path.exists(directory):

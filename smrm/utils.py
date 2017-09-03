@@ -1,9 +1,12 @@
-# coding: utf8
+"""
+This module contains utils for working of class Trash
+"""
 import os
 import sys
 
 
 def confirmed(filename):
+    """Gets Yes/No from console"""
     answer = raw_input("-Are you sure you want to move \"{0}\" to the Trash?\n".format(filename))
     if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:
         return True
@@ -14,6 +17,7 @@ def confirmed(filename):
 
 
 def get_size(filepath):
+    """Returns size of folder"""
     if not os.path.isdir(filepath):
         return os.path.getsize(filepath)
     total_size = 0
@@ -24,6 +28,7 @@ def get_size(filepath):
 
 
 def conflict_solver(filepath):
+    """Renames file to solve nameconflict"""
     try:
         num = int(filepath[filepath.rfind('(') + 1:filepath.rfind(')')])
     except ValueError:
@@ -32,6 +37,7 @@ def conflict_solver(filepath):
 
 
 def output(output_data, silent):
+    """Puts data at console output"""
     exit_code = ExitCodes.GOOD
     for dat in output_data:
         if dat[1] != ExitCodes.GOOD:
@@ -48,6 +54,7 @@ def output(output_data, silent):
 
 
 def get_list_of_directories(directory):
+    """Returns list of directories"""
     dir_list = []
     for path, directories, files in os.walk(directory):
         for d in directories:
@@ -56,6 +63,7 @@ def get_list_of_directories(directory):
 
 
 class ExitCodes(object):
+    """Exit codes constants"""
     GOOD = 0
 
     CONFLICT = 1
@@ -66,6 +74,7 @@ class ExitCodes(object):
 
 
 class Progress(object):
+    """Progress shower"""
     def __init__(self, filename):
         self.num = 0
         self.all_ = sum([len(files) + len(d) for r, d, files in os.walk(filename)])

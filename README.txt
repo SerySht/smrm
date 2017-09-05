@@ -31,7 +31,7 @@ Write "smrm [parameter]"
 
 
 MODULES:
-	smrm.py:
+	argparser.py:
 	gets argumets from console and calls trash module
 
 	trash.py:

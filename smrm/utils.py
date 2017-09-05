@@ -72,6 +72,7 @@ class ExitCodes(object):
 
     NO_FILE = 3
 
+    NO_ACCESS = 4
 
 class Progress(object):
     """Progress shower"""

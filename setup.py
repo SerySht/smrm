@@ -9,6 +9,6 @@ setup(
     long_description=open(join(dirname(__file__), 'README.txt')).read(),
     entry_points={
             'console_scripts':
-                ['smrm = smrm.smrm:main']
+                ['smrm = smrm.argparser:main']
             }
 )

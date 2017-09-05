@@ -5,9 +5,9 @@ import os
 import sys
 import argparse
 import logging
-from . import trash
-from . import trashconfig
-from .utils import output
+from smrm.trash import Trash
+from smrm import trashconfig
+from smrm.utils import output
 
 
 def main():
@@ -61,7 +61,7 @@ def main():
                         filename=conf['log_path'], level=logging.DEBUG)
     logging.debug(arguments)
 
-    my_trash = trash.Trash(**conf)
+    my_trash = Trash(**conf)
 
     output_data = []
     if arguments.files:
@@ -72,8 +72,8 @@ def main():
         for f in arguments.recover:
             output_data.append(my_trash.recover_from_trash(f))
 
-    elif arguments.regex:
-        my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1], conf['silent'])
+    elif arguments.regex:        
+        my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1])
         # output_data.append(my_trash.delete_to_trash_by_reg2('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))
 
     elif arguments.show_trash:
@@ -85,7 +85,7 @@ def main():
     else:
         output_data = [("No arguments", 2)]
     output(output_data, conf["silent"])
-    my_trash.policy_check()
+   
 
 
 if __name__ == "__main__":

@@ -36,30 +36,15 @@ def conflict_solver(filepath):
     return filepath.replace('(' + str(num) + ')', '(' + str(num + 1) + ')')
 
 
-def output(output_data, silent):
+def output(output_data, silet=False):
     """Puts data at console output"""
     exit_code = ExitCodes.GOOD
-    for dat in output_data:
-        if dat[1] != ExitCodes.GOOD:
-            exit_code = dat[1]
-            if not silent:
-                if exit_code == ExitCodes.CONFLICT:
-                    print "Name confilct solved: ", dat[0]
-                else:
-                    print "Error smrm: ", dat[0]
-        else:
-            if not silent and dat[0] != '':
-                print dat[0]
+    for data in output_data:
+        if data[1] != ExitCodes.GOOD:
+            exit_code = data[1]            
+        if data[0] != '':
+            print data[0]
     sys.exit(exit_code)
-
-
-def get_list_of_directories(directory):
-    """Returns list of directories"""
-    dir_list = []
-    for path, directories, files in os.walk(directory):
-        for d in directories:
-            dir_list.append(os.path.join(path, d))
-    return dir_list
 
 
 class ExitCodes(object):
@@ -73,6 +58,7 @@ class ExitCodes(object):
     NO_FILE = 3
 
     NO_ACCESS = 4
+
 
 class Progress(object):
     """Progress shower"""

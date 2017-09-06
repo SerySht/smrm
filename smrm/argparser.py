@@ -65,15 +65,14 @@ def main():
 
     output_data = []
     if arguments.files:
-        for f in arguments.files:
-            output_data.append(my_trash.delete_to_trash(f))
+        output_data = my_trash.delete_to_trash(arguments.files)
 
     elif arguments.recover:
         for f in arguments.recover:
             output_data.append(my_trash.recover_from_trash(f))
 
     elif arguments.regex:        
-        my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1])
+        output_data = my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1])
         # output_data.append(my_trash.delete_to_trash_by_reg2('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))
 
     elif arguments.show_trash:
@@ -84,8 +83,8 @@ def main():
 
     else:
         output_data = [("No arguments", 2)]
-    output(output_data, conf["silent"])
-   
+  
+    output(output_data)
 
 
 if __name__ == "__main__":

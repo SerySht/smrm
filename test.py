@@ -70,13 +70,13 @@ class TestTrash(unittest.TestCase):
 
 
     def test_exit_code_of_delete_to_trash_zero(self):
-        text, code = self.test_trash.delete_to_trash(self.file1)
-        self.assertEqual(code, 0)
+        lst = self.test_trash.delete_to_trash(self.file1)
+        self.assertEqual(lst[0][1], 0)
 
 
     def test_exit_code_of_delete_to_trash_three(self):   
-        text, code = self.test_trash.delete_to_trash(self.test_dir + '/not_existing')
-        self.assertEqual(code, 3)
+        lst = self.test_trash.delete_to_trash(self.test_dir + '/not_existing')
+        self.assertEqual(lst[0][1], 3)
 
 
     def test_recover_from_trash(self):        
@@ -114,18 +114,17 @@ class TestTrash(unittest.TestCase):
     def test_delete_to_trash_by_reg(self):
         self.test_trash.delete_to_trash_by_reg('\d+', self.test_dir)
         self.assertEqual(os.path.exists(self.file1), False)
-        self.assertEqual(os.path.exists(self.file2), False)
-     
+        self.assertEqual(os.path.exists(self.file2), False)     
 
     
     def test_delete_to_trash_force(self):
-        self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash",force=True)
-        self.assertEqual(self.test_trash_dr.delete_to_trash(self.test_dir + "/not_existing"), ("",0))
-       
+        self.test_trash = trash.Trash(trash_path = self.test_dir + "/Trash",force=True)
+        self.assertEqual(self.test_trash.delete_to_trash(self.test_dir + "/not_existing"), [("",0)])
+
 
     def test_dry_run(self):
-        self.test_trash_dr = trash.Trash(trash_path = self.test_dir + "/Trash", dry_run=True)
-        self.test_trash_dr.delete_to_trash(self.file1)
+        self.test_trash = trash.Trash(trash_path = self.test_dir + "/Trash", dry_run=True)
+        self.test_trash .delete_to_trash(self.file1)
         self.assertTrue(os.path.exists(self.file1))
 
 

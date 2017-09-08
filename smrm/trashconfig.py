@@ -8,22 +8,27 @@ import sys
 
 
 class Defaults(object):
-    """This class contains default paths"""
-    
+    """
+    This class contains default paths
+    """    
     TRASH_PATH = os.path.join(os.getenv('HOME'), "Trash")
+
     LOG_PATH = os.path.join(os.getenv('HOME'), 'smrm.log')
+
     CONFIG_PATH = os.path.join(os.getenv('HOME'), ".smrmconfig.json")
-    CONFIG_DICT = {"trash_path": TRASH_PATH,
-                 "log_path": LOG_PATH,
-                 "silent": False,
-                 "recover_conflict": "not_replace",
-                 "storage_time": False,
-                 "trash_maximum_size": False,
-                 "verbose":False,               
-                 "force":False,
-                 "interactive":False,
-                 "dry_run":False, 
-                 }
+
+    CONFIG_DICT = {
+            "trash_path": TRASH_PATH,
+            "log_path": LOG_PATH,
+            "silent": False,
+            "recover_conflict": "not_replace",
+            "storage_time": False,
+            "trash_maximum_size": False,
+            "verbose":False,               
+            "force":False,
+            "interactive":False,
+            "dry_run":False, 
+    }
 
 
 def load(config_path=Defaults.CONFIG_PATH):
@@ -91,6 +96,3 @@ def load(config_path=Defaults.CONFIG_PATH):
 
     return conf_dict
 
-
-def get_default_path():
-    return Defaults.CONFIG_PATH

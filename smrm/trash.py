@@ -1,5 +1,25 @@
 """
 This module contains class Trash, which serves for creation and manipulation with trashes
+
+Parameters for initializzations of Trash:
+    non-optional:
+        trash_path = path of trash
+    optional:
+        trash_maximum_size = maximum size of trash, default = False
+        storage_time = time of storaging files(in days), default = False
+        recover_conflict = what do if name conflice while restore file (replace/not_replace), default = 'not_replace'
+        interactive = turn on interactive mode, default = False
+        log_path = path of log file, default = home dir
+        silent = turn on silent mode, default = False
+        verbose = turn on verbose mode(commenting what is happening), default = False
+        dry_run = turn on dry mode (not appling changes), default = False
+        force = turn to force mode, default = False
+
+
+Example of working with Trash:
+    my_trash = Trash(trash_path = "/home/username/Trash", verbose=True)
+    my_trash.delete_trash("/home/username/file1")
+
 """
 import os
 import sys
@@ -16,10 +36,10 @@ class Trash(object):
     """
     Class for creation and manipulation with trash
     """
-    def __init__(self, trash_path, torage_time=False,
-                 trash_maximum_size=False, storage_time=False, recover_conflict='not_replace',
-                 interactive=False, log_path=os.getcwd() + "/log", silent=False,
-                 verbose = False, dry_run=False, force=False):
+    def __init__(self, trash_path, trash_maximum_size=False, storage_time=False, 
+                    recover_conflict='not_replace', interactive=False,  
+                    log_path=os.getcwd() + "/log", silent=False, verbose = False, 
+                    dry_run=False, force=False):
 
         self.trash_path = trash_path   
         self.storage_time = storage_time
@@ -55,7 +75,6 @@ class Trash(object):
     
     def mover_to_trash(self, filepath):
         """Gets path of the file and moves it to the Trash"""
-
         filepath_in_trash = os.path.join(self.trash_path, str(os.stat(filepath).st_ino))
 
         if os.path.isdir(filepath):
@@ -71,8 +90,7 @@ class Trash(object):
             return ExitCodes.GOOD, filepath_in_trash, filepath
     
 
-    def _delete_to_trash(self, target, filelist_dict, return_list):
-        """Calls mover_to_trash and generates exit code and info message"""
+    def _delete_to_trash(self, target, filelist_dict, return_list):        
         info_message = u''  
         if not isinstance(target, unicode):
             target = target.decode("utf-8")   
@@ -125,7 +143,7 @@ class Trash(object):
 
 
     def delete_to_trash(self, targets):  
-        
+        """Gets target or list of targets and moves it to the trash, using multiprocessing"""
         mgr = multiprocessing.Manager()        
         mp_dict = mgr.dict()
         return_list = mgr.list()
@@ -195,7 +213,7 @@ class Trash(object):
 
 
     def recover_from_trash(self, target):
-        """Finds suitable files for target in trash dict and calls mover_from_trash"""
+        """Finds suitable files for target in trash_dict and calls mover_from_trash"""
         self._load_from_filelist()
         target = target.decode("utf-8")
         # getting [(path in trash, original path of file)]
@@ -225,6 +243,7 @@ class Trash(object):
     
     
     def wipe_trash(self):
+        """Cleaning trash directory"""
         if not self.dry_run:
             self._delete_directory(self.trash_path)
             os.mkdir(self.trash_path)            
@@ -235,7 +254,7 @@ class Trash(object):
 
 
     def show_trash(self, n=0):
-        """If gets n shows last n files"""
+        """If gets n shows last n files, if no - all content of trash"""
         self._load_from_filelist()
         return_list = []  
         if self.filelist_dict != {}:         
@@ -306,7 +325,6 @@ class Trash(object):
             return_list.append("Directory does not exist")  
             logging.error("Directory does not exist")
 
-
     
     def delete_to_trash_by_reg(self, regular, directory):
         "Removes by regex in directory"        
@@ -325,55 +343,3 @@ class Trash(object):
             else:
                 if os.path.isdir(path):
                     self._find_matches(path, regular, lst)
-
-        
-
-     
-
-        # listdir = get_list_of_directories(directory) 
-        # listdir.append(directory)
-
-        # mgr = multiprocessing.Manager()        
-        # mp_dict = mgr.dict()
-        # return_list = mgr.list()
-
-        # proc_list = []
-        # cpu = multiprocessing.cpu_count() 
-        
-        # while len(listdir) > 0:          
-        #     if len(filter(lambda proc: proc.is_alive(), proc_list)) < cpu:     
-        #         p = multiprocessing.Process(target=self._reg, args=(listdir.pop(), regular, mp_dict, return_list))
-        #         proc_list.append(p)
-        #         p.start()
-
-        # for p in proc_list:
-        #     p.join()
-
-        # self._load_from_filelist()
-        # self.filelist_dict.update(mp_dict)
-        # self._save_to_filelist()
-        
-        # if len(return_list) == 0:
-        #     if os.path.exists(directory):
-        #         return_list.append("No matches")
-        #     else:
-        #         return_list.append("Directory not exists")
-        # return return_list
-
-
-        # def delete_to_trash_by_reg2(self, regular, directory, silent=False):
-        #     progress = Progress(os.path.abspath(directory))
-        #     info_message = ''
-        #     exit_code = ExitCodes.GOOD
-
-        #     for path, directories, files in os.walk(directory):
-        #         for f in files:
-        #             if re.match(regular, f):
-        #                 if not self.interactive or confirmed(f):
-        #                     progress.inc()
-        #                     info_message, exit_code = self.delete_to_trash(os.path.join(path, f))
-        #         if not silent:
-        #             progress.show()
-        #     if not silent:
-        #         progress.end()
-        #     return "", exit_code

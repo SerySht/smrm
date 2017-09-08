@@ -6,7 +6,7 @@ import sys
 
 
 def confirmed(filename):
-    """Gets Yes/No from console"""
+    """Gets confirmation from console for deleting file"""
     answer = raw_input("-Are you sure you want to move \"{0}\" to the Trash?\n".format(filename))
     if answer in {'yes', 'Yes', 'y', 'YES' 'da'}:
         return True
@@ -28,7 +28,7 @@ def get_size(filepath):
 
 
 def conflict_solver(filepath):
-    """Renames file to solve nameconflict"""
+    """Renames file to solve name conflict"""
     try:
         num = int(filepath[filepath.rfind('(') + 1:filepath.rfind(')')])
     except ValueError:
@@ -37,7 +37,7 @@ def conflict_solver(filepath):
 
 
 def output(output_data, silet=False):
-    """Puts data at console output"""
+    """Puts data to console output and exit with exit code"""
     exit_code = ExitCodes.GOOD
     for data in output_data:
         if data[1] != ExitCodes.GOOD:
@@ -49,6 +49,7 @@ def output(output_data, silet=False):
 
 class ExitCodes(object):
     """Exit codes constants"""
+    
     GOOD = 0
 
     CONFLICT = 1
@@ -77,6 +78,3 @@ class Progress(object):
 
     def end(self):
         print "100%"
-
-
-        # os.path.dirname(__file__)

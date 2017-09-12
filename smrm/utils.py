@@ -17,7 +17,7 @@ def confirmed(filename):
 
 
 def get_size(filepath):
-    """Returns size of folder"""
+    """Returns size of folder in bytes"""
     if not os.path.isdir(filepath):
         return os.path.getsize(filepath)
     total_size = 0

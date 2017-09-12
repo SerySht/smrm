@@ -19,7 +19,6 @@ Parameters for initializzations of Trash:
 Example of working with Trash:
     my_trash = Trash(trash_path = "/home/username/Trash", verbose=True)
     my_trash.delete_trash("/home/username/file1")
-
 """
 import os
 import sys
@@ -118,8 +117,7 @@ class Trash(object):
                 info_message = target + u" - deleting canceled"
         else:
             info_message = target + u" not exists" 
-            exit_code = ExitCodes.NO_FILE
-        self.policy_check()
+            exit_code = ExitCodes.NO_FILE        
 
         if exit_code == ExitCodes.NO_ACCESS:
             info_message = "Error: No access to {}/{}".format(filepath_in_trash, filepath)  
@@ -147,16 +145,13 @@ class Trash(object):
         mgr = multiprocessing.Manager()        
         mp_dict = mgr.dict()
         return_list = mgr.list()
-
-        proc_list = []
-        cpu = multiprocessing.cpu_count() 
+        proc_list = []     
         
         if not isinstance(targets, list):
             targets = [targets]
               
-        while len(targets) > 0:      
-           
-            if len(filter(lambda proc: proc.is_alive(), proc_list)) < cpu:     
+        while len(targets) > 0:          
+            if multiprocessing.cpu_count() > len(multiprocessing.active_children()):     
                 p = multiprocessing.Process(target=self._delete_to_trash, args=(targets.pop(), mp_dict, return_list))
                 proc_list.append(p)            
                 p.start()
@@ -167,7 +162,8 @@ class Trash(object):
         self._load_from_filelist()
         self.filelist_dict.update(mp_dict)
         self._save_to_filelist()                    
-      
+        self.policy_check()
+        
         return list(return_list)
     
 
@@ -341,5 +337,5 @@ class Trash(object):
             if re.match(regular,f):
                 lst.append(path)
             else:
-                if os.path.isdir(path):
+                if os.path.isdir(path) and not os.path.islink(path):
                     self._find_matches(path, regular, lst)

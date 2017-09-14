@@ -27,8 +27,8 @@ import re
 import logging
 from smrm.utils import confirmed, get_size, conflict_solver, output, Progress, ExitCodes
 import multiprocessing
-import time
 import codecs 
+import time
 
 
 class Trash(object):
@@ -54,8 +54,8 @@ class Trash(object):
         if not os.path.exists(self.trash_path):
             os.mkdir(self.trash_path)
 
-        logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', filemode="w",
-                            filename=log_path, level=logging.DEBUG)
+        # logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', filemode="w",
+        #                     filename=log_path, level=logging.DEBUG)
         logging.info("Trash path {}".format(trash_path))
 
     
@@ -95,7 +95,8 @@ class Trash(object):
             target = target.decode("utf-8")   
         exit_code = ExitCodes.GOOD
         filepath = os.path.abspath(target)
-
+        print "begin delete"        
+        time.sleep(10)
         if os.path.exists(filepath) or self.force:
             if not self.interactive or confirmed(target):
                 if os.access(filepath, os.W_OK):
@@ -141,24 +142,30 @@ class Trash(object):
 
 
     def delete_to_trash(self, targets):  
-        """Gets target or list of targets and moves it to the trash, using multiprocessing"""
-        mgr = multiprocessing.Manager()        
-        mp_dict = mgr.dict()
+        """Gets target or list of targets and moves it to the trash, using multiprocessing"""             
+     
+        mgr = multiprocessing.Manager()         
+        mp_dict = mgr.dict()    
         return_list = mgr.list()
-        proc_list = []     
-        
-        if not isinstance(targets, list):
-            targets = [targets]
-              
-        while len(targets) > 0:          
-            if multiprocessing.cpu_count() > len(multiprocessing.active_children()):     
-                p = multiprocessing.Process(target=self._delete_to_trash, args=(targets.pop(), mp_dict, return_list))
-                proc_list.append(p)            
-                p.start()
+        proc_list = [] 
 
-        for p in proc_list:
-            p.join()                            
+        if not isinstance(targets, list):
+            targets = [targets] 
+        
+        deadpool = multiprocessing.Pool(4)
+        rez = deadpool.map(pickle_rick, [(self, target, mp_dict, return_list) for target in targets])
+        # while len(targets) > 0:              
+        #     print "active_children ", len(multiprocessing.active_children())  
+        #     time.sleep(2)     
+        #     if 2*multiprocessing.cpu_count() > len(multiprocessing.active_children()):     
+        #         p = multiprocessing.Process(target=self._delete_to_trash, args=(targets.pop(), mp_dict, return_list))
+        #         proc_list.append(p)            
+        #         p.start()
        
+        # for p in proc_list:
+        #     p.join()                            
+        deadpool.close()
+        deadpool.join()
         self._load_from_filelist()
         self.filelist_dict.update(mp_dict)
         self._save_to_filelist()                    
@@ -339,3 +346,10 @@ class Trash(object):
             else:
                 if os.path.isdir(path) and not os.path.islink(path):
                     self._find_matches(path, regular, lst)
+
+
+
+
+def pickle_rick(args):
+    trash_obj, target, dct, lst = args
+    return trash_obj._delete_to_trash(target, dct, lst)

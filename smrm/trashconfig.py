@@ -31,7 +31,7 @@ class Defaults(object):
     }
 
 
-def load(config_path=Defaults.CONFIG_PATH):
+def load_config(config_path=Defaults.CONFIG_PATH):
     """This function reads config file or loads defaults"""
     
     conf_dict = Defaults.CONFIG_DICT

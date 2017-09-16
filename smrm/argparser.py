@@ -6,8 +6,8 @@ import sys
 import argparse
 import logging
 from smrm.trash import Trash
-from smrm import trashconfig
 from smrm.utils import output
+from smrm.trashconfig import load_config
 
 
 def main():
@@ -33,9 +33,9 @@ def main():
     arguments = parser.parse_args(sys.argv[1:])
 
     if arguments.config_path:
-        conf = trashconfig.load(arguments.config_path)
+        conf = load_config(arguments.config_path)
     else:
-        conf = trashconfig.load()
+        conf = load_config()
     if arguments.silent:
         conf['silent'] = True
     if arguments.verbose:
@@ -72,14 +72,13 @@ def main():
             output_data.append(my_trash.recover_from_trash(f))
 
     elif arguments.regex:        
-        output_data = my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1])
-        # output_data.append(my_trash.delete_to_trash_by_reg2('\\' + arguments.regex[0], arguments.regex[1], conf['silent']))
+        output_data = my_trash.delete_to_trash_by_reg('\\' + arguments.regex[0], arguments.regex[1])       
 
     elif arguments.show_trash:
         output_data = my_trash.show_trash(int(arguments.show_trash))
 
     elif arguments.wipe_trash:
-        output_data.append(my_trash.wipe_trash())
+        output_data = my_trash.wipe_trash()
 
     else:
         output_data = [("No arguments", 2)]

@@ -54,8 +54,8 @@ class Trash(object):
         if not os.path.exists(self.trash_path):
             os.mkdir(self.trash_path)
 
-        # logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', filemode="w",
-        #                     filename=log_path, level=logging.DEBUG)
+        logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', filemode="w",
+                             filename=log_path, level=logging.DEBUG)
         logging.info("Trash path {}".format(trash_path))
 
     
@@ -72,10 +72,11 @@ class Trash(object):
             filelist.write(json.dumps(self.filelist_dict))
 
     
-    def mover_to_trash(self, filepath):
+    def _mover_to_trash(self, filepath):
         """Gets path of the file and moves it to the Trash"""
         filepath_in_trash = os.path.join(self.trash_path, str(os.stat(filepath).st_ino))
 
+        # cheking for accesses of all files in directory
         if os.path.isdir(filepath):
             for root, dirs, files in os.walk(filepath):
                 for f in dirs + files:  
@@ -89,43 +90,46 @@ class Trash(object):
             return ExitCodes.GOOD, filepath_in_trash, filepath
     
 
-    def _delete_to_trash(self, target, filelist_dict, return_list):        
-        info_message = u''  
+    def _delete_to_trash(self, target, filelist_dict):  
+        """Calls _mover_to_trash and forms exit_code and info_message"""       
         if not isinstance(target, unicode):
-            target = target.decode("utf-8")   
+            target = target.decode("utf-8")
+
         exit_code = ExitCodes.GOOD
-        filepath = os.path.abspath(target)
-        print "begin delete"        
-        time.sleep(10)
-        if os.path.exists(filepath) or self.force:
+        filepath = os.path.abspath(target)      
+
+        if os.path.exists(filepath):
             if not self.interactive or confirmed(target):
                 if os.access(filepath, os.W_OK):
                     if not self.dry_run:
-                        exit_code, filepath_in_trash, filepath = self.mover_to_trash(filepath)
+                        
+                        exit_code, filepath_in_trash, filepath = self._mover_to_trash(filepath)
                         
                         if exit_code == ExitCodes.GOOD:
                             filelist_dict[filepath_in_trash] = filepath                        
-                            info_message = target + u' moved to trash'                    
+                            info_message = target + u" moved to trash"                    
 
                         else:
                             info_message = u"Unknown error"
+                            exit_code = ExitCodes.UNKNOWN
+
+                        if exit_code == ExitCodes.NO_ACCESS:
+                            info_message = u"Error: No access to {}/{}".format(filepath_in_trash, filepath)  
+                    
                     else:
-                        info_message = target + u' wil be moved to trash'
+                        info_message = target + u" will be moved to trash"
                 else:
                     info_message = target + u" not exists or no access to it"
                     exit_code = ExitCodes.UNKNOWN
             else:
-                info_message = target + u" - deleting canceled"
+                info_message = target + u" deleting canceled"
+                exit_code = ExitCodes.NO_ACCESS
         else:
-            info_message = target + u" not exists" 
-            exit_code = ExitCodes.NO_FILE        
-
-        if exit_code == ExitCodes.NO_ACCESS:
-            info_message = "Error: No access to {}/{}".format(filepath_in_trash, filepath)  
-
-        if self.force:
-            exit_code = ExitCodes.GOOD
-            info_message = ""        
+            if self.force:                
+                info_message = u""
+            else:
+                info_message = target + u" not exists" 
+                exit_code = ExitCodes.NO_FILE        
         
         if exit_code != ExitCodes.GOOD:
             logging.error(info_message)
@@ -136,64 +140,49 @@ class Trash(object):
             info_message = "" 
               
         if exit_code == ExitCodes.GOOD and not self.dry_run and not self.verbose:           
-            info_message = ""
-        
-        return_list.append((info_message, exit_code))
+            info_message = ""        
+       
+        return info_message, exit_code
 
 
     def delete_to_trash(self, targets):  
-        """Gets target or list of targets and moves it to the trash, using multiprocessing"""             
-     
-        mgr = multiprocessing.Manager()         
-        mp_dict = mgr.dict()    
-        return_list = mgr.list()
-        proc_list = [] 
-
+        """Gets target or list of targets and moves it to the trash, using multiprocessing"""        
         if not isinstance(targets, list):
-            targets = [targets] 
+            targets = [targets]
+
+        mgr = multiprocessing.Manager()         
+        mp_dict = mgr.dict()         
         
-        deadpool = multiprocessing.Pool(4)
-        rez = deadpool.map(pickle_rick, [(self, target, mp_dict, return_list) for target in targets])
-        # while len(targets) > 0:              
-        #     print "active_children ", len(multiprocessing.active_children())  
-        #     time.sleep(2)     
-        #     if 2*multiprocessing.cpu_count() > len(multiprocessing.active_children()):     
-        #         p = multiprocessing.Process(target=self._delete_to_trash, args=(targets.pop(), mp_dict, return_list))
-        #         proc_list.append(p)            
-        #         p.start()
-       
-        # for p in proc_list:
-        #     p.join()                            
-        deadpool.close()
-        deadpool.join()
+        pool = multiprocessing.Pool(multiprocessing.cpu_count())
+        return_list = pool.map(_pickled_delete_to_trash, [(self, target, mp_dict) for target in targets])                              
+        pool.close()
+        pool.join()
+
         self._load_from_filelist()
         self.filelist_dict.update(mp_dict)
-        self._save_to_filelist()                    
-        self.policy_check()
-        
-        return list(return_list)
-    
+        self._save_to_filelist()
+        self.policy_check()                          
+       
+        return return_list    
 
     
-    def get_last_deleted(self, recover_list):
-        """Returns last deleted file to trash"""
-        oldest_file = recover_list[0]
+    def _get_last_deleted(self, recover_list):       
+        last_file = recover_list[0]
         j = 0
         for i in range(len(recover_list)):
-            if os.path.getctime(recover_list[i][0]) > os.path.getctime(oldest_file[0]):
-                oldest_file = recover_list[i]
+            if os.path.getctime(recover_list[i][0]) > os.path.getctime(last_file[0]):
+                last_file = recover_list[i]
                 j = i
         return j
 
 
     def mover_from_trash(self, filepath_in_trash, filepath):
-        "Gets path of file in trash and original path and replace file to original path"
-        info_message = ''
+        """Gets path of file in trash and original path and replace file to original path"""    
         exit_code = ExitCodes.GOOD
 
         if os.path.exists(filepath):
             exit_code = ExitCodes.CONFLICT
-            if self.recover_conflict != 'replace':
+            if self.recover_conflict != "replace":
                 while os.path.exists(filepath):
                     filepath = conflict_solver(filepath)
 
@@ -201,24 +190,26 @@ class Trash(object):
             try:
                 os.rename(filepath_in_trash, filepath)
             except OSError:
-                info_message = 'Something go wrong while renaming'
+                info_message = u"Something go wrong while renaming"
                 exit_code = ExitCodes.UNKNOWN
                 logging.error(info_message)
             else:
                 self.filelist_dict.pop(filepath_in_trash)
-                info_message = "Recovered " + os.path.basename(filepath)
+                info_message = u"Recovered " + os.path.basename(filepath)
                 logging.info(info_message)
         else:
-            info_message = os.path.basename(filepath) + " will be recovered"
+            info_message = os.path.basename(filepath) + u" will be recovered"
 
         self._save_to_filelist()
         return info_message, exit_code
 
 
     def recover_from_trash(self, target):
-        """Finds suitable files for target in trash_dict and calls mover_from_trash"""
+        """Finds suitable files for target in trash_dict and calls mover_from_trash"""        
+        if not isinstance(target, unicode):
+            target = target.decode("utf-8")
         self._load_from_filelist()
-        target = target.decode("utf-8")
+
         # getting [(path in trash, original path of file)]
         recover_list = [item for item in self.filelist_dict.items() if os.path.basename(item[1]) == target]
 
@@ -230,9 +221,9 @@ class Trash(object):
         elif len(recover_list) == 1:
             info_message, exit_code = self.mover_from_trash(recover_list[0][0], recover_list[0][1])
         else:
-            i = int(self.get_last_deleted(recover_list))  # for auto recover
+            i = int(self._get_last_deleted(recover_list))
             info_message, exit_code = self.mover_from_trash(recover_list[i][0], recover_list[i][1])
-
+        self.policy_check()
         return info_message, exit_code
 
     
@@ -251,9 +242,9 @@ class Trash(object):
             self._delete_directory(self.trash_path)
             os.mkdir(self.trash_path)            
             logging.info("Trash wiped")
-            return "Trash wiped", ExitCodes.GOOD
+            return [("Trash wiped", ExitCodes.GOOD)]
         else:
-            return "Trash will be wiped", ExitCodes.GOOD
+            return [("Trash will be wiped", ExitCodes.GOOD)]
 
 
     def show_trash(self, n=0):
@@ -292,21 +283,21 @@ class Trash(object):
                     else:
                          self._delete_directory(f)
                     self.filelist_dict.pop(f)
-
+                    logging.info("Policy by time: deleted " + t)
                     self._save_to_filelist()
 
         if self.trash_maximum_size:
             while get_size(self.trash_path) > self.trash_maximum_size:
                 try:
                     oldest_file = self.filelist_dict.keys()[0]
-                except IndexError:
+                except IndexError:    
                     break
                 for f in self.filelist_dict.keys():
                     if os.path.getctime(f) > os.path.getctime(oldest_file):
                         oldest_file = f
 
                 self.filelist_dict.pop(oldest_file)
-                logging.info("Policy: deleted " + oldest_file)
+                logging.info("Policy by size: deleted " + oldest_file)
                 if not os.path.isdir(oldest_file):
                     os.remove(oldest_file)
                 else:
@@ -314,42 +305,47 @@ class Trash(object):
 
         self._save_to_filelist()
 
-
-    def _reg(self, directory, regular, mp_dict, return_list):     
-        if os.path.exists(directory):
-            for f in os.listdir(directory): 
-                if not os.path.isdir(os.path.join(directory, f)):
-                    if re.match(regular, f):
-                        info_message, filepath_in_trash, filepath = self.delete_to_trash(os.path.join(directory, f),
-                                                                                         is_multiprocessing=True)
-                        mp_dict[filepath_in_trash] = filepath
-                        return_list.append(info_message)
-        else:
-            return_list.append("Directory does not exist")  
-            logging.error("Directory does not exist")
-
     
     def delete_to_trash_by_reg(self, regular, directory):
-        "Removes by regex in directory"        
-        del_list = []
-        self._find_matches(os.path.abspath(directory),regular, del_list)
+        """Removes by regex in directory"""        
+        info_message = u""
+        exit_code = ExitCodes.GOOD
+        del_list = []        
+        directory = os.path.abspath(directory)
 
-        return self.delete_to_trash(del_list)
+        if os.path.isdir(directory):
+            try:
+                self._find_matches(directory, regular, del_list)
+            except OSError:
+                info_message = u"Unknown message"
+                exit_code = ExitCodes.UNKNOWN
+        else:
+            info_message = u"Not correct path of directory"
+            exit_code =  ExitCodes.NO_ACCESS
 
+        if not len(del_list):
+            info_message = u"No matches"
+            exit_code =  ExitCodes.NO_FILE
 
+        if exit_code == ExitCodes.GOOD:        
+            return_list = self.delete_to_trash(del_list)
+            self.policy_check()   
+            return return_list
+        else:
+            logging.error(info_message)
+            return [(info_message, exit_code)]
+
+    
     def _find_matches(self, directory, regular, lst):
         for f in os.listdir(directory):
-            path = os.path.join(directory,f)
-            
-            if re.match(regular,f):
-                lst.append(path)
+            path = os.path.join(directory,f)           
+            if re.match(regular, f):
+                lst.append(path)                
             else:
                 if os.path.isdir(path) and not os.path.islink(path):
                     self._find_matches(path, regular, lst)
 
 
-
-
-def pickle_rick(args):
-    trash_obj, target, dct, lst = args
-    return trash_obj._delete_to_trash(target, dct, lst)
+def _pickled_delete_to_trash(args):
+    trash_obj, target, dct = args
+    return trash_obj._delete_to_trash(target, dct)
